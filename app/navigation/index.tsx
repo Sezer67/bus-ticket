@@ -79,7 +79,7 @@ function BottomTabNavigator() {
         name="Profile"
         component={ProfileScreen}
         options={{
-          title: 'Profile',
+          title: 'Your Name',
           tabBarIcon: ({ color }) => <FontAwesome5 name='user' color={color} />,
         }}
       />

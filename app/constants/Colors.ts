@@ -1,6 +1,7 @@
 const COLORS = {
   light: '#F2F2F2',
   gray: '#92AABB',
+  disabledColor: '#dde1eb',
   'primary-100': '#E0EBFE',
   'primary-200': '#C2D6FE',
   'primary-300': '#A4BFFE',

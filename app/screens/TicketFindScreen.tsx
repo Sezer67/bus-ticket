@@ -7,6 +7,7 @@ import { ticketFindConfigs } from './configs';
 import { FontAwesome } from '@expo/vector-icons';
 import { COLORS, images } from '../constants';
 import TicketFindForm from '../components/Forms/TicketFindForm';
+import { StatusBar } from 'expo-status-bar';
 
 export default function TicketFindScreen({ navigation }: RootStackScreenProps<'TicketFind'>) {
 
@@ -19,6 +20,7 @@ export default function TicketFindScreen({ navigation }: RootStackScreenProps<'T
 
     return (
         <View style={styles.container}>
+            <StatusBar style={'light'} />
             <ImageBackground style={styles.coloredArea} resizeMode='cover' source={bgImage as never} ></ImageBackground>
             <View style={styles.itemContainer}>
                 <View style={styles.tabContainer}>
