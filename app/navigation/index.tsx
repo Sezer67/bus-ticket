@@ -10,6 +10,7 @@ import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../typ
 import LinkingConfiguration from './LinkingConfiguration';
 import TicketFindScreen from '../screens/TicketFindScreen';
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import ProfileScreen from '../screens/ProfileScreen';
 export default function Navigation() {
   return (
     <NavigationContainer
@@ -74,13 +75,18 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color }) => <FontAwesome5 name="map-marked-alt" color={color} />,
         }}
       />
+      <BottomTab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <FontAwesome5 name='user' color={color} />,
+        }}
+      />
     </BottomTab.Navigator>
   );
 }
 
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
   color: string;

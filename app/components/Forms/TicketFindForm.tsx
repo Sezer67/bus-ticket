@@ -24,6 +24,8 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
     const [toValue, setToValue] = React.useState<string>("");
     const [dateValue, setDateValue] = useState<Date>(new Date());
     const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false);
+    const [fromModalVisible, setFromModalVisible] = useState<boolean>(false);
+    const [toModalVisible, setToModalVisible] = useState<boolean>(false);
     const [data, setData] = React.useState<{ id: number, name: string, }[]>(cities);
 
     useEffect(() => {
@@ -46,19 +48,6 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
 
     const dispatch = useAppDispatch();
 
-    const searchText = (text: string, type: 'from' | 'to') => {
-        if (type === "from") setFromValue(text);
-        else setToValue(text);
-        setData(data.filter((item) => item.name.toLowerCase().includes(text.toLowerCase())));
-    }
-
-    const renderOption = (item: { name: string }, index: number) => (
-        <AutocompleteItem
-            key={index}
-            title={item.name}
-        />
-    );
-
     const compareFromTo = () => {
         setFromValue(toValue);
         setToValue(fromValue);
@@ -74,20 +63,14 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
     return (
         <View style={styles.container}>
             <RouteLine icon={routeLineIcon} >
-                <Autocomplete
-                    style={{ width: '100%', marginBottom: 10, borderColor: COLORS['warning-300'] }}
-                    onFocus={() => setData(cities)}
-                    label="From"
-                    value={fromValue}
-                    onSelect={(index: number) => {
-                        setFromValue(data[index].name)
-                        setData(cities);
-                    }}
-                    onChangeText={(value: string) => searchText(value, "from")}
-                    scrollEnabled
-                >
-                    {fromValue.trim().length > 2 ? data.map(renderOption) : <></>}
-                </Autocomplete>
+                <View style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start', width: '100%', marginBottom: 10 }}>
+                    <Text appearance='hint' style={{ fontWeight: '700', fontSize: 12, marginBottom: 2 }} >
+                        From
+                    </Text>
+                    <Button style={{ width: '100%', backgroundColor: 'white' }} onPress={() => setFromModalVisible(true)} appearance='outline' status='basic'>
+                        {fromValue || "Select Click"}
+                    </Button>
+                </View>
                 <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <View style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <View style={GLOBAL_STYLES.separator} />
@@ -96,22 +79,15 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
                         <MaterialCommunityIcons name="compare-vertical" size={24} color="black" />
                     </TouchableOpacity>
                 </View>
-                <Autocomplete
-                    style={{ width: '100%', marginBottom: 10 }}
-                    label="To"
-                    onFocus={() => setData(cities)}
-                    value={toValue}
-                    onSelect={(index: number) => {
-                        setToValue(data[index].name)
-                        setData(cities);
-                    }}
-                    onChangeText={(value: string) => searchText(value, "to")}
-                    scrollEnabled
-                >
-                    {toValue.trim().length > 2 ? data.map(renderOption) : <></>}
-                </Autocomplete>
+                <View style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start', width: '100%', marginBottom: 10 }}>
+                    <Text appearance='hint' style={{ fontWeight: '700', fontSize: 12, marginBottom: 2 }} >
+                        To
+                    </Text>
+                    <Button style={{ width: '100%', backgroundColor: 'white' }} onPress={() => setToModalVisible(true)} appearance='outline' status='basic'>
+                        {toValue || "Select Click"}
+                    </Button>
+                </View>
             </RouteLine>
-            <SelectCityModal isVisible data={data} setVisible={setDatePickerVisible} />
             <View style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start', width: '100%' }}>
                 <Text appearance='hint' style={{ fontWeight: '700', fontSize: 12, marginBottom: 2 }} >
                     Date
@@ -139,6 +115,8 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
             >
                 {submitButtonText}
             </Button>
+            <SelectCityModal key="fromModal" isVisible={fromModalVisible} setVisible={setFromModalVisible} data={data.filter(item => item.name !== fromValue)} setValue={setFromValue} />
+            <SelectCityModal key="toModal" isVisible={toModalVisible} setVisible={setToModalVisible} data={data.filter(item => item.name !== toValue)} setValue={setToValue} />
         </View>
     );
 }
