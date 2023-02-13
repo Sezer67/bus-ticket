@@ -11,6 +11,7 @@ import LinkingConfiguration from './LinkingConfiguration';
 import TicketFindScreen from '../screens/TicketFindScreen';
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import ProfileScreen from '../screens/ProfileScreen';
+import ServicesScreen from '../screens/ServicesScreen';
 export default function Navigation() {
   return (
     <NavigationContainer
@@ -26,6 +27,7 @@ function RootNavigator() {
   return (
     <Stack.Navigator initialRouteName='Root'>
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+      <Stack.Screen name='Services' component={ServicesScreen} options={{}} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
@@ -79,7 +81,7 @@ function BottomTabNavigator() {
         name="Profile"
         component={ProfileScreen}
         options={{
-          title: 'Your Name',
+          title: 'My Profile',
           tabBarIcon: ({ color }) => <FontAwesome5 name='user' color={color} />,
         }}
       />

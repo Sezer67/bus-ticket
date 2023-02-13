@@ -11,11 +11,14 @@ import GLOBAL_STYLES from '../../constants/Styles';
 import { TicketRouteLineIcon, TicketType } from '../../screens/types/ticket-find.type';
 import cities from '../../static-files/cities_of_turkey.json';
 import SelectCityModal from '../Modals/SelectCityModal';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native'
 
 type PropsType = {
     routeLineIcon: TicketRouteLineIcon;
     submitButtonText: string;
-    ticketType: TicketType
+    ticketType: TicketType;
+    navigation: NativeStackNavigationProp<any>
 }
 
 const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, ticketType }) => {
@@ -27,6 +30,8 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
     const [fromModalVisible, setFromModalVisible] = useState<boolean>(false);
     const [toModalVisible, setToModalVisible] = useState<boolean>(false);
     const [data, setData] = React.useState<{ id: number, name: string, }[]>(cities);
+
+    const navigation = useNavigation();
 
     useEffect(() => {
         if (data.length < 1)
@@ -58,6 +63,7 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
         setTimeout(() => {
             dispatch(settingsActions.setLoading({ isLoading: false, content: undefined }));
         }, 5000);
+        navigation.navigate('Services');
     }
 
     return (

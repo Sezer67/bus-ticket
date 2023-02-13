@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import { RootTabScreenProps } from '../types';
 import { COLORS, images } from '../constants';
@@ -8,42 +8,47 @@ import Layout from '../constants/Layout';
 import UserDetailForm from '../components/Forms/UserDetailForm';
 import ChangePasswordForm from '../components/Forms/ChangePasswordForm';
 const ProfileScreen = ({ navigation, route }: RootTabScreenProps<'Profile'>) => {
-    // navigation.setOptions({ title: 'Sezer Kenar' })
 
     const [activePageIndex, setActivePageIndex] = useState<0 | 1>(0);
 
-    return <View style={styles.container}>
-        <StatusBar style='dark' />
-        <View style={[styles.tabBarContainer,]}>
-            <TouchableOpacity onPress={() => setActivePageIndex(0)} style={[styles.tabBar, activePageIndex === 0 && styles.activeTab]}>
-                <Text style={activePageIndex === 0 && styles.activeText}>Profile</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setActivePageIndex(1)} style={[styles.tabBar, activePageIndex === 1 && styles.activeTab]}>
-                <Text style={activePageIndex === 1 && styles.activeText}>Change Password</Text>
-            </TouchableOpacity>
+    useEffect(() => {
+        navigation.setOptions({ title: 'Sezer Kenar' })
+    }, [])
+
+    return (
+        <View style={styles.container}>
+            <StatusBar style='dark' />
+            <View style={[styles.tabBarContainer,]}>
+                <TouchableOpacity onPress={() => setActivePageIndex(0)} style={[styles.tabBar, activePageIndex === 0 && styles.activeTab]}>
+                    <Text style={activePageIndex === 0 && styles.activeText}>Profile</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setActivePageIndex(1)} style={[styles.tabBar, activePageIndex === 1 && styles.activeTab]}>
+                    <Text style={activePageIndex === 1 && styles.activeText}>Change Password</Text>
+                </TouchableOpacity>
+            </View>
+
+            <ViewPager
+                style={{ flex: 1 }}
+                selectedIndex={activePageIndex}
+                onSelect={(index) => setActivePageIndex(index as never)}
+            >
+                <View style={styles.tabContainer}>
+                    <View style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+
+                        <Image style={styles.profileImage} borderRadius={100} resizeMethod='resize' resizeMode='cover' source={images.plane} />
+                    </View>
+                    <View style={styles.form}>
+                        <UserDetailForm isEdit isDisable />
+                    </View>
+                </View>
+                <View style={styles.tabContainer}>
+                    <ChangePasswordForm />
+                </View>
+            </ViewPager>
+
+
         </View>
-
-        <ViewPager
-            style={{ flex: 1 }}
-            selectedIndex={activePageIndex}
-            onSelect={(index) => setActivePageIndex(index as never)}
-        >
-            <View style={styles.tabContainer}>
-                <View style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-
-                    <Image style={styles.profileImage} borderRadius={100} resizeMethod='resize' resizeMode='cover' source={images.plane} />
-                </View>
-                <View style={styles.form}>
-                    <UserDetailForm isEdit isDisable />
-                </View>
-            </View>
-            <View style={styles.tabContainer}>
-                <ChangePasswordForm />
-            </View>
-        </ViewPager>
-
-
-    </View>
+    )
 };
 
 const styles = StyleSheet.create({

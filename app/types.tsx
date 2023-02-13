@@ -20,7 +20,7 @@ export type RootStackParamList = {
   Modal: undefined;
   NotFound: undefined;
   TicketFind: undefined;
-
+  Services: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
