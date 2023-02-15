@@ -7,8 +7,9 @@ import dbConfig from './config/db.config';
 import { TypeOrmModule } from '@nestjs/typeorm/dist';
 import { TypeOrmConfigService } from './shared/typeorm.service';
 import { UserModule } from './user/user.module';
-import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
+import { CompanyModule } from './company/company.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -18,6 +19,9 @@ import { AuthModule } from './auth/auth.module';
       load: [configuration, dbConfig],
     }),
     TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
+    MulterModule.register({
+      dest: './images',
+    }),
     // GraphQLModule.forRoot<ApolloDriverConfig>({
     //   driver: ApolloDriver,
     //   debug: true,
@@ -31,6 +35,7 @@ import { AuthModule } from './auth/auth.module';
     // }),
     UserModule,
     AuthModule,
+    CompanyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

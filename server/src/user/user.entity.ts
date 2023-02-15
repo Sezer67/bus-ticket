@@ -1,5 +1,13 @@
+import { Company } from 'src/company/company.entity';
 import { userEnum } from 'src/shared/enums';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('user')
 export class User extends BaseEntity {
@@ -30,4 +38,8 @@ export class User extends BaseEntity {
 
   @Column({ type: 'text', nullable: false })
   password: string;
+
+  @OneToOne(() => Company, (company) => company.user, { onDelete: 'CASCADE' })
+  @JoinColumn()
+  company: Company;
 }

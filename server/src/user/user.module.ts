@@ -5,10 +5,11 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { UserStrategy } from 'src/shared/strategies/user.strategy';
+import { Company } from 'src/company/company.entity';
 
 @Global()
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), JwtModule.register({})],
+  imports: [TypeOrmModule.forFeature([User, Company]), JwtModule.register({})],
   controllers: [UserController],
   providers: [UserService, JwtService, UserStrategy],
   exports: [JwtModule, UserService],
