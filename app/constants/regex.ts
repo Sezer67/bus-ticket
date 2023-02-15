@@ -1,4 +1,4 @@
-const mailFormat = '/^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/';
+const mailFormat = '/^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,5})+$/';
 
 export default {
   mailFormat,
