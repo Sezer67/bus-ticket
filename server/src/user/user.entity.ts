@@ -1,10 +1,12 @@
 import { Company } from 'src/company/company.entity';
+import { ServicesOfUsers } from 'src/services-of-users/services-of-users.entity';
 import { userEnum } from 'src/shared/enums';
 import {
   BaseEntity,
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -30,7 +32,7 @@ export class User extends BaseEntity {
   })
   role: userEnum.Role;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text', nullable: false, unique: true })
   mail: string;
 
   @Column({ type: 'date', nullable: true })
@@ -40,6 +42,14 @@ export class User extends BaseEntity {
   password: string;
 
   @OneToOne(() => Company, (company) => company.user, { onDelete: 'CASCADE' })
-  @JoinColumn()
+  @JoinColumn({ name: 'companyId' })
   company: Company;
+
+  @Column()
+  companyId: string;
+
+  @OneToMany(() => ServicesOfUsers, (entity) => entity.user, {
+    onDelete: 'CASCADE',
+  })
+  services: ServicesOfUsers[];
 }

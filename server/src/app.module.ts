@@ -10,6 +10,9 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { CompanyModule } from './company/company.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { VehicleModule } from './vehicle/vehicle.module';
+import { ServiceModule } from './service/service.module';
+import { ServicesOfUsersModule } from './services-of-users/services-of-users.module';
 
 @Module({
   imports: [
@@ -36,6 +39,9 @@ import { MulterModule } from '@nestjs/platform-express';
     UserModule,
     AuthModule,
     CompanyModule,
+    VehicleModule,
+    ServiceModule,
+    ServicesOfUsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

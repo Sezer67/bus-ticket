@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserCreateDto } from './dto/user-create.dto';
 import { Request } from 'express';
@@ -15,6 +15,14 @@ export class UserController {
   createUser(@Body() dto: UserCreateDto) {
     return this.service.createUser(dto);
   }
+
+
+  @Put('/')
+  @UseGuards(AuthGuard('user'))
+  updateUser(@Body() dto:any,@Req() request:Request){
+    console.log();
+  }
+
 
   @Get('/deneme')
   @UseGuards(AuthGuard('user'), RolesGuard)
