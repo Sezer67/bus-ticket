@@ -4,7 +4,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { formTypes } from '../../types/index';
 import DatePicker from 'react-native-date-picker';
 import { COLORS } from '../../constants';
-
+import { KeyboardAvoidingScrollView } from 'react-native-keyboard-avoiding-scroll-view'
 type PropsType = {
     isEdit: boolean;
     isDisable: boolean
@@ -45,66 +45,67 @@ const UserDetailForm: React.FC<PropsType> = ({ isEdit, isDisable }) => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.formInput}>
-                <Input disabled={isDisable} label="Full Name" onChangeText={(text) => onChangeText(text, "fullName")} value={form.fullName} />
-            </View>
-            <View style={styles.formInput}>
-                <Input disabled={isDisable} label="Identity No" onChangeText={(text) => onChangeText(text, "identityNumber")} value={form.identityNumber} />
-            </View>
-            <View>
-                <View style={{ flexDirection: 'row' }}>
-                    <Text style={{ width: '50%', fontSize: 12, fontWeight: '700', color: isDisable ? '#C5CEE0' : COLORS.gray }} appearance='hint'>Date</Text>
-                    <Text style={{ width: '50%', fontSize: 12, fontWeight: '700', color: isDisable ? '#C5CEE0' : COLORS.gray }} appearance='hint'>Gender</Text>
+            <KeyboardAvoidingScrollView>
+                <View style={styles.formInput}>
+                    <Input disabled={isDisable} label="Full Name" onChangeText={(text) => onChangeText(text, "fullName")} value={form.fullName} />
                 </View>
-                <View style={[styles.formRow, { backgroundColor: isDisable ? '#f7f8fa' : 'white' }]}>
-                    <TouchableOpacity onPress={() => {
-                        if (!isDisable) setDatePickerVisible(true)
-                    }} style={styles.dateContent}>
-                        <Text style={{ textAlign: 'center' }}>
-                            {form.birthday?.toDateString() || "Select Date"}
-                        </Text>
-                    </TouchableOpacity>
-                    <DatePicker
-                        maximumDate={new Date()}
-                        title="Select Birthday"
-                        confirmText='Select'
-                        cancelText='Cancel'
-                        mode='date'
-                        modal
-                        locale='en'
-                        open={datePickerVisible}
-                        onConfirm={(date: Date) => {
-                            setDatePickerVisible(false);
-                            setForm({ ...form, birthday: date });
-                        }}
-                        onCancel={() => setDatePickerVisible(false)}
-                        date={form.birthday || new Date("January 2,2000")}
-                    />
-                    <RadioGroup
-                        selectedIndex={genderRadio}
-                        onChange={(index) => onChangeGender(index)}
-                        style={[styles.radioGroup]}
-                    >
-                        <Radio >Male</Radio>
-                        <Radio>Female</Radio>
-                    </RadioGroup>
+                <View style={styles.formInput}>
+                    <Input disabled={isDisable} label="Identity No" onChangeText={(text) => onChangeText(text, "identityNumber")} value={form.identityNumber} />
                 </View>
-            </View>
-            <View style={styles.formInput}>
-                <Input disabled={isDisable} label="Email" onChangeText={(text) => onChangeText(text, "mail")} value={form.mail} />
-            </View>
-
-            {
-                !isEdit ? (
-                    <View style={styles.formInput}>
-                        <Input label="Password" onChangeText={(text) => onChangeText(text, "password")} />
+                <View>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text style={{ width: '50%', fontSize: 12, fontWeight: '700', color: isDisable ? '#C5CEE0' : COLORS.gray }} appearance='hint'>Date</Text>
+                        <Text style={{ width: '50%', fontSize: 12, fontWeight: '700', color: isDisable ? '#C5CEE0' : COLORS.gray }} appearance='hint'>Gender</Text>
                     </View>
-                ) : null
-            }
-            <Button style={styles.button}>
-                {isEdit ? "EDIT" : "REGISTER"}
-            </Button>
-        </View>
+                    <View style={[styles.formRow, { backgroundColor: isDisable ? '#f7f8fa' : 'white' }]}>
+                        <TouchableOpacity onPress={() => {
+                            if (!isDisable) setDatePickerVisible(true)
+                        }} style={styles.dateContent}>
+                            <Text style={{ textAlign: 'center' }}>
+                                {form.birthday?.toDateString() || "Select Date"}
+                            </Text>
+                        </TouchableOpacity>
+                        <DatePicker
+                            maximumDate={new Date()}
+                            title="Select Birthday"
+                            confirmText='Select'
+                            cancelText='Cancel'
+                            mode='date'
+                            modal
+                            locale='en'
+                            open={datePickerVisible}
+                            onConfirm={(date: Date) => {
+                                setDatePickerVisible(false);
+                                setForm({ ...form, birthday: date });
+                            }}
+                            onCancel={() => setDatePickerVisible(false)}
+                            date={form.birthday || new Date("January 2,2000")}
+                        />
+                        <RadioGroup
+                            selectedIndex={genderRadio}
+                            onChange={(index) => onChangeGender(index)}
+                            style={[styles.radioGroup]}
+                        >
+                            <Radio >Male</Radio>
+                            <Radio>Female</Radio>
+                        </RadioGroup>
+                    </View>
+                </View>
+                <View style={styles.formInput}>
+                    <Input disabled={isDisable} label="Email" onChangeText={(text) => onChangeText(text, "mail")} value={form.mail} />
+                </View>
+                {
+                    !isEdit ? (
+                        <View style={styles.formInput}>
+                            <Input label="Password" onChangeText={(text) => onChangeText(text, "password")} />
+                        </View>
+                    ) : null
+                }
+                <Button style={styles.button}>
+                    {isEdit ? "EDIT" : "REGISTER"}
+                </Button>
+            </KeyboardAvoidingScrollView>
+        </View >
     )
 };
 
@@ -113,7 +114,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-
     },
     formInput: {
         marginBottom: 10,

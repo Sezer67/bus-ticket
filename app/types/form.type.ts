@@ -3,6 +3,19 @@ import { UserType } from './user.type';
 export type InputHookType = {
   value: string;
   onChangeText: (value: string) => void;
+  isFocus: boolean;
+  onFocus: () => void;
+  onBlur: () => void;
+};
+
+export type InputPasswordHookType = InputHookType & {
+  secureTextEntry: boolean;
+  setSecureTextEntry: (value: boolean) => void;
+};
+
+export type RadioGroupHookType = {
+  selectedIndex: number;
+  onChange: (value: number) => void;
 };
 
 export type UserDetailFormType = Omit<UserType, 'id'> & {

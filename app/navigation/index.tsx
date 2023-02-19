@@ -12,6 +12,11 @@ import TicketFindScreen from '../screens/TicketFindScreen';
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import ProfileScreen from '../screens/ProfileScreen';
 import ServicesScreen from '../screens/ServicesScreen';
+import { useAppSelector } from '../hooks/redux.hook';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
+
 export default function Navigation() {
   return (
     <NavigationContainer
@@ -24,14 +29,44 @@ export default function Navigation() {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
+
+  const controlToPhoneStorage = async () => {
+    try {
+      const token = await AsyncStorage.getItem('@token')
+      if (!token) return;
+
+      // @me isteği gönder
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  React.useEffect(() => {
+    if (!userState.isAuthenticated)
+      controlToPhoneStorage();
+  }, [])
+  const userState = useAppSelector((state) => state.user);
+
   return (
     <Stack.Navigator initialRouteName='Root'>
-      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name='Services' component={ServicesScreen} options={{}} />
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
-      </Stack.Group>
+      {
+        userState.isAuthenticated ? (
+          <>
+            <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+            <Stack.Screen name='Services' component={ServicesScreen} options={{}} />
+            <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+            <Stack.Group screenOptions={{ presentation: 'modal' }}>
+              <Stack.Screen name="Modal" component={ModalScreen} />
+            </Stack.Group>
+          </>
+        ) : (
+          <>
+            <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }} />
+            <Stack.Screen name='Register' component={RegisterScreen} options={{ headerShown: false }} />
+          </>
+        )
+      }
     </Stack.Navigator>
   );
 }

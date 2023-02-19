@@ -38,7 +38,7 @@ const ProfileScreen = ({ navigation, route }: RootTabScreenProps<'Profile'>) => 
                         <Image style={styles.profileImage} borderRadius={100} resizeMethod='resize' resizeMode='cover' source={images.plane} />
                     </View>
                     <View style={styles.form}>
-                        <UserDetailForm isEdit isDisable />
+                        <UserDetailForm isEdit isDisable={false} />
                     </View>
                 </View>
                 <View style={styles.tabContainer}>
@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     form: {
         flex: 1,
         padding: 20,
+        paddingBottom: 0
     }
 })
 
