@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
@@ -8,12 +14,15 @@ import { IJwtPayload } from 'src/shared/interfaces/jwt.interface';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ILoginResponse } from 'src/shared/interfaces/user.interface';
+import { ServicesOfUsers } from 'src/services-of-users/services-of-users.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly repo: Repository<User>,
+    @InjectRepository(ServicesOfUsers)
+    private readonly servicesOfUserRepo: Repository<ServicesOfUsers>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
@@ -68,6 +77,20 @@ export class UserService {
         user,
         token,
       };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async buyTicket(dto: any, user: User) {
+    try {
+      // error
+      const serviceOfUser = this.servicesOfUserRepo.create({
+        userId: user.id,
+        seatNumber: 10,
+        serviceId: '0dc132ce-4614-4fee-ad1b-35679de9707a',
+      });
+      return await serviceOfUser.save();
     } catch (error) {
       throw error;
     }

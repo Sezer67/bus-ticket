@@ -6,6 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/shared/guards/role.guard';
 import { Roles } from 'src/shared/decorators/role.decorator';
 import { userEnum } from 'src/shared/enums';
+import { User } from './user.entity';
 
 @Controller('user')
 export class UserController {
@@ -16,13 +17,18 @@ export class UserController {
     return this.service.createUser(dto);
   }
 
-
   @Put('/')
   @UseGuards(AuthGuard('user'))
-  updateUser(@Body() dto:any,@Req() request:Request){
+  updateUser(@Body() dto: any, @Req() request: Request) {
     console.log();
   }
 
+  @Post('/buy-ticket')
+  @UseGuards(AuthGuard('user'), RolesGuard)
+  @Roles(userEnum.Role.Company)
+  buyTicket(@Body() dto: any, @Req() req: Request) {
+    return this.service.buyTicket(dto, req.user as User);
+  }
 
   @Get('/deneme')
   @UseGuards(AuthGuard('user'), RolesGuard)

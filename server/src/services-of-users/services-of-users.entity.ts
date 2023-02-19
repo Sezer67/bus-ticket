@@ -19,6 +19,9 @@ export class ServicesOfUsers extends BaseEntity {
   @Column({ type: 'uuid', nullable: false, unique: true, default: v4() })
   PNRNumber: string;
 
+  @Column({ type: 'smallint', nullable: false })
+  seatNumber: number;
+
   @Column({ type: 'boolean', default: false })
   isToVote: boolean;
 
