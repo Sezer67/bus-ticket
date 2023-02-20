@@ -5,6 +5,10 @@ export type SettingsSliceType = {
     isLoading: boolean;
     content: string | undefined;
   };
+  error: {
+    isError: boolean;
+    content: string | undefined;
+  };
 };
 
 export type UserSliceType = {

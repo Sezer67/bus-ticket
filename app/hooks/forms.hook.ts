@@ -37,4 +37,22 @@ const useRadioGroupState = (index = 0): formTypes.RadioGroupHookType => {
   return { selectedIndex, onChange: (value: number) => setSelectedIndex(value) };
 };
 
-export { useInputState, useInputPasswordState, useRadioState, useRadioGroupState };
+const useDatePickerState = (initialDate: Date): formTypes.DatePickerHookType => {
+  const [date, setDate] = React.useState<Date>(initialDate);
+  const [visible, setVisible] = React.useState<boolean>(false);
+  return {
+    open: visible,
+    date,
+    onCancel: () => setVisible(false),
+    onConfirm: (value) => {
+      const year = value.getFullYear();
+      const month = value.getMonth();
+      const day = value.getDate();
+      setDate(new Date(year, month, day - 1));
+      setVisible(false);
+    },
+    onOpen: () => setVisible(true),
+  };
+};
+
+export { useInputState, useInputPasswordState, useRadioState, useRadioGroupState, useDatePickerState };

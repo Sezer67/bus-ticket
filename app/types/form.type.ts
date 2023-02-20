@@ -18,6 +18,14 @@ export type RadioGroupHookType = {
   onChange: (value: number) => void;
 };
 
+export type DatePickerHookType = {
+  open: boolean;
+  date: Date;
+  onConfirm: (date: Date) => void;
+  onCancel: () => void;
+  onOpen: () => void;
+};
+
 export type UserDetailFormType = Omit<UserType, 'id'> & {
   password?: string;
 };

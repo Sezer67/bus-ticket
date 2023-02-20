@@ -1,6 +1,8 @@
 import axios, { AxiosError } from 'axios';
+import urlsConfig from '../configs/url.config';
 
 const axiosInstance = axios.create({
+  baseURL: urlsConfig.apiUrl,
   headers: {
     'Access-Control-Allow-Origin': '*',
   },
