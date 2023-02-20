@@ -41,11 +41,14 @@ export class User extends BaseEntity {
   @Column({ type: 'text', nullable: false })
   password: string;
 
-  @OneToOne(() => Company, (company) => company.user, { onDelete: 'CASCADE' })
+  @OneToOne(() => Company, (company) => company.user, {
+    onDelete: 'CASCADE',
+    nullable: true,
+  })
   @JoinColumn({ name: 'companyId' })
   company: Company;
 
-  @Column()
+  @Column({ nullable: true })
   companyId: string;
 
   @OneToMany(() => ServicesOfUsers, (entity) => entity.user, {

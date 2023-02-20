@@ -27,14 +27,22 @@ export class UserService {
     private readonly configService: ConfigService,
   ) {}
 
-  async createUser(dto: UserCreateDto): Promise<User> {
+  async createUser(dto: UserCreateDto): Promise<ILoginResponse> {
     try {
       const user = await this.repo.save({
         ...dto,
       });
       user.password = undefined;
+      const jwtPayload: IJwtPayload = {
+        id: user.id,
+        mail: user.mail,
+      };
 
-      return user;
+      const token = await this.jwtService.signAsync(jwtPayload, {
+        algorithm: 'HS256',
+        secret: this.configService.get<string>('jwtSecret'),
+      });
+      return { user, token };
     } catch (error) {
       throw error;
     }

@@ -7,6 +7,7 @@ import {
   IsEmail,
   Matches,
   IsDate,
+  IsDateString,
 } from 'class-validator';
 import { userEnum } from 'src/shared/enums';
 
@@ -29,7 +30,7 @@ export class UserCreateDto {
   mail: string;
 
   @IsOptional()
-  @IsDate()
+  @IsDateString()
   birthday: Date;
 
   @IsNotEmpty()
