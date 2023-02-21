@@ -7,16 +7,49 @@ import { COLORS } from '../../constants';
 import { Feather } from '@expo/vector-icons';
 import { useInputPasswordState, useInputState } from '../../hooks/forms.hook';
 import GLOBAL_STYLES from '../../constants/Styles';
+import { settingsActions } from '../redux/settings/slice';
+import { useAppDispatch } from '../../hooks/redux.hook';
+import { userService } from '../../service';
+import { userActions } from '../redux/user/slice';
+import { setToken } from '../../utils/axios.util';
+import { storageHelper } from '../helpers';
 const LoginScreen = ({ navigation, route }: RootStackScreenProps<'Login'>) => {
 
     const mailInputState = useInputState();
     const passwordInputState = useInputPasswordState();
+
+    const dispatch = useAppDispatch();
 
     const renderPasswordIcon = () => (
         <TouchableOpacity onPress={() => passwordInputState.setSecureTextEntry(!passwordInputState.secureTextEntry)} style={{ marginLeft: 10, marginRight: 10 }}>
             <Feather name='lock' size={20} />
         </TouchableOpacity>
     )
+
+    const handleOnSubmit = async () => {
+        try {
+            const formData = {
+                mail: mailInputState.value,
+                password: passwordInputState.value
+            }
+            console.log(formData);
+            const { data } = await userService.login(formData);
+            dispatch(userActions.login(data));
+            setToken(data.token);
+            storageHelper.setStorageKey("@token", data.token);
+
+        } catch (error: any) {
+            if (typeof error.response?.data.message === "string") {
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));
+            } else if (typeof error.response?.data.message === "object") {
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message[0] }));
+            } else {
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.message }));
+            }
+        } finally {
+            dispatch(settingsActions.setLoading({ isLoading: false, content: undefined }));
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -33,6 +66,7 @@ const LoginScreen = ({ navigation, route }: RootStackScreenProps<'Login'>) => {
                         <Input
                             accessoryLeft={<Feather name='mail' size={20} />}
                             style={mailInputState.isFocus ? GLOBAL_STYLES.focusInput : GLOBAL_STYLES.input}
+                            keyboardType='email-address'
                             placeholder='Mail Address'
                             {...mailInputState}
                         />
@@ -43,7 +77,7 @@ const LoginScreen = ({ navigation, route }: RootStackScreenProps<'Login'>) => {
                             {...passwordInputState}
                         />
                     </View>
-                    <Button style={styles.submitButton}>
+                    <Button onPress={handleOnSubmit} style={styles.submitButton}>
                         SIGN IN
                     </Button>
                 </View>

@@ -7,12 +7,39 @@ import { StatusBar } from 'expo-status-bar';
 import Layout from '../../constants/Layout';
 import UserDetailForm from '../components/Forms/UserDetailForm';
 import ChangePasswordForm from '../components/Forms/ChangePasswordForm';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
+import { ReduxRootType } from '../../types/redux-slice.type';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { setToken } from '../../utils/axios.util';
+import { storageHelper } from '../helpers';
+import { userActions } from '../redux/user/slice';
 const ProfileScreen = ({ navigation, route }: RootTabScreenProps<'Profile'>) => {
 
     const [activePageIndex, setActivePageIndex] = useState<0 | 1>(0);
 
+    const userState = useAppSelector((state: ReduxRootType) => state.user);
+    const dispacth = useAppDispatch();
+
+    const handleLogout = async () => {
+        try {
+            setToken("");
+            storageHelper.setStorageKey("@token", "");
+            dispacth(userActions.logOut());
+            navigation.navigate('Login');
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
-        navigation.setOptions({ title: 'Sezer Kenar' })
+        navigation.setOptions({
+            title: userState.user.fullName,
+            headerRight: () => (
+                <TouchableOpacity onPress={handleLogout} style={{ marginRight: 20 }}>
+                    <MaterialIcons size={24} name='logout' />
+                </TouchableOpacity>
+            )
+        })
     }, [])
 
     return (
@@ -38,7 +65,7 @@ const ProfileScreen = ({ navigation, route }: RootTabScreenProps<'Profile'>) => 
                         <Image style={styles.profileImage} borderRadius={100} resizeMethod='resize' resizeMode='cover' source={images.plane} />
                     </View>
                     <View style={styles.form}>
-                        <UserDetailForm isEdit isDisable={false} />
+                        <UserDetailForm isEdit isDisable />
                     </View>
                 </View>
                 <View style={styles.tabContainer}>

@@ -7,6 +7,6 @@ export type UserType = {
   gender: userEnums.Gender;
   role: userEnums.Role;
   mail: string;
-  birthday?: Date;
+  birthday: Date;
   companyId?: string;
 };

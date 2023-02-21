@@ -12,6 +12,12 @@ import { User } from './user.entity';
 export class UserController {
   constructor(private readonly service: UserService) {}
 
+  @Get('@me')
+  @UseGuards(AuthGuard('user'))
+  currentUser(@Req() req: Request) {
+    return req.user;
+  }
+
   @Post('register')
   createUser(@Body() dto: UserCreateDto) {
     return this.service.createUser(dto);
@@ -28,12 +34,5 @@ export class UserController {
   @Roles(userEnum.Role.Company)
   buyTicket(@Body() dto: any, @Req() req: Request) {
     return this.service.buyTicket(dto, req.user as User);
-  }
-
-  @Get('/deneme')
-  @UseGuards(AuthGuard('user'), RolesGuard)
-  @Roles(userEnum.Role.Customer)
-  deneme(@Req() req: Request) {
-    return req.user;
   }
 }

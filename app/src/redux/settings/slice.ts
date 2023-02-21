@@ -9,8 +9,8 @@ const initialState: reduxSliceTypes.SettingsSliceType = {
     content: undefined,
   },
   error: {
-    isError: true,
-    content: 'Error Snackbar',
+    isError: false,
+    content: undefined,
   },
 };
 

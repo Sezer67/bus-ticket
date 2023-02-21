@@ -16,3 +16,9 @@ export type UserSliceType = {
   token?: string;
   isAuthenticated: boolean;
 };
+
+
+export type ReduxRootType = {
+  user: UserSliceType;
+  settings: SettingsSliceType;
+};

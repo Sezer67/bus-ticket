@@ -59,11 +59,19 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
     }
 
     const handleOnFinish = () => {
-        dispatch(settingsActions.setLoading({ isLoading: true, content: 'Looking for Tickets ...' }));
-        setTimeout(() => {
-            dispatch(settingsActions.setLoading({ isLoading: false, content: undefined }));
-        }, 5000);
-        navigation.navigate('Services');
+        try {
+            if (!isFilledForm) {
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: 'From & To required fields !' }));
+            }
+            dispatch(settingsActions.setLoading({ isLoading: true, content: 'Looking for Tickets ...' }));
+            setTimeout(() => {
+                dispatch(settingsActions.setLoading({ isLoading: false, content: undefined }));
+            }, 5000);
+            navigation.navigate('Services');
+        } catch (error) {
+            console.log(error);
+        }
+
     }
 
     return (
@@ -73,7 +81,7 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
                     <Text appearance='hint' style={{ fontWeight: '700', fontSize: 12, marginBottom: 2 }} >
                         From
                     </Text>
-                    <Button style={{ width: '100%', backgroundColor: 'white' }} onPress={() => setFromModalVisible(true)} appearance='outline' status='basic'>
+                    <Button style={[GLOBAL_STYLES.input, styles.selectButton]} onPress={() => setFromModalVisible(true)} appearance='outline' status='danger'>
                         {fromValue || "Select Click"}
                     </Button>
                 </View>
@@ -89,7 +97,7 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
                     <Text appearance='hint' style={{ fontWeight: '700', fontSize: 12, marginBottom: 2 }} >
                         To
                     </Text>
-                    <Button style={{ width: '100%', backgroundColor: 'white' }} onPress={() => setToModalVisible(true)} appearance='outline' status='basic'>
+                    <Button style={[GLOBAL_STYLES.input, styles.selectButton]} onPress={() => setToModalVisible(true)} appearance='outline' status='danger'>
                         {toValue || "Select Click"}
                     </Button>
                 </View>
@@ -98,7 +106,7 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
                 <Text appearance='hint' style={{ fontWeight: '700', fontSize: 12, marginBottom: 2 }} >
                     Date
                 </Text>
-                <Button style={{ width: '100%', backgroundColor: 'white' }} onPress={() => setDatePickerVisible(true)} appearance='outline' status='basic'>
+                <Button style={[GLOBAL_STYLES.input, styles.selectButton]} onPress={() => setDatePickerVisible(true)} appearance='outline' status='danger'>
                     {dateValue.toDateString()}
                 </Button>
                 <DatePicker
@@ -115,7 +123,7 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
                 />
             </View>
             <Button
-                style={[styles.submitButton, { backgroundColor: isFilledForm ? COLORS['danger-400'] : COLORS.gray }]}
+                style={[styles.submitButton, { backgroundColor: isFilledForm ? COLORS['danger-400'] : COLORS.disabledColor }]}
                 appearance='filled'
                 onPress={handleOnFinish}
             >
@@ -139,7 +147,8 @@ const styles = StyleSheet.create({
         marginTop: 20,
         borderWidth: 0,
         elevation: 4,
-    }
+    },
+    selectButton: { width: '100%', backgroundColor: COLORS['danger-100'], marginBottom: 10, borderTopRightRadius: 5, borderTopLeftRadius: 5, color: 'white' }
 })
 
 export default TicketFindForm;

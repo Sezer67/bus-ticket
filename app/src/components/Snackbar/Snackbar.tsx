@@ -1,19 +1,36 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import Layout from '../../../constants/Layout';
 import { COLORS } from '../../../constants';
 import { Text } from '@ui-kitten/components';
-import { useAppSelector } from '../../../hooks/redux.hook';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux.hook';
+import { FontAwesome } from '@expo/vector-icons';
+import { settingsActions } from '../../redux/settings/slice';
+import { ReduxRootType } from '../../../types/redux-slice.type';
 
 
 const Snackbar = () => {
 
-    const settingState = useAppSelector((state) => state.settings);
+    const settingState = useAppSelector((state: ReduxRootType) => state.settings);
+    const dispacth = useAppDispatch();
+
+    const handleClose = () => {
+        dispacth(settingsActions.setErrorSnackbar({ isError: false, content: undefined }))
+    }
+
+    useEffect(() => {
+        setTimeout(() => {
+            handleClose();
+        }, 3000)
+    }, [settingState.error])
 
     return (
         <View style={[styles.container, { display: settingState.error.isError ? 'flex' : 'none' }]}>
             <View style={styles.subContainer}>
                 <Text style={styles.text}>{settingState.error.content}</Text>
+                <TouchableOpacity onPress={handleClose}>
+                    <FontAwesome name='close' color="red" size={20} />
+                </TouchableOpacity>
             </View>
         </View>
     )
@@ -32,7 +49,9 @@ const styles = StyleSheet.create({
         height: 60,
         marginHorizontal: 20,
         borderRadius: 5,
-        padding: 20
+        padding: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     },
     text: {
         color: 'white'

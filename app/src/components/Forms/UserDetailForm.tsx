@@ -1,150 +1,171 @@
-import { Button, Input, Radio, RadioGroup, Text } from '@ui-kitten/components';
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { formTypes } from '../../../types/index';
-import DatePicker from 'react-native-date-picker';
-import { COLORS } from '../../../constants';
-import { KeyboardAvoidingScrollView } from 'react-native-keyboard-avoiding-scroll-view'
+import React, { useEffect } from 'react';
+import { Feather, FontAwesome } from "@expo/vector-icons"
+import { Input, Button, Radio, RadioGroup, Text } from "@ui-kitten/components"
+import { View, TouchableOpacity, StyleSheet } from 'react-native'
+import { useDatePickerState, useInputPasswordState, useInputState, useRadioGroupState } from "../../../hooks/forms.hook";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux.hook";
+import { settingsActions } from "../../redux/settings/slice";
+import { userService } from "../../../service";
+import { userActions } from "../../redux/user/slice";
+import { storageHelper } from "../../helpers";
+import { setToken } from "../../../utils/axios.util";
+import GLOBAL_STYLES from "../../../constants/Styles";
+import { COLORS } from "../../../constants";
+import DatePicker from "react-native-date-picker";
+import { KeyboardAvoidingScrollView } from "react-native-keyboard-avoiding-scroll-view";
+import { ReduxRootType } from '../../../types/redux-slice.type';
+
 type PropsType = {
     isEdit: boolean;
     isDisable: boolean
 }
 
-const initialFormData: formTypes.UserDetailFormType = {
-    fullName: "",
-    gender: "Male",
-    identityNumber: "",
-    mail: "",
-}
-enum GenderRadioEnum {
-    Male = 0,
-    Female = 1
-}
 const UserDetailForm: React.FC<PropsType> = ({ isEdit, isDisable }) => {
+    const identityNumberInputState = useInputState();
+    const fullNameInputState = useInputState();
+    const mailInputState = useInputState();
+    const passwordInputState = useInputPasswordState();
+    const genderRadioGroupState = useRadioGroupState(0);
+    const datePickerState = useDatePickerState(new Date("January 1,2000"));
 
-    const [form, setForm] = useState<formTypes.UserDetailFormType>(initialFormData);
-    const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false);
-    const [genderRadio, setGenderRadio] = useState<GenderRadioEnum>(0);
+    const userState = useAppSelector((state: ReduxRootType) => state.user);
+    const dispacth = useAppDispatch();
 
-    const onChangeText = (value: string, formValue: keyof formTypes.UserDetailFormType) => {
-        setForm({
-            ...form,
-            [formValue]: value
-        });
+    useEffect(() => {
+        if (isEdit && userState.user.id) {
+            fullNameInputState.onChangeText(userState.user.fullName);
+            identityNumberInputState.onChangeText(userState.user.identityNumber || "");
+            mailInputState.onChangeText(userState.user.mail);
+            genderRadioGroupState.onChange(userState.user.gender);
+            datePickerState.onConfirm(new Date(userState.user.birthday) || new Date("January 1,2000"));
+        }
+    }, [isEdit, userState])
+
+    const renderPasswordIcon = () => (
+        <TouchableOpacity onPress={() => passwordInputState.setSecureTextEntry(!passwordInputState.secureTextEntry)} style={{ marginLeft: 10, marginRight: 10 }}>
+            <Feather name='lock' size={20} />
+        </TouchableOpacity>
+    )
+
+    const handleOnSubmit = async () => {
+        const formData = {
+            fullName: fullNameInputState.value,
+            mail: mailInputState.value,
+            gender: genderRadioGroupState.selectedIndex,
+            birthday: datePickerState.date,
+            identityNumber: identityNumberInputState.value || undefined,
+            password: passwordInputState.value
+        };
+        dispacth(settingsActions.setLoading({ isLoading: true, content: 'Creating a record...' }));
+        try {
+            const { data } = await userService.register(formData);
+            dispacth(userActions.login(data));
+            setToken(data.token);
+            storageHelper.setStorageKey("@token", data.token);
+        } catch (error: any) {
+            if (typeof error.response?.data.message === "string") {
+                dispacth(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));
+            } else if (typeof error.response?.data.message === "object") {
+                dispacth(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message[0] }));
+            } else {
+                dispacth(settingsActions.setErrorSnackbar({ isError: true, content: error.message }));
+            }
+        } finally {
+            dispacth(settingsActions.setLoading({ isLoading: false, content: undefined }));
+        }
+
+        console.log(formData);
     }
-
-    const onChangeGender = (index: GenderRadioEnum) => {
-        setGenderRadio(index);
-        Object.keys(GenderRadioEnum).map((key) => {
-            if (GenderRadioEnum[key as keyof typeof GenderRadioEnum] === index)
-                onChangeText(key, "gender")
-        });
-    }
-
-
-
     return (
-        <View style={styles.container}>
+        <>
+
             <KeyboardAvoidingScrollView>
-                <View style={styles.formInput}>
-                    <Input disabled={isDisable} label="Full Name" onChangeText={(text) => onChangeText(text, "fullName")} value={form.fullName} />
-                </View>
-                <View style={styles.formInput}>
-                    <Input disabled={isDisable} label="Identity No" onChangeText={(text) => onChangeText(text, "identityNumber")} value={form.identityNumber} />
-                </View>
-                <View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <Text style={{ width: '50%', fontSize: 12, fontWeight: '700', color: isDisable ? '#C5CEE0' : COLORS.gray }} appearance='hint'>Date</Text>
-                        <Text style={{ width: '50%', fontSize: 12, fontWeight: '700', color: isDisable ? '#C5CEE0' : COLORS.gray }} appearance='hint'>Gender</Text>
+                <View style={styles.forms}>
+                    <Input
+                        accessoryLeft={<FontAwesome name='user-o' size={20} />}
+                        style={fullNameInputState.isFocus ? GLOBAL_STYLES.focusInput : GLOBAL_STYLES.input}
+                        placeholder='Full Name'
+                        {...fullNameInputState}
+                    />
+                    <Input
+                        accessoryLeft={<Feather name='mail' size={20} />}
+                        style={mailInputState.isFocus ? GLOBAL_STYLES.focusInput : GLOBAL_STYLES.input}
+                        placeholder='Mail Address'
+                        disabled={isDisable}
+                        {...mailInputState}
+                        keyboardType='email-address'
+                    />
+                    <Input
+                        accessoryLeft={<FontAwesome name='id-card-o' size={20} />}
+                        style={identityNumberInputState.isFocus ? GLOBAL_STYLES.focusInput : GLOBAL_STYLES.input}
+                        placeholder='Identity Number'
+                        disabled={isDisable}
+                        maxLength={11}
+                        keyboardType='number-pad'
+                        {...identityNumberInputState}
+                    />
+                    <View style={[GLOBAL_STYLES.input, styles.row, { alignItems: 'center', paddingLeft: 20 }]}>
+                        <FontAwesome name='transgender' size={20} />
+                        <RadioGroup {...genderRadioGroupState} style={[styles.row, { paddingLeft: 20 }]}>
+                            <Radio status='danger'>Male</Radio>
+                            <Radio status='danger'>Female</Radio>
+                        </RadioGroup>
                     </View>
-                    <View style={[styles.formRow, { backgroundColor: isDisable ? '#f7f8fa' : 'white' }]}>
-                        <TouchableOpacity onPress={() => {
-                            if (!isDisable) setDatePickerVisible(true)
-                        }} style={styles.dateContent}>
-                            <Text style={{ textAlign: 'center' }}>
-                                {form.birthday?.toDateString() || "Select Date"}
-                            </Text>
+                    <View style={[GLOBAL_STYLES.input, styles.row, { alignItems: 'center', paddingLeft: 18, paddingBottom: 10 }]}>
+                        <FontAwesome name='birthday-cake' size={20} />
+                        <TouchableOpacity style={{ paddingLeft: 20 }} onPress={() => datePickerState.onOpen()}>
+                            <Text>{datePickerState.date.toDateString()}</Text>
                         </TouchableOpacity>
                         <DatePicker
-                            maximumDate={new Date()}
+                            maximumDate={new Date("January 1,2014")}
                             title="Select Birthday"
                             confirmText='Select'
                             cancelText='Cancel'
                             mode='date'
                             modal
                             locale='en'
-                            open={datePickerVisible}
-                            onConfirm={(date: Date) => {
-                                setDatePickerVisible(false);
-                                setForm({ ...form, birthday: date });
-                            }}
-                            onCancel={() => setDatePickerVisible(false)}
-                            date={form.birthday || new Date("January 2,2000")}
+                            {...datePickerState}
                         />
-                        <RadioGroup
-                            selectedIndex={genderRadio}
-                            onChange={(index) => onChangeGender(index)}
-                            style={[styles.radioGroup]}
-                        >
-                            <Radio >Male</Radio>
-                            <Radio>Female</Radio>
-                        </RadioGroup>
                     </View>
+                    {
+                        !isEdit && (
+                            <Input
+                                accessoryLeft={renderPasswordIcon}
+                                style={passwordInputState.isFocus ? GLOBAL_STYLES.focusInput : GLOBAL_STYLES.input}
+                                placeholder='Password'
+                                {...passwordInputState}
+                            />
+                        )
+                    }
                 </View>
-                <View style={styles.formInput}>
-                    <Input disabled={isDisable} label="Email" onChangeText={(text) => onChangeText(text, "mail")} value={form.mail} />
-                </View>
-                {
-                    !isEdit ? (
-                        <View style={styles.formInput}>
-                            <Input label="Password" onChangeText={(text) => onChangeText(text, "password")} />
-                        </View>
-                    ) : null
-                }
-                <Button style={styles.button}>
-                    {isEdit ? "EDIT" : "REGISTER"}
+                <Button onPress={handleOnSubmit} style={isEdit ? styles.button : styles.submitButton}>
+                    {isEdit ? "EDIT" : "CREATE ACCOUNT"}
                 </Button>
-            </KeyboardAvoidingScrollView>
-        </View >
-    )
-};
-
+            </KeyboardAvoidingScrollView >
+        </>
+    );
+}
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column',
+    forms: {
+        width: '100%',
+        marginTop: 30
     },
-    formInput: {
-        marginBottom: 10,
+    submitButton: {
+        backgroundColor: COLORS['success-400'],
+        width: '100%',
+        borderWidth: 0,
+        elevation: 4
     },
-    formRow: {
+    row: {
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 10,
-        height: 45,
-        paddingHorizontal: 5,
-        borderColor: COLORS.disabledColor,
-        borderWidth: 1,
-        borderRadius: 5
     },
-    radioGroup: {
-        flexDirection: 'row',
-        width: '50%',
-        backgroundColor: 'transparent',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 5,
-    },
-    dateContent: {
-        width: '50%',
-    }, button: {
+    button: {
         backgroundColor: COLORS['danger-300'],
         borderWidth: 0,
         elevation: 4
     }
 })
-
 
 export default UserDetailForm;

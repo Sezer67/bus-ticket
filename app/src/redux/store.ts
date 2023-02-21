@@ -1,6 +1,7 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import settingsSlice from './settings/slice';
 import userSlice from './user/slice';
+import { ReduxRootType } from '../../types/redux-slice.type';
 
 const reducer = {
   settings: settingsSlice,

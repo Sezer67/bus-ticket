@@ -32,7 +32,7 @@ const userSlice = createSlice({
       state.token = action.payload.token;
       state.isAuthenticated = true;
     },
-    logOut: (state, action) => {
+    logOut: (state) => {
       state = initialState;
     },
   },

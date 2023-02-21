@@ -2,7 +2,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
@@ -12,12 +12,14 @@ import TicketFindScreen from '../screens/TicketFindScreen';
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import ProfileScreen from '../screens/ProfileScreen';
 import ServicesScreen from '../screens/ServicesScreen';
-import { useAppSelector } from '../../hooks/redux.hook';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
+import * as SplashScreen from 'expo-splash-screen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import { storageHelper } from '../helpers';
 import { setToken } from '../../utils/axios.util';
+import { userService } from '../../service';
+import { userActions } from '../redux/user/slice';
 
 export default function Navigation() {
   return (
@@ -32,23 +34,51 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
 
+  const dispacth = useAppDispatch();
+  const [appIsReady, setAppIsReady] = useState<boolean>(false);
+
+  const prepare = async () => {
+    await SplashScreen.preventAutoHideAsync();
+  }
+
   const controlToPhoneStorage = async () => {
     try {
       const token = await storageHelper.getStorageKey("@token");
+      console.log("token: ");
       if (!token) return;
+      console.log(token);
       setToken(token);
 
-      // @me isteği gönder
+      const { data } = await userService.currentUser();
+      dispacth(userActions.login({
+        user: data,
+        token
+      }));
 
     } catch (error) {
       console.log(error);
+    } finally {
+      setAppIsReady(true);
     }
   }
 
-  React.useEffect(() => {
+
+
+  const hideSplash = async () => {
+    await SplashScreen.hideAsync();
+  }
+
+  useEffect(() => {
     if (!userState.isAuthenticated)
       controlToPhoneStorage();
-  }, [])
+    prepare();
+  }, []);
+
+  useEffect(() => {
+    if (appIsReady)
+      hideSplash();
+  }, [appIsReady])
+
   const userState = useAppSelector((state) => state.user);
 
   return (
