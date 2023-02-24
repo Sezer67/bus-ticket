@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, StyleSheet, TouchableOpacity } from 'react-native'
-import { RootTabScreenProps } from '../../types';
-import { COLORS, images } from '../../constants';
+import { RootTabScreenProps } from '../../../types';
+import { COLORS, images } from '../../../constants';
 import { Text, ViewPager } from '@ui-kitten/components';
 import { StatusBar } from 'expo-status-bar';
-import Layout from '../../constants/Layout';
-import UserDetailForm from '../components/Forms/UserDetailForm';
-import ChangePasswordForm from '../components/Forms/ChangePasswordForm';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
-import { ReduxRootType } from '../../types/redux-slice.type';
+import Layout from '../../../constants/Layout';
+import UserDetailForm from '../../components/Forms/UserDetailForm';
+import ChangePasswordForm from '../../components/Forms/ChangePasswordForm';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux.hook';
+import { ReduxRootType } from '../../../types/redux-slice.type';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import { setToken } from '../../utils/axios.util';
-import { storageHelper } from '../helpers';
-import { userActions } from '../redux/user/slice';
+import { setToken } from '../../../utils/axios.util';
+import { storageHelper } from '../../helpers';
+import { userActions } from '../../redux/user/slice';
 const ProfileScreen = ({ navigation, route }: RootTabScreenProps<'Profile'>) => {
 
     const [activePageIndex, setActivePageIndex] = useState<0 | 1>(0);
@@ -23,13 +23,17 @@ const ProfileScreen = ({ navigation, route }: RootTabScreenProps<'Profile'>) => 
     const handleLogout = async () => {
         try {
             setToken("");
-            storageHelper.setStorageKey("@token", "");
+            await storageHelper.setStorageKey("@token", "");
             dispacth(userActions.logOut());
-            navigation.navigate('Login');
         } catch (error) {
             console.log(error);
         }
     }
+
+    useEffect(() => {
+        console.log("Profile screen : ", userState.isAuthenticated);
+        console.log("Profile role : ", userState.user.role);
+    }, [userState.isAuthenticated])
 
     useEffect(() => {
         navigation.setOptions({

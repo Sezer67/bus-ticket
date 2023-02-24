@@ -1,28 +1,12 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { RootStackScreenProps } from '../../types';
-import { Input, Text, Button, RadioGroup, Radio } from '@ui-kitten/components';
+import { Text } from '@ui-kitten/components';
 import Layout from '../../constants/Layout';
 import { COLORS } from '../../constants';
-import { Feather, FontAwesome } from '@expo/vector-icons';
-import { useDatePickerState, useInputPasswordState, useInputState, useRadioGroupState } from '../../hooks/forms.hook';
-import GLOBAL_STYLES from '../../constants/Styles';
-import DatePicker from 'react-native-date-picker';
-import { userService } from '../../service';
-import { useAppDispatch } from '../../hooks/redux.hook';
-import { settingsActions } from '../redux/settings/slice';
-import { userActions } from '../redux/user/slice';
-import { storageHelper } from '../helpers';
-import { setToken } from '../../utils/axios.util';
 import UserDetailForm from '../components/Forms/UserDetailForm';
 
 const RegisterScreen = ({ navigation, route }: RootStackScreenProps<'Register'>) => {
-
-
-
-
-
-
 
     return (
         <View style={styles.container}>
@@ -64,7 +48,7 @@ const styles = StyleSheet.create({
     },
     cardContainer: {
         width: Layout.window.width * 3 / 4,
-        height: Layout.window.height * 3 / 5,
+        height: Layout.window.height * 2 / 3,
         backgroundColor: COLORS['danger-100'],
         marginTop: 60,
         borderRadius: 20,
@@ -82,7 +66,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderRadius: 20,
         flexDirection: 'column',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         alignItems: 'center',
         elevation: 8,
     },

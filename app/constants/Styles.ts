@@ -9,6 +9,14 @@ const GLOBAL_STYLES = StyleSheet.create({
     width: Layout.window.width / 2,
     backgroundColor: COLORS['danger-400'],
   },
+  headerRightButtonContainer: {
+    marginRight: 20,
+  },
+  transparentHeaderScreenContainer: {
+    backgroundColor: COLORS.light,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS['danger-200'],
+  },
   input: {
     borderWidth: 0,
     borderBottomWidth: 1,

@@ -32,7 +32,7 @@ const LoginScreen = ({ navigation, route }: RootStackScreenProps<'Login'>) => {
                 mail: mailInputState.value,
                 password: passwordInputState.value
             }
-            console.log(formData);
+            dispatch(settingsActions.setLoading({ isLoading: true, content: 'Loading...' }));
             const { data } = await userService.login(formData);
             dispatch(userActions.login(data));
             setToken(data.token);

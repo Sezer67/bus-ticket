@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
-import { RootStackScreenProps } from '../../types'
+import { RootStackScreenProps } from '../../../types'
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native'
 import { Button, Card, Text } from '@ui-kitten/components'
 import { StatusBar } from 'expo-status-bar'
-import { COLORS } from '../../constants'
+import { COLORS } from '../../../constants'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>) => {

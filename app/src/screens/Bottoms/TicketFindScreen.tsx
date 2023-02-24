@@ -1,12 +1,12 @@
 import { StyleSheet, View, ImageBackground } from 'react-native';
-import { RootStackScreenProps } from '../../types';
-import Layout from '../../constants/Layout';
+import { RootStackScreenProps } from '../../../types';
+import Layout from '../../../constants/Layout';
 import { useState, useMemo, useEffect } from 'react';
 import { Text } from '@ui-kitten/components';
-import { ticketFindConfigs } from './configs';
+import { ticketFindConfigs } from '../configs';
 import { FontAwesome } from '@expo/vector-icons';
-import { COLORS, images } from '../../constants';
-import TicketFindForm from '../components/Forms/TicketFindForm';
+import { COLORS, images } from '../../../constants';
+import TicketFindForm from '../../components/Forms/TicketFindForm';
 import { StatusBar } from 'expo-status-bar';
 
 export default function TicketFindScreen({ navigation }: RootStackScreenProps<'TicketFind'>) {

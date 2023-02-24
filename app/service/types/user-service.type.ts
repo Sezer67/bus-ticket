@@ -18,4 +18,5 @@ export type RegisterFormDataType = {
   gender: userEnums.Gender;
   birthday: Date;
   password: string;
+  role: userEnums.Role;
 };

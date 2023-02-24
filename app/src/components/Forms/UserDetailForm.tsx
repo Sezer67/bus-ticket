@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Feather, FontAwesome } from "@expo/vector-icons"
+import { Feather, FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons"
 import { Input, Button, Radio, RadioGroup, Text } from "@ui-kitten/components"
 import { View, TouchableOpacity, StyleSheet } from 'react-native'
 import { useDatePickerState, useInputPasswordState, useInputState, useRadioGroupState } from "../../../hooks/forms.hook";
@@ -26,6 +26,7 @@ const UserDetailForm: React.FC<PropsType> = ({ isEdit, isDisable }) => {
     const mailInputState = useInputState();
     const passwordInputState = useInputPasswordState();
     const genderRadioGroupState = useRadioGroupState(0);
+    const roleRadioGroupState = useRadioGroupState(0);
     const datePickerState = useDatePickerState(new Date("January 1,2000"));
 
     const userState = useAppSelector((state: ReduxRootType) => state.user);
@@ -43,7 +44,7 @@ const UserDetailForm: React.FC<PropsType> = ({ isEdit, isDisable }) => {
 
     const renderPasswordIcon = () => (
         <TouchableOpacity onPress={() => passwordInputState.setSecureTextEntry(!passwordInputState.secureTextEntry)} style={{ marginLeft: 10, marginRight: 10 }}>
-            <Feather name='lock' size={20} />
+            <Feather name={passwordInputState.secureTextEntry ? "lock" : "unlock"} size={20} />
         </TouchableOpacity>
     )
 
@@ -54,7 +55,8 @@ const UserDetailForm: React.FC<PropsType> = ({ isEdit, isDisable }) => {
             gender: genderRadioGroupState.selectedIndex,
             birthday: datePickerState.date,
             identityNumber: identityNumberInputState.value || undefined,
-            password: passwordInputState.value
+            password: passwordInputState.value,
+            role: roleRadioGroupState.selectedIndex
         };
         dispacth(settingsActions.setLoading({ isLoading: true, content: 'Creating a record...' }));
         try {
@@ -78,7 +80,6 @@ const UserDetailForm: React.FC<PropsType> = ({ isEdit, isDisable }) => {
     }
     return (
         <>
-
             <KeyboardAvoidingScrollView>
                 <View style={styles.forms}>
                     <Input
@@ -107,7 +108,7 @@ const UserDetailForm: React.FC<PropsType> = ({ isEdit, isDisable }) => {
                     <View style={[GLOBAL_STYLES.input, styles.row, { alignItems: 'center', paddingLeft: 20 }]}>
                         <FontAwesome name='transgender' size={20} />
                         <RadioGroup {...genderRadioGroupState} style={[styles.row, { paddingLeft: 20 }]}>
-                            <Radio status='danger'>Male</Radio>
+                            <Radio status='danger'>Male        </Radio>
                             <Radio status='danger'>Female</Radio>
                         </RadioGroup>
                     </View>
@@ -127,6 +128,17 @@ const UserDetailForm: React.FC<PropsType> = ({ isEdit, isDisable }) => {
                             {...datePickerState}
                         />
                     </View>
+                    {
+                        !isEdit && (
+                            <View style={[GLOBAL_STYLES.input, styles.row, { alignItems: 'center', paddingLeft: 16 }]}>
+                                <MaterialCommunityIcons name='office-building' size={20} />
+                                <RadioGroup {...roleRadioGroupState} style={[styles.row, { paddingLeft: 20 }]}>
+                                    <Radio status='danger'>Customer</Radio>
+                                    <Radio status='danger'>Company</Radio>
+                                </RadioGroup>
+                            </View>
+                        )
+                    }
                     {
                         !isEdit && (
                             <Input

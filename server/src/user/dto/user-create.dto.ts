@@ -25,6 +25,10 @@ export class UserCreateDto {
   @IsEnum(userEnum.Gender)
   gender: userEnum.Gender;
 
+  @IsOptional()
+  @IsEnum(userEnum.Role)
+  role: userEnum.Role;
+
   @IsNotEmpty()
   @IsEmail()
   mail: string;

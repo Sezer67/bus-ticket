@@ -33,7 +33,19 @@ const userSlice = createSlice({
       state.isAuthenticated = true;
     },
     logOut: (state) => {
-      state = initialState;
+      state.isAuthenticated = false;
+      state.token = undefined;
+      state.user = {
+        id: '',
+        fullName: '',
+        gender: userEnums.Gender.Male,
+        mail: '',
+        role: userEnums.Role.Customer,
+        birthday: undefined,
+        companyId: undefined,
+        identityNumber: undefined,
+      };
+      console.log('function');
     },
   },
 });
