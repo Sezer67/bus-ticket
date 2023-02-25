@@ -16,8 +16,8 @@ export class Vehicle extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'enum', enum: vehicleEnum.VehicleTypes, nullable: false })
-  vehicleType: vehicleEnum.VehicleTypes;
+  @Column({ type: 'enum', enum: vehicleEnum.VehicleType, nullable: false })
+  vehicleType: vehicleEnum.VehicleType;
 
   @Column({ type: 'smallint', nullable: false })
   seatCount: number;

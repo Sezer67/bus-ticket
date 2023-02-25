@@ -1,3 +1,4 @@
+import { IndexPath } from '@ui-kitten/components';
 import { UserType } from './user.type';
 
 export type InputHookType = {
@@ -16,6 +17,11 @@ export type InputPasswordHookType = InputHookType & {
 export type RadioGroupHookType = {
   selectedIndex: number;
   onChange: (value: number) => void;
+};
+
+export type SelectInputState = {
+  selectedIndex: IndexPath | IndexPath[];
+  onSelect: (index: IndexPath | IndexPath[]) => void;
 };
 
 export type DatePickerHookType = {

@@ -1,6 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
 import useCachedResources from './hooks/useCachedResources';
 import Navigation from './src/navigation';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
@@ -11,6 +10,7 @@ import { Provider } from 'react-redux';
 import LoadingPopover from './src/components/LoadingPopover';
 import { store } from './src/redux/store';
 import Snackbar from './src/components/Snackbar/Snackbar';
+
 export default function App() {
   const isLoadingComplete = useCachedResources();
 

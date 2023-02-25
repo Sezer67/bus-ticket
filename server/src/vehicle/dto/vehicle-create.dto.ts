@@ -34,6 +34,6 @@ export class VehicleCreateDto {
   isTV: boolean;
 
   @IsNotEmpty()
-  @IsEnum(vehicleEnum.VehicleTypes)
-  vehicleType: vehicleEnum.VehicleTypes;
+  @IsEnum(vehicleEnum.VehicleType)
+  vehicleType: vehicleEnum.VehicleType;
 }

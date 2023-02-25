@@ -13,6 +13,7 @@ import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { setToken } from '../../../utils/axios.util';
 import { storageHelper } from '../../helpers';
 import { userActions } from '../../redux/user/slice';
+import { userEnums } from '../../../enums';
 const ProfileScreen = ({ navigation, route }: RootTabScreenProps<'Profile'>) => {
 
     const [activePageIndex, setActivePageIndex] = useState<0 | 1>(0);
@@ -64,9 +65,9 @@ const ProfileScreen = ({ navigation, route }: RootTabScreenProps<'Profile'>) => 
                 onSelect={(index) => setActivePageIndex(index as never)}
             >
                 <View style={styles.tabContainer}>
-                    <View style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-
+                    <View style={{ width: '100%', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
                         <Image style={styles.profileImage} borderRadius={100} resizeMethod='resize' resizeMode='cover' source={images.plane} />
+                        <Text category='h4'>{Object.keys(userEnums.Role).filter((key) => userEnums.Role[key as keyof typeof userEnums.Role] === userState.user.role)[0]} Account</Text>
                     </View>
                     <View style={styles.form}>
                         <UserDetailForm isEdit isDisable />

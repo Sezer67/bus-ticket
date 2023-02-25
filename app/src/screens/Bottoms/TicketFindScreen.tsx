@@ -34,7 +34,6 @@ export default function TicketFindScreen({ navigation }: RootStackScreenProps<'T
                         key={activeTab}
                         routeLineIcon={ticketFindConfigs.TabItems[activeTab].routeIcon}
                         submitButtonText={ticketFindConfigs.TabItems[activeTab].submitButtonText}
-                        navigation={navigation}
                     />
                 </View>
             </View>

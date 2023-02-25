@@ -1,10 +1,10 @@
 import { images } from '../../../constants';
-import { ticketFindEnums } from '../../../enums';
+import { vehicleEnums } from '../../../enums';
 import { ticketFindTypes } from '../types';
 
 export const TabItems: ticketFindTypes.TabItemType[] = [
   {
-    id: ticketFindEnums.TabEnum.Bus,
+    id: vehicleEnums.VehicleType.Bus,
     name: 'Bus',
     icon: 'bus',
     image: images.bus,
@@ -13,7 +13,7 @@ export const TabItems: ticketFindTypes.TabItemType[] = [
     submitButtonText: 'GET ON',
   },
   {
-    id: ticketFindEnums.TabEnum.Plane,
+    id: vehicleEnums.VehicleType.Plane,
     name: 'Plane',
     icon: 'plane',
     image: images.plane,
@@ -22,7 +22,7 @@ export const TabItems: ticketFindTypes.TabItemType[] = [
     submitButtonText: 'FLY',
   },
   {
-    id: ticketFindEnums.TabEnum.Train,
+    id: vehicleEnums.VehicleType.Train,
     name: 'Train',
     icon: 'train',
     image: images.train,

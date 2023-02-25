@@ -1,5 +1,6 @@
 import React from 'react';
 import { formTypes } from '../types/index';
+import { IndexPath } from '@ui-kitten/components';
 
 const useInputState = (): formTypes.InputHookType => {
   const [value, setValue] = React.useState<string>('');
@@ -26,6 +27,11 @@ const useInputPasswordState = (): formTypes.InputPasswordHookType => {
     secureTextEntry,
     setSecureTextEntry: (value: boolean) => setSecureTextEntry(value),
   };
+};
+
+const useOnlySelectInputState = (initialIndex = 0): formTypes.SelectInputState => {
+  const [selectedIndex, setSelectedIndex] = React.useState<IndexPath | IndexPath[]>(new IndexPath(initialIndex));
+  return { selectedIndex, onSelect: (index: IndexPath | IndexPath[]) => setSelectedIndex(index as IndexPath) };
 };
 
 const useRadioState = (initialCheck = false) => {
@@ -55,4 +61,11 @@ const useDatePickerState = (initialDate: Date): formTypes.DatePickerHookType => 
   };
 };
 
-export { useInputState, useInputPasswordState, useRadioState, useRadioGroupState, useDatePickerState };
+export {
+  useInputState,
+  useInputPasswordState,
+  useOnlySelectInputState,
+  useRadioState,
+  useRadioGroupState,
+  useDatePickerState,
+};

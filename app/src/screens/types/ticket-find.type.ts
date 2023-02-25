@@ -1,9 +1,9 @@
-import { ticketFindEnums } from '../../../enums';
+import { vehicleEnums } from '../../../enums';
 import { ReactNode } from 'react';
 
 export type TabItemType = {
   name: string;
-  id: ticketFindEnums.TabEnum;
+  id: vehicleEnums.VehicleType;
   icon: string;
   image: string;
   ticketType: TicketType;

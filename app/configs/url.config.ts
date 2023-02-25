@@ -6,6 +6,11 @@ const urlsConfig = {
     register: '/user/register',
     getCurrent: '/user/@me',
   },
+  vehicle: {
+    create: '/vehicle',
+    update: '/vehicle/information',
+    updatePoint: '/vehicle/point',
+  },
 };
 
 export default urlsConfig;

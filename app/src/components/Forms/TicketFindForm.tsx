@@ -13,12 +13,12 @@ import cities from '../../../static-files/cities_of_turkey.json';
 import SelectCityModal from '../Modals/SelectCityModal';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native'
+import { RootStackParamList, RootStackScreenProps } from '../../../types';
 
 type PropsType = {
     routeLineIcon: TicketRouteLineIcon;
     submitButtonText: string;
     ticketType: TicketType;
-    navigation: NativeStackNavigationProp<any>
 }
 
 const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, ticketType }) => {
