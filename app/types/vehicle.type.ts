@@ -5,7 +5,7 @@ export type VehicleType = {
   vehicleType: vehicleEnums.VehicleType;
   seatCount: number;
   plate: string;
-  seatingPlan: BusSeatPlanType | PlaneSeatPlanType;
+  seatingPlan: BusSeatPlanType | PlaneSeatPlanType | TrainSeatPlanType;
   isWifi: boolean;
   isJack: boolean;
   isTV: boolean;
@@ -18,3 +18,6 @@ export type VehicleType = {
 
 export type BusSeatPlanType = '2+1' | '2+2';
 export type PlaneSeatPlanType = '3+3' | '4+3';
+export type TrainSeatPlanType = '2+2' | '3+2';
+
+export type SeatPlanInput = BusSeatPlanType | PlaneSeatPlanType | TrainSeatPlanType;

@@ -38,6 +38,7 @@ const useRadioState = (initialCheck = false) => {
   const [checked, setChecked] = React.useState(initialCheck);
   return { checked, onChange: setChecked };
 };
+
 const useRadioGroupState = (index = 0): formTypes.RadioGroupHookType => {
   const [selectedIndex, setSelectedIndex] = React.useState<number>(index);
   return { selectedIndex, onChange: (value: number) => setSelectedIndex(value) };
