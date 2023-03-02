@@ -166,7 +166,6 @@ const mockArr = [
 // vehicle için redux yazılacak.
 const BusModel = () => {
 
-
     const seatWithNumber = (prop: { isFilled: boolean, number: number }) => (
         <View style={{ height: 36, width: 36, margin: 3, borderWidth: 1, borderRadius: 3, borderColor: COLORS['danger-400'], justifyContent: 'center', alignItems: 'center' }} key={prop.number}>
             <Text >{prop.number.toString()}</Text>

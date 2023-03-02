@@ -20,6 +20,7 @@ import {
   VehicleInfoUpdateDto,
   VehiclePointsUpdateDto,
 } from './dto/vehicle-update.dto';
+import { VehicleLookupDto } from './dto/vehicle-lookup.dto';
 
 @Controller('vehicle')
 export class VehicleController {
@@ -27,8 +28,8 @@ export class VehicleController {
 
   @Get('/')
   @UseGuards(AuthGuard('user'))
-  lookup(@Query() dto: any) {
-    return this.service.lookup(dto);
+  lookup(@Query() dto: VehicleLookupDto, @Req() req: any) {
+    return this.service.lookup(dto, req.user);
   }
 
   @Post('/')

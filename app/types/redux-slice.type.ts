@@ -1,4 +1,5 @@
 import { UserType } from './user.type';
+import { VehicleType } from './vehicle.type';
 
 export type SettingsSliceType = {
   loading: {
@@ -17,8 +18,14 @@ export type UserSliceType = {
   isAuthenticated: boolean;
 };
 
+export type VehicleSliceType = {
+  vehicle: VehicleType | undefined;
+  vehicleList: VehicleType[];
+  vehiclesCount: number;
+};
 
 export type ReduxRootType = {
   user: UserSliceType;
   settings: SettingsSliceType;
+  vehicle: VehicleSliceType;
 };

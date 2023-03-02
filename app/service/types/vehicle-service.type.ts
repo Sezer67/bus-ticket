@@ -1,5 +1,5 @@
 import { vehicleEnums } from '../../enums';
-import { BusSeatPlanType, PlaneSeatPlanType, TrainSeatPlanType } from '../../types/vehicle.type';
+import { BusSeatPlanType, PlaneSeatPlanType, TrainSeatPlanType, VehicleType } from '../../types/vehicle.type';
 
 export type CreateVehicleFormDataType = {
   seatCount: number;
@@ -9,4 +9,15 @@ export type CreateVehicleFormDataType = {
   isJack?: boolean;
   isTV?: boolean;
   vehicleType: vehicleEnums.VehicleType;
+};
+
+type RelationsType = 'company' | 'vehicle' | 'user';
+
+export type LookupQueryDataType = {
+  relations?: RelationsType[];
+};
+
+export type LookupResponseType = {
+  rows: VehicleType[];
+  count: number;
 };

@@ -5,6 +5,9 @@ import { Repository } from 'typeorm';
 import { CompanyService } from 'src/company/company.service';
 import { VehicleCreateDto } from './dto/vehicle-create.dto';
 import { VehicleInfoUpdateDto } from './dto/vehicle-update.dto';
+import { VehicleLookupDto } from './dto/vehicle-lookup.dto';
+import { User } from 'src/user/user.entity';
+import { IVehicleLookupResponse } from 'src/shared/interfaces/vehicle.interface';
 
 @Injectable()
 export class VehicleService {
@@ -15,11 +18,30 @@ export class VehicleService {
     private readonly companyService: CompanyService,
   ) {}
 
-  async lookup(dto: any) {
+  async lookup(
+    dto: VehicleLookupDto,
+    user: User,
+  ): Promise<IVehicleLookupResponse> {
     try {
-      return await this.repo.findAndCount({
-        relations: ['company'],
-      });
+      const query: any = {};
+
+      {
+        const where: any = {};
+        if (dto.relations) {
+          query.relations = [...dto.relations];
+        }
+        if (user.companyId) {
+          where.companyId = user.companyId;
+        }
+        query.where = where;
+      }
+
+      const [rows, count] = await this.repo.findAndCount(query);
+
+      return {
+        rows,
+        count,
+      };
     } catch (error) {
       throw error;
     }

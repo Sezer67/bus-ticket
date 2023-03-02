@@ -1,11 +1,12 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import settingsSlice from './settings/slice';
 import userSlice from './user/slice';
-import { ReduxRootType } from '../../types/redux-slice.type';
+import vehicleSlice from './vehicle/slice';
 
 const reducer = {
   settings: settingsSlice,
   user: userSlice,
+  vehicle: vehicleSlice,
 };
 export const store = configureStore({
   reducer,
