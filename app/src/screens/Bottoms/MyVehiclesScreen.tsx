@@ -1,6 +1,6 @@
-import { Card, Text } from '@ui-kitten/components';
-import React, { useEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { Card, Text, Button, Popover, Input } from '@ui-kitten/components';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, TouchableOpacity, FlatList, Image } from 'react-native';
 import { RootTabScreenProps } from '../../../types';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux.hook';
 import { ReduxRootType } from '../../../types/redux-slice.type';
@@ -8,12 +8,21 @@ import { settingsActions } from '../../redux/settings/slice';
 import { vehicleService } from '../../../service';
 import { vehicleActions } from '../../redux/vehicle/slice';
 import { AntDesign, Feather, FontAwesome, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { COLORS } from '../../../constants';
+import { COLORS, images } from '../../../constants';
 import { VehicleType } from '../../../types/vehicle.type';
 import { vehicleEnums } from '../../../enums';
+import Layout from '../../../constants/Layout';
+import EmptyList from '../../components/EmptyList';
+import { useInputState } from '../../../hooks/forms.hook';
+import GLOBAL_STYLES from '../../../constants/Styles';
 
 const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'>) => {
 
+    const [filterDropVisible, setFilterDropVisible] = useState<boolean>(false);
+    const [searchVisible, setSearchVisible] = useState<boolean>(false);
+    const [filterKey, setFilterKey] = useState<number | undefined>(undefined);
+    const [filteredList, setFilteredList] = useState<VehicleType[]>([]);
+    const searchInputState = useInputState();
     const vehicleState = useAppSelector((state: ReduxRootType) => state.vehicle);
 
     const dispatch = useAppDispatch();
@@ -22,6 +31,7 @@ const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'
         try {
             const { data } = await vehicleService.lookup({});
             dispatch(vehicleActions.setVehicleList(data));
+            setFilteredList(data.rows);
         } catch (error: any) {
             if (typeof error.response?.data.message === "string") {
                 dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));
@@ -35,7 +45,30 @@ const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'
 
     useEffect(() => {
         getMyVehicles();
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        if (!searchInputState.value.trim()) {
+            setFilteredList(vehicleState.vehicleList);
+            return;
+        }
+        const filtered = vehicleState.vehicleList.filter((v) =>
+            v.plate.trim().toLowerCase().includes(searchInputState.value.trim().toLowerCase())
+        );
+        setFilteredList(filtered);
+    }, [searchInputState.value])
+
+    const handleEditPress = (id: string) => {
+        const selectedVehicle = vehicleState.vehicleList.find((v) => v.id === id);
+
+        if (!selectedVehicle) return;
+
+        dispatch(vehicleActions.setSelectedVehicle(selectedVehicle));
+        navigation.navigate('AddVehicleModal', {
+            vehicleId: id,
+            title: selectedVehicle.plate.toUpperCase()
+        });
+    }
 
     const renderIcon = (type: vehicleEnums.VehicleType) => {
         let iconNode = <></>;
@@ -82,7 +115,7 @@ const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'
     }
 
     const renderItem = (prop: { item: VehicleType, index: number }) => (
-        <Card  >
+        <Card style={{ marginBottom: 10, backgroundColor: 'white', borderWidth: 0, elevation: 1 }} >
             {/* Header */}
             <View style={[styles.row, { borderBottomWidth: 1, borderBottomColor: COLORS.disabledColor, paddingBottom: 10, paddingLeft: 5, justifyContent: 'center' }]}>
                 {renderIcon(prop.item.vehicleType)}
@@ -119,49 +152,109 @@ const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'
                         </View> : null
                 }
                 <View style={[styles.row, { width: '100%' }]}>
-                    <View style={[styles.row, { width: '30%', backgroundColor: COLORS['primary-100'], justifyContent: 'space-around', marginRight: 10, marginBottom: 5, paddingVertical: 5 }]}>
+                    <View style={[styles.row, { width: '30%', backgroundColor: COLORS.light, justifyContent: 'space-around', marginRight: 10, marginBottom: 5, paddingVertical: 5 }]}>
                         <Text>Comfort : </Text>
                         <Text>{prop.item.comfortPoint}</Text>
                     </View>
-                    <View style={[styles.row, { width: '30%', backgroundColor: COLORS['primary-100'], justifyContent: 'space-around', marginRight: 10, marginBottom: 5, paddingVertical: 5 }]}>
+                    <View style={[styles.row, { width: '30%', backgroundColor: COLORS.light, justifyContent: 'space-around', marginRight: 10, marginBottom: 5, paddingVertical: 5 }]}>
                         <Text>Speed : </Text>
                         <Text>{prop.item.speedPoint}</Text>
                     </View>
-                    <View style={[styles.row, { width: '30%', backgroundColor: COLORS['primary-100'], justifyContent: 'space-around', marginRight: 10, marginBottom: 5, paddingVertical: 5 }]}>
+                    <View style={[styles.row, { width: '30%', backgroundColor: COLORS.light, justifyContent: 'space-around', marginRight: 10, marginBottom: 5, paddingVertical: 5 }]}>
                         <Text>Service : </Text>
                         <Text>{prop.item.servicePoint}</Text>
                     </View>
                 </View>
             </View>
             {/* Footer */}
-            <View style={[styles.row, { justifyContent: 'space-between' }]}>
+            <View style={[styles.row, { justifyContent: 'space-between', marginTop: 5 }]}>
                 <View style={styles.row} >
                     {totalPointRenderWithStarIcons(prop.item.comfortPoint, prop.item.speedPoint, prop.item.servicePoint).map((node) => node)}
                     <Text style={{ marginLeft: 5, fontSize: 12 }} appearance='hint'>{`(${prop.item.votesCount})`}</Text>
                 </View>
-                <Text>Edit & Delete</Text>
+                <TouchableOpacity onPress={() => handleEditPress(prop.item.id)} style={{ backgroundColor: COLORS['danger-400'], borderRadius: 4, elevation: 4, paddingVertical: 10, paddingHorizontal: 15, height: 'auto' }}>
+                    <Text style={{ color: COLORS.light }} >EDIT</Text>
+                </TouchableOpacity>
             </View>
         </Card>
     )
 
+    const renderPopoverContent = () => {
+        return (
+            <TouchableOpacity onPress={() => setFilterDropVisible(true)} style={filterKey !== undefined && styles.activeFilterContainer}>
+                <Ionicons name="filter" size={24} color={"black"} />
+            </TouchableOpacity>
+        );
+    }
+
+    const handleOnFilterPress = (index: number) => {
+        setFilterKey((index) % 3);
+        setFilterDropVisible(false);
+    }
+
     return (
         <View style={styles.container}>
-            <View style={[styles.row, { justifyContent: 'space-between', marginBottom: 20 }]}>
-                <View style={[styles.row, styles.hrBorder, { width: '85%' }]}>
-                    <Text category='h6'>Total Vehicle Count of Your Company </Text>
-                    <AntDesign name="right" size={18} style={{ marginTop: 2, marginHorizontal: 4 }} color="black" />
-                    <Text category='h6' >{vehicleState.vehiclesCount}</Text>
-                </View>
+            <View style={[styles.row, { justifyContent: 'space-between', marginBottom: 20, alignItems: 'center' }]}>
+                {
+                    searchVisible ? (
+                        <View style={{ flexDirection: 'row', width: '80%', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <Input
+                                accessoryLeft={<AntDesign name='search1' size={20} />}
+                                style={[searchInputState.isFocus ? GLOBAL_STYLES.focusInput : GLOBAL_STYLES.input, { width: '100%', marginBottom: 0 }]}
+                                placeholder='Search Plate'
+                                {...searchInputState}
+                            />
+                            <TouchableOpacity style={{ width: 20, marginLeft: 10 }} onPress={() => setSearchVisible(false)}>
+                                <AntDesign name='close' size={20} />
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <>
+                            <View style={[styles.row, styles.hrBorder, { width: '80%' }]}>
+                                <Text category='h6'>Total Vehicle Count of Your Company : </Text>
+                                {/* <AntDesign name="right" size={18} style={{ marginTop: 2, marginHorizontal: 4 }} color="black" /> */}
+                                <Text category='h6' >{vehicleState.vehiclesCount}</Text>
+                            </View>
+                            <TouchableOpacity onPress={() => setSearchVisible(true)}>
+                                <AntDesign name='search1' size={20} />
+                            </TouchableOpacity>
+                        </>
+                    )
+                }
                 <View>
-                    <TouchableOpacity>
-                        <Ionicons name="filter" size={24} color="black" />
-                    </TouchableOpacity>
+                    <Popover style={{ opacity: .75, marginTop: 40 }} visible={filterDropVisible} onBackdropPress={() => setFilterDropVisible(false)} anchor={renderPopoverContent}>
+
+                        <View style={styles.popoverContent}>
+                            <View style={styles.popoverArrow} />
+                            <View>
+                                {
+                                    Object.keys(vehicleEnums.VehicleType).filter((key) => Number.isNaN(Number(key)))
+                                        .map((key, index) => (
+                                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => handleOnFilterPress(index)} key={key} >
+                                                {
+                                                    filterKey === index && (
+                                                        <FontAwesome5 style={{ marginRight: 20 }} name="check" />
+                                                    )
+                                                }
+                                                <Text>{key}</Text>
+                                            </TouchableOpacity>
+                                        ))}
+                            </View>
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                                <TouchableOpacity onPress={() => { setFilterKey(undefined); setFilterDropVisible(false); }}>
+                                    <Text>Reset</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </Popover>
                 </View>
             </View>
             <FlatList
-                data={vehicleState.vehicleList}
+                data={filterKey === undefined ? filteredList : filteredList.filter((v) => v.vehicleType === filterKey)}
                 keyExtractor={(item) => item.id}
                 renderItem={renderItem}
+                showsVerticalScrollIndicator={false}
+                ListEmptyComponent={EmptyList}
             />
         </View>
     )
@@ -182,6 +275,35 @@ const styles = StyleSheet.create({
         borderColor: COLORS['danger-400'],
         paddingVertical: 5,
         paddingHorizontal: 10
+    },
+    popoverArrow: {
+        position: 'absolute',
+        backgroundColor: 'transparent',
+        width: 0,
+        height: 0,
+        right: 1,
+        top: -20,
+        borderWidth: 10,
+        borderColor: 'transparent',
+        borderBottomColor: COLORS['danger-400']
+    },
+    popoverContent: {
+        width: Layout.window.width / 3,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        backgroundColor: COLORS['danger-400'],
+        borderTopRightRadius: 2,
+        borderRadius: 5,
+        flexDirection: 'column',
+        justifyContent: 'space-between'
+    },
+    activeFilterContainer: {
+        width: 35,
+        height: 35,
+        backgroundColor: COLORS['danger-500'],
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 4
     }
 });
 

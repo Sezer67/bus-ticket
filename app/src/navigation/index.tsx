@@ -60,10 +60,10 @@ function RootNavigator() {
   const controlToPhoneStorage = async () => {
     try {
       const token = await storageHelper.getStorageKey("@token");
-      console.log("token: ");
+      console.log("token: ", token);
       if (!token) return;
       setToken(token);
-
+      console.log("token avaliable, get current user ");
       const { data } = await userService.currentUser();
       console.log(data.role);
       dispacth(userActions.login({
@@ -133,16 +133,16 @@ function BottomTabNavigator() {
       <BottomTab.Screen
         name='MyVehicles'
         component={MyVehiclesScreen}
-        options={({ navigation }: RootTabScreenProps<'MyVehicles'>) => ({
+        options={({ navigation, route }: RootTabScreenProps<'MyVehicles'>) => ({
           title: 'My Vehicles',
           headerShadowVisible: true,
           headerStyle: GLOBAL_STYLES.transparentHeaderScreenContainer,
           headerRight: () => (
-            <TouchableOpacity onPress={() => navigation.navigate('AddVehicleModal')} style={GLOBAL_STYLES.headerRightButtonContainer}>
+            <TouchableOpacity onPress={() => navigation.navigate('AddVehicleModal', { title: 'Create Vehicle' })} style={GLOBAL_STYLES.headerRightButtonContainer}>
               <Entypo name='add-to-list' color="black" size={24} />
             </TouchableOpacity>
           ),
-          tabBarIcon: ({ color }) => <FontAwesome5 name="bus" color={color} />
+          tabBarIcon: ({ color }) => <FontAwesome5 name="bus" color={color} size={18} />
         })}
       />
       <BottomTab.Screen
@@ -157,7 +157,7 @@ function BottomTabNavigator() {
               <Entypo name='add-to-list' color="black" size={24} />
             </TouchableOpacity>
           ),
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="timetable" color={color} />
+          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="timetable" color={color} size={18} />
         })}
       />
       <BottomTab.Screen
@@ -166,7 +166,7 @@ function BottomTabNavigator() {
         options={() => ({
           title: 'My Company',
           headerShown: false,
-          tabBarIcon: ({ color }) => <MaterialIcons name="business-center" color={color} />
+          tabBarIcon: ({ color }) => <MaterialIcons name="business-center" color={color} size={18} />
         })}
       />
     </>
@@ -179,7 +179,7 @@ function BottomTabNavigator() {
         options={({ navigation }: RootTabScreenProps<'TicketFind'>) => ({
           title: 'Find Ticket',
           headerShown: false,
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="highway" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="highway" color={color} size={18} />,
 
         })}
       />
@@ -188,7 +188,7 @@ function BottomTabNavigator() {
         component={TabTwoScreen}
         options={{
           title: 'My Travels',
-          tabBarIcon: ({ color }) => <FontAwesome5 name="map-marked-alt" color={color} />,
+          tabBarIcon: ({ color }) => <FontAwesome5 name="map-marked-alt" color={color} size={18} />,
         }}
       />
     </>
@@ -203,7 +203,8 @@ function BottomTabNavigator() {
     <BottomTab.Navigator
       initialRouteName={userState.user.role === userEnums.Role.Company ? "MyVehicles" : "TicketFind"}
       screenOptions={{
-        tabBarActiveTintColor: COLORS['danger-400'],
+        tabBarActiveTintColor: COLORS.light,
+        tabBarActiveBackgroundColor: COLORS['danger-400']
       }}>
       {
         userState.user.role === userEnums.Role.Company ? CompanyBottomNavigator() : CustomerBottomNavigator()
@@ -213,16 +214,9 @@ function BottomTabNavigator() {
         component={ProfileScreen}
         options={{
           title: 'My Profile',
-          tabBarIcon: ({ color }) => <FontAwesome5 name='user' color={color} />,
+          tabBarIcon: ({ color }) => <FontAwesome5 name='user' color={color} size={18} />,
         }}
       />
     </BottomTab.Navigator>
   );
-}
-
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
 }

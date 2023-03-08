@@ -1,5 +1,5 @@
-import { Button, CheckBox, Input, Select, SelectItem, Text, } from '@ui-kitten/components';
-import React, { useMemo, useState } from 'react';
+import { Button, CheckBox, IndexPath, Input, Select, SelectItem, Text, } from '@ui-kitten/components';
+import React, { useMemo, useState, useEffect } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { KeyboardAvoidingScrollView } from 'react-native-keyboard-avoiding-scroll-view';
 import { useInputState, useOnlySelectInputState } from '../../../hooks/forms.hook';
@@ -9,18 +9,19 @@ import { COLORS, icons } from '../../../constants';
 import { vehicleEnums } from '../../../enums';
 import { BusSeatPlanType, PlaneSeatPlanType, SeatPlanInput, TrainSeatPlanType, VehicleType } from '../../../types/vehicle.type';
 import { settingsActions } from '../../redux/settings/slice';
-import { useAppDispatch } from '../../../hooks/redux.hook';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux.hook';
 import { CreateVehicleFormDataType } from '../../../service/types/vehicle-service.type';
 import { vehicleService } from '../../../service';
 import BusModel from '../VehicleModels/BusModel';
 import { vehicleActions } from '../../redux/vehicle/slice';
 import { useNavigation } from '@react-navigation/native';
+import { RootState } from '../../redux/store';
 
 type PropsType = {
     isEdit: boolean;
+    vehicle?: VehicleType;
 }
 const VehicleDetailForm: React.FC<PropsType> = ({ isEdit }) => {
-
 
     const seatCountInputState = useInputState();
     const plateInputState = useInputState();
@@ -35,6 +36,7 @@ const VehicleDetailForm: React.FC<PropsType> = ({ isEdit }) => {
     const [vehicleModelVisible, setVehicleModelVisible] = useState<boolean>(false);
 
     const seatingPlanItems: SeatPlanInput[] = useMemo(() => {
+        console.log("vehicle : ", vehicleTypeSelectState.selectedIndex);
         if (Number(vehicleTypeSelectState.selectedIndex) - 1 === 0) {
             return ["2+1", "2+2"] as BusSeatPlanType[];
         }
@@ -47,7 +49,22 @@ const VehicleDetailForm: React.FC<PropsType> = ({ isEdit }) => {
     }, [vehicleTypeSelectState.selectedIndex])
 
     const dispatch = useAppDispatch();
+    const selectedVehicle = useAppSelector((state: RootState) => state.vehicle.vehicle);
     const navigation = useNavigation();
+
+    useEffect(() => {
+        console.log(selectedVehicle);
+        if (isEdit && selectedVehicle) {
+            seatCountInputState.onChangeText(selectedVehicle.seatCount.toString());
+            plateInputState.onChangeText(selectedVehicle.plate);
+            vehicleTypeSelectState.onSelect(new IndexPath(selectedVehicle.vehicleType));
+            setCheckboxGroupState({
+                isJack: selectedVehicle.isJack,
+                isWifi: selectedVehicle.isWifi,
+                isTV: selectedVehicle.isTV
+            });
+        }
+    }, [isEdit]);
 
     const handleOnEdit = async () => { }
 
