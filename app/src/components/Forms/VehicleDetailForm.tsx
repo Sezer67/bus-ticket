@@ -10,20 +10,20 @@ import { vehicleEnums } from '../../../enums';
 import { BusSeatPlanType, PlaneSeatPlanType, SeatPlanInput, TrainSeatPlanType, VehicleType } from '../../../types/vehicle.type';
 import { settingsActions } from '../../redux/settings/slice';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux.hook';
-import { CreateVehicleFormDataType } from '../../../service/types/vehicle-service.type';
+import { CreateVehicleFormDataType, EditVehicleFormDataType } from '../../../service/types/vehicle-service.type';
 import { vehicleService } from '../../../service';
 import BusModel from '../VehicleModels/BusModel';
 import { vehicleActions } from '../../redux/vehicle/slice';
 import { useNavigation } from '@react-navigation/native';
 import { RootState } from '../../redux/store';
+import { getSeatPlanArray } from '../../helpers';
 
 type PropsType = {
     isEdit: boolean;
-    vehicle?: VehicleType;
 }
 const VehicleDetailForm: React.FC<PropsType> = ({ isEdit }) => {
 
-    const seatCountInputState = useInputState();
+    const seatCountInputState = useInputState(true);
     const plateInputState = useInputState();
     const seatingPlanSelectState = useOnlySelectInputState();
     const vehicleTypeSelectState = useOnlySelectInputState();
@@ -36,16 +36,7 @@ const VehicleDetailForm: React.FC<PropsType> = ({ isEdit }) => {
     const [vehicleModelVisible, setVehicleModelVisible] = useState<boolean>(false);
 
     const seatingPlanItems: SeatPlanInput[] = useMemo(() => {
-        console.log("vehicle : ", vehicleTypeSelectState.selectedIndex);
-        if (Number(vehicleTypeSelectState.selectedIndex) - 1 === 0) {
-            return ["2+1", "2+2"] as BusSeatPlanType[];
-        }
-        else if (Number(vehicleTypeSelectState.selectedIndex) - 1 === 1) {
-            return ["3+3", "4+3"] as PlaneSeatPlanType[];
-        }
-        else {
-            return ["2+2", "3+2"] as TrainSeatPlanType[];
-        }
+        return getSeatPlanArray(Number(vehicleTypeSelectState.selectedIndex) - 1);
     }, [vehicleTypeSelectState.selectedIndex])
 
     const dispatch = useAppDispatch();
@@ -53,11 +44,13 @@ const VehicleDetailForm: React.FC<PropsType> = ({ isEdit }) => {
     const navigation = useNavigation();
 
     useEffect(() => {
-        console.log(selectedVehicle);
         if (isEdit && selectedVehicle) {
             seatCountInputState.onChangeText(selectedVehicle.seatCount.toString());
             plateInputState.onChangeText(selectedVehicle.plate);
             vehicleTypeSelectState.onSelect(new IndexPath(selectedVehicle.vehicleType));
+            const seatArray = getSeatPlanArray(selectedVehicle.vehicleType);
+            const index = seatArray.findIndex((item) => item === selectedVehicle.seatingPlan);
+            seatingPlanSelectState.onSelect(new IndexPath(index));
             setCheckboxGroupState({
                 isJack: selectedVehicle.isJack,
                 isWifi: selectedVehicle.isWifi,
@@ -66,21 +59,21 @@ const VehicleDetailForm: React.FC<PropsType> = ({ isEdit }) => {
         }
     }, [isEdit]);
 
-    const handleOnEdit = async () => { }
+    const handleOnEdit = async () => {
+        if (!selectedVehicle) return;
 
-    const handleOnCreate = async () => {
-        const formData: CreateVehicleFormDataType = {
+        const formData: EditVehicleFormDataType = {
             seatCount: Number(seatCountInputState.value),
-            plate: plateInputState.value,
-            seatingPlan: seatingPlanItems[Number(vehicleTypeSelectState.selectedIndex) - 1],
+            seatingPlan: seatingPlanItems[Number(vehicleTypeSelectState.selectedIndex)],
             ...checkboxGroupState,
-            vehicleType: Number(vehicleTypeSelectState.selectedIndex) - 1
+            id: selectedVehicle.id
         };
-        console.log(formData);
-        dispatch(settingsActions.setLoading({ isLoading: true, content: 'Creating a record...' }));
+
+        dispatch(settingsActions.setLoading({ isLoading: true, content: 'Updating a vehicle...' }));
         try {
-            const { data } = await vehicleService.createVehicle(formData);
-            dispatch(vehicleActions.addVehicleToList(data));
+            const { data } = await vehicleService.editVehicle(formData);
+            dispatch(vehicleActions.updateVehicle(data));
+            navigation.navigate("Root");
         } catch (error: any) {
             if (typeof error.response?.data.message === "string") {
                 dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));
@@ -91,7 +84,34 @@ const VehicleDetailForm: React.FC<PropsType> = ({ isEdit }) => {
             }
         } finally {
             dispatch(settingsActions.setLoading({ isLoading: false, content: undefined }));
+        }
+
+    }
+
+    const handleOnCreate = async () => {
+        const formData: CreateVehicleFormDataType = {
+            seatCount: Number(seatCountInputState.value),
+            plate: plateInputState.value,
+            seatingPlan: seatingPlanItems[Number(vehicleTypeSelectState.selectedIndex) - 1],
+            ...checkboxGroupState,
+            vehicleType: Number(vehicleTypeSelectState.selectedIndex) - 1
+        };
+
+        dispatch(settingsActions.setLoading({ isLoading: true, content: 'Creating a record...' }));
+        try {
+            const { data } = await vehicleService.createVehicle(formData);
+            dispatch(vehicleActions.addVehicleToList(data));
             navigation.navigate("Root");
+        } catch (error: any) {
+            if (typeof error.response?.data.message === "string") {
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));
+            } else if (typeof error.response?.data.message === "object") {
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message[0] }));
+            } else {
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.message }));
+            }
+        } finally {
+            dispatch(settingsActions.setLoading({ isLoading: false, content: undefined }));
         }
     }
 
@@ -119,6 +139,7 @@ const VehicleDetailForm: React.FC<PropsType> = ({ isEdit }) => {
                         style={seatCountInputState.isFocus ? GLOBAL_STYLES.focusInput : GLOBAL_STYLES.input}
                         placeholder='Vehicle Plate'
                         maxLength={12}
+                        disabled={isEdit}
                         {...plateInputState}
                     />
                     <View style={styles.checkboxGroup}>
@@ -158,6 +179,7 @@ const VehicleDetailForm: React.FC<PropsType> = ({ isEdit }) => {
                     </View>
                     <Select
                         multiSelect={false}
+                        disabled={isEdit}
                         {...vehicleTypeSelectState}
                         label="Vehicle Type"
                         value={vehicleEnums.VehicleType[(Number(vehicleTypeSelectState.selectedIndex) - 1).toString() as keyof typeof vehicleEnums.VehicleType]}

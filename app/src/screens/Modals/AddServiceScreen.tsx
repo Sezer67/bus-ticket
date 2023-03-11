@@ -4,6 +4,9 @@ import { View, StyleSheet } from 'react-native';
 import { RootStackScreenProps } from '../../../types';
 import GLOBAL_STYLES from '../../../constants/Styles';
 import { COLORS } from '../../../constants';
+import ServiceDetailForm from '../../components/Forms/ServiceDetailForm';
+
+
 
 const AddServiceScreen = ({ navigation, route }: RootStackScreenProps<'AddServiceModal'>) => {
 
@@ -17,8 +20,10 @@ const AddServiceScreen = ({ navigation, route }: RootStackScreenProps<'AddServic
     }, [])
 
     return (
-        <View style={[GLOBAL_STYLES.transparentHeaderScreenContainer]}>
-            <Text>My Service Add Modal</Text>
+        <View style={styles.container}>
+            <View style={styles.formContainer}>
+                <ServiceDetailForm isEdit={false} />
+            </View>
         </View>
     )
 };
@@ -26,6 +31,10 @@ const AddServiceScreen = ({ navigation, route }: RootStackScreenProps<'AddServic
 const styles = StyleSheet.create({
     container: {
         flex: 1
+    },
+    formContainer: {
+        flex: 1,
+        paddingHorizontal: 40
     }
 });
 

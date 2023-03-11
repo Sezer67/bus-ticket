@@ -1,5 +1,5 @@
 const urlsConfig = {
-  apiUrl: 'http://192.168.1.105:8000',
+  apiUrl: 'http://192.168.1.104:8000',
   user: {
     login: '/auth/login',
     logout: '/user/logout',

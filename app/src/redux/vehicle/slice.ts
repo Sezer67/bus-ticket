@@ -20,6 +20,12 @@ const vehicleSlice = createSlice({
       state.vehicleList = [...action.payload.rows];
       state.vehiclesCount = action.payload.count;
     },
+    updateVehicle: (state, action: PayloadAction<VehicleType>) => {
+      state.vehicleList = state.vehicleList.map((v) => {
+        if (v.id === action.payload.id) return action.payload;
+        return v;
+      });
+    },
     addVehicleToList: (state, action: PayloadAction<VehicleType>) => {
       state.vehicleList = [...state.vehicleList, { ...action.payload }];
       state.vehiclesCount = state.vehiclesCount + 1;

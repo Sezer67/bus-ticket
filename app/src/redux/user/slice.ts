@@ -45,7 +45,6 @@ const userSlice = createSlice({
         companyId: undefined,
         identityNumber: undefined,
       };
-      console.log('function');
     },
   },
 });

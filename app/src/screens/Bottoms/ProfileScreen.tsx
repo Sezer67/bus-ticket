@@ -9,7 +9,7 @@ import UserDetailForm from '../../components/Forms/UserDetailForm';
 import ChangePasswordForm from '../../components/Forms/ChangePasswordForm';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux.hook';
 import { ReduxRootType } from '../../../types/redux-slice.type';
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { setToken } from '../../../utils/axios.util';
 import { storageHelper } from '../../helpers';
 import { userActions } from '../../redux/user/slice';
@@ -30,11 +30,6 @@ const ProfileScreen = ({ navigation, route }: RootTabScreenProps<'Profile'>) => 
             console.log(error);
         }
     }
-
-    useEffect(() => {
-        console.log("Profile screen : ", userState.isAuthenticated);
-        console.log("Profile role : ", userState.user.role);
-    }, [userState.isAuthenticated])
 
     useEffect(() => {
         navigation.setOptions({

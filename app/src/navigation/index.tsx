@@ -63,9 +63,7 @@ function RootNavigator() {
       console.log("token: ", token);
       if (!token) return;
       setToken(token);
-      console.log("token avaliable, get current user ");
       const { data } = await userService.currentUser();
-      console.log(data.role);
       dispacth(userActions.login({
         user: data,
         token
@@ -92,10 +90,6 @@ function RootNavigator() {
     if (appIsReady)
       hideSplash();
   }, [appIsReady])
-
-  useEffect(() => {
-    console.log(isSignedIn);
-  }, [isSignedIn])
 
   return (
     <Stack.Navigator initialRouteName='Root'>

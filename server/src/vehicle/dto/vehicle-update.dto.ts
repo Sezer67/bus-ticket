@@ -20,10 +20,6 @@ export class VehicleInfoUpdateDto {
 
   @IsOptional()
   @IsString()
-  plate?: string;
-
-  @IsOptional()
-  @IsString()
   seatingPlan?: string;
 
   @IsOptional()

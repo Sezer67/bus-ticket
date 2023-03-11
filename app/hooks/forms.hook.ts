@@ -2,13 +2,23 @@ import React from 'react';
 import { formTypes } from '../types/index';
 import { IndexPath } from '@ui-kitten/components';
 
-const useInputState = (): formTypes.InputHookType => {
+const useInputState = (isNumeric: boolean = false): formTypes.InputHookType => {
   const [value, setValue] = React.useState<string>('');
   const [isFocus, setIsFocus] = React.useState<boolean>(false);
   return {
     value,
     isFocus,
-    onChangeText: setValue,
+    onChangeText: (value: string) => {
+      if (isNumeric && value) {
+        let lastText = value.replace(',', '');
+        lastText = lastText.replace('-', '');
+        lastText = lastText.replace('.', '');
+        lastText = lastText.replace(' ', '');
+        setValue(lastText);
+      } else {
+        setValue(value);
+      }
+    },
     onFocus: () => setIsFocus(true),
     onBlur: () => setIsFocus(false),
   };

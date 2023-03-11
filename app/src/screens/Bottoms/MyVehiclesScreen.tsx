@@ -48,6 +48,15 @@ const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'
     }, []);
 
     useEffect(() => {
+        if (searchInputState.value) {
+            setFilteredList(vehicleState.vehicleList.filter((v) =>
+                v.plate.trim().toLowerCase().includes(searchInputState.value.trim().toLowerCase())
+            ))
+        }
+        else setFilteredList(vehicleState.vehicleList);
+    }, [vehicleState.vehicleList])
+
+    useEffect(() => {
         if (!searchInputState.value.trim()) {
             setFilteredList(vehicleState.vehicleList);
             return;

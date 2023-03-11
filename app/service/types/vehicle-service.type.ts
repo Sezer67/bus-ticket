@@ -11,6 +11,10 @@ export type CreateVehicleFormDataType = {
   vehicleType: vehicleEnums.VehicleType;
 };
 
+export type EditVehicleFormDataType = Omit<CreateVehicleFormDataType, 'plate' | 'vehicleType'> & {
+  id: string;
+};
+
 type RelationsType = 'company' | 'vehicle' | 'user';
 
 export type LookupQueryDataType = {

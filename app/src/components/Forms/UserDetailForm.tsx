@@ -76,7 +76,6 @@ const UserDetailForm: React.FC<PropsType> = ({ isEdit, isDisable }) => {
             dispacth(settingsActions.setLoading({ isLoading: false, content: undefined }));
         }
 
-        console.log(formData);
     }
     return (
         <>

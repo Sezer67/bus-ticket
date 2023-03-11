@@ -12,7 +12,11 @@ import { Cities } from 'src/shared/enums/service.enum';
 export class ServiceCreateDto {
   @IsNotEmpty()
   @IsNumber()
-  price: number;
+  startPrice: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  endPrice: number;
 
   @IsNotEmpty()
   @IsString()

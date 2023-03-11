@@ -18,7 +18,10 @@ export class Service extends BaseEntity {
   id: string;
 
   @Column({ type: 'smallint', nullable: false })
-  price: number;
+  startPrice: number;
+
+  @Column({ type: 'smallint', nullable: false })
+  endPrice: number;
 
   @Column({ type: 'varchar', length: 20, nullable: false })
   arrivalTime: string;
