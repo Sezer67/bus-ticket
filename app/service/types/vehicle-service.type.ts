@@ -19,6 +19,7 @@ type RelationsType = 'company' | 'vehicle' | 'user';
 
 export type LookupQueryDataType = {
   relations?: RelationsType[];
+  select?: (keyof VehicleType)[];
 };
 
 export type LookupResponseType = {

@@ -1,3 +1,4 @@
+import { BaseService } from 'src/base-service/base-service.entity';
 import { Service } from 'src/service/service.entity';
 import { User } from 'src/user/user.entity';
 import { Vehicle } from 'src/vehicle/vehicle.entity';
@@ -43,8 +44,8 @@ export class Company extends BaseEntity {
   })
   vehicles: Vehicle[];
 
-  @OneToMany(() => Service, (service) => service.company, {
+  @OneToMany(() => BaseService, (service) => service.company, {
     onDelete: 'CASCADE',
   })
-  services: Service[];
+  services: BaseService[];
 }

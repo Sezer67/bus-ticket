@@ -1,3 +1,4 @@
+import { BaseService } from 'src/base-service/base-service.entity';
 import { Company } from 'src/company/company.entity';
 import { Service } from 'src/service/service.entity';
 import { vehicleEnum } from 'src/shared/enums';
@@ -56,8 +57,8 @@ export class Vehicle extends BaseEntity {
   @Column()
   companyId: string;
 
-  @OneToMany(() => Service, (service) => service.vehicle, {
+  @OneToMany(() => BaseService, (service) => service.vehicle, {
     onDelete: 'CASCADE',
   })
-  services: Service[];
+  services: BaseService[];
 }

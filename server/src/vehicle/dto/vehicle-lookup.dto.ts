@@ -6,4 +6,9 @@ export class VehicleLookupDto {
   @Transform(({ value }) => value.split(','))
   @IsArray()
   relations?: string[];
+
+  @IsOptional()
+  @Transform(({ value }) => value.split(','))
+  @IsArray()
+  select?: string[];
 }

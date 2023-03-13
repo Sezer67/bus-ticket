@@ -27,15 +27,24 @@ export class VehicleService {
 
       {
         const where: any = {};
+        const select: any = {};
         if (dto.relations) {
           query.relations = [...dto.relations];
         }
+
+        if (dto.select) {
+          dto.select.forEach((val) => {
+            select[val] = true;
+          });
+        }
+
         if (user.companyId) {
           where.companyId = user.companyId;
         }
         query.where = where;
+        query.select = select;
       }
-
+      
       const [rows, count] = await this.repo.findAndCount(query);
 
       return {

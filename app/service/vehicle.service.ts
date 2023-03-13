@@ -23,5 +23,8 @@ export const lookup = (data: LookupQueryDataType): AxiosPromise<LookupResponseTy
   if (data.relations) {
     query.relations = data.relations.join(',');
   }
+  if (data.select) {
+    query.select = data.select.join(',');
+  }
   return axiosInstance.get(routeHelper.addQueryPArameters(urlsConfig.vehicle.get, query));
 };

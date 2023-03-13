@@ -12,3 +12,14 @@ export const getSeatPlanArray = (index: number) => {
     return ['2+2', '3+2'] as TrainSeatPlanType[];
   }
 };
+
+export const arrayIndexChange = <T>(arr: T[], old_index: number, new_index: number): T[] => {
+  if (new_index >= arr.length) {
+    var k = new_index - arr.length + 1;
+    while (k--) {
+      arr.push();
+    }
+  }
+  arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+  return arr;
+};

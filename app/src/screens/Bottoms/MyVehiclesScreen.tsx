@@ -15,6 +15,7 @@ import Layout from '../../../constants/Layout';
 import EmptyList from '../../components/EmptyList';
 import { useInputState } from '../../../hooks/forms.hook';
 import GLOBAL_STYLES from '../../../constants/Styles';
+import VehicleTypeIcon from '../../components/VehicleModels/TypeIcon';
 
 const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'>) => {
 
@@ -79,23 +80,6 @@ const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'
         });
     }
 
-    const renderIcon = (type: vehicleEnums.VehicleType) => {
-        let iconNode = <></>;
-        switch (type) {
-            case vehicleEnums.VehicleType.Bus:
-                iconNode = <FontAwesome name='bus' size={24} color={COLORS['danger-800']} />
-                break;
-            case vehicleEnums.VehicleType.Plane:
-                iconNode = <FontAwesome name='plane' size={24} color={COLORS['danger-800']} />
-                break;
-            case vehicleEnums.VehicleType.Train:
-                iconNode = <FontAwesome name='train' size={24} color={COLORS['danger-800']} />
-                break;
-        }
-
-        return iconNode;
-    }
-
     const totalPointRenderWithStarIcons = (...points: number[]): React.ReactNode[] => {
         let totalPoint = 0;
         points.forEach((point) => totalPoint += point);
@@ -127,7 +111,7 @@ const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'
         <Card style={{ marginBottom: 10, backgroundColor: 'white', borderWidth: 0, elevation: 1 }} >
             {/* Header */}
             <View style={[styles.row, { borderBottomWidth: 1, borderBottomColor: COLORS.disabledColor, paddingBottom: 10, paddingLeft: 5, justifyContent: 'center' }]}>
-                {renderIcon(prop.item.vehicleType)}
+                {<VehicleTypeIcon type={prop.item.vehicleType} />}
                 <Text style={{ marginLeft: 10 }} category='h6'>{prop.item.plate.toUpperCase()}</Text>
             </View>
             {/* Content */}

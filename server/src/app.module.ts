@@ -13,6 +13,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { VehicleModule } from './vehicle/vehicle.module';
 import { ServiceModule } from './service/service.module';
 import { ServicesOfUsersModule } from './services-of-users/services-of-users.module';
+import { BaseServiceModule } from './base-service/base-service.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ServicesOfUsersModule } from './services-of-users/services-of-users.mod
     AuthModule,
     CompanyModule,
     VehicleModule,
+    BaseServiceModule,
     ServiceModule,
     ServicesOfUsersModule,
   ],
