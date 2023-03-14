@@ -12,6 +12,9 @@ const urlsConfig = {
     update: '/vehicle/information',
     updatePoint: '/vehicle/point',
   },
+  service: {
+    baseCreate: '/base-service',
+  },
 };
 
 export default urlsConfig;

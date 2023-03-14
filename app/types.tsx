@@ -23,8 +23,10 @@ export type RootStackParamList = {
     title: string;
   };
   AddServiceModal: undefined;
-  EditVehicleModal: undefined;
-  EditServiceModal: undefined;
+  AddServiceStepsModal: {
+    baseServiceId: string;
+    route: string;
+  };
   NotFound: undefined;
   TicketFind: undefined;
   Services: undefined;

@@ -4,7 +4,7 @@ import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { RootStackScreenProps } from '../../../types';
 import { COLORS } from '../../../constants';
 import ServiceDetailForm from '../../components/Forms/ServiceDetailForm';
-import { vehicleService } from '../../../service';
+import { serviceOfService, vehicleService } from '../../../service';
 import { useAppDispatch } from '../../../hooks/redux.hook';
 import { settingsActions } from '../../redux/settings/slice';
 import { VehicleType } from '../../../types/vehicle.type';
@@ -15,7 +15,7 @@ import { TabItems } from '../configs/ticket-find.config';
 import { FontAwesome } from '@expo/vector-icons';
 import SelectCityModal from '../../components/Modals/SelectCityModal';
 import cities from '../../../static-files/cities_of_turkey.json'
-import { arrayIndexChange } from '../../helpers';
+import { arrayIndexChange, convertHelper } from '../../helpers';
 
 
 const AddServiceScreen = ({ navigation, route }: RootStackScreenProps<'AddServiceModal'>) => {
@@ -103,6 +103,29 @@ const AddServiceScreen = ({ navigation, route }: RootStackScreenProps<'AddServic
         });
     }
 
+    const handleSubmit = async () => {
+        if (form.route.length < 2) {
+            dispatch(settingsActions.setErrorSnackbar({ isError: true, content: 'Minimum 2 stations are required' }))
+            return;
+        }
+        try {
+            const { data } = await serviceOfService.createBaseService({ vehicleId: form.id, route: form.route.join(",") });
+            navigation.navigate('AddServiceStepsModal', {
+                baseServiceId: data.id,
+                route: data.route
+            });
+        } catch (error: any) {
+            console.log(error);
+            if (typeof error.response?.data.message === "string") {
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));
+            } else if (typeof error.response?.data.message === "object") {
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message[0] }));
+            } else {
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.message }));
+            }
+        }
+    }
+
 
     const renderPlate = (prop: { item: Pick<VehicleType, "id" | "plate" | "vehicleType"> }) => (
         <TouchableOpacity onPress={() => handlePressVehicleItem(prop.item.id)} style={[form.id === prop.item.id ? styles.selectedItem : null, { borderBottomColor: COLORS['danger-200'], borderBottomWidth: 1, marginBottom: 10 }]}>
@@ -168,6 +191,7 @@ const AddServiceScreen = ({ navigation, route }: RootStackScreenProps<'AddServic
                             />
                             <TouchableOpacity
                                 style={[styles.buttonT, { marginTop: 10 }]}
+                                onPress={handleSubmit}
                             >
                                 <Text style={{ fontWeight: '700', color: COLORS['primary-400'], marginRight: 15 }}>Next Step</Text>
                                 <FontAwesome name='arrow-right' size={16} style={{}} color={COLORS['primary-500']} />
@@ -177,7 +201,6 @@ const AddServiceScreen = ({ navigation, route }: RootStackScreenProps<'AddServic
                 }
 
                 <SelectCityModal key="create-service" isVisible={cityModalVisible} setVisible={setCityModalVisible} data={filterCities} setValue={setSelectedCity} />
-                {/* <ServiceDetailForm isEdit={false} /> */}
             </View>
         </View>
     )

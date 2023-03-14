@@ -32,6 +32,7 @@ import TabTwoScreen from '../screens/TabTwoScreen';
 import GLOBAL_STYLES from '../../constants/Styles';
 import AddVehicleScreen from '../screens/Modals/AddVehicleScreen';
 import AddServiceScreen from '../screens/Modals/AddServiceScreen';
+import AddServiceStepsScreen from '../screens/Modals/AddServiceStepsScreen';
 
 export default function Navigation() {
   return (
@@ -103,6 +104,7 @@ function RootNavigator() {
               <Stack.Screen name="Modal" component={ModalScreen} />
               <Stack.Screen name="AddVehicleModal" component={AddVehicleScreen} />
               <Stack.Screen name="AddServiceModal" component={AddServiceScreen} />
+              <Stack.Screen name="AddServiceStepsModal" component={AddServiceStepsScreen} options={{ headerShown: false }} />
             </Stack.Group>
           </>
         ) : (

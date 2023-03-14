@@ -2,7 +2,7 @@ import { BusSeatPlanType, PlaneSeatPlanType, TrainSeatPlanType } from '../../typ
 
 export * as storageHelper from './storage.helper';
 export * as routeHelper from './route.helper';
-
+export * as convertHelper from './convert.helper';
 export const getSeatPlanArray = (index: number) => {
   if (index === 0) {
     return ['2+1', '2+2'] as BusSeatPlanType[];
@@ -23,3 +23,4 @@ export const arrayIndexChange = <T>(arr: T[], old_index: number, new_index: numb
   arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
   return arr;
 };
+
