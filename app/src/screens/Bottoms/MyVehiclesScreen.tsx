@@ -30,6 +30,7 @@ const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'
 
     const getMyVehicles = async () => {
         try {
+            dispatch(settingsActions.setLoading({ isLoading: true, content: 'Loading...' }))
             const { data } = await vehicleService.lookup({});
             dispatch(vehicleActions.setVehicleList(data));
             setFilteredList(data.rows);
@@ -41,6 +42,8 @@ const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'
             } else {
                 dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.message }));
             }
+        } finally {
+            dispatch(settingsActions.setLoading({ isLoading: false, content: undefined }));
         }
     }
 

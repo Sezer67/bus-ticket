@@ -3,6 +3,8 @@ import { BusSeatPlanType, PlaneSeatPlanType, TrainSeatPlanType } from '../../typ
 export * as storageHelper from './storage.helper';
 export * as routeHelper from './route.helper';
 export * as convertHelper from './convert.helper';
+export * as dateHelper from './date.helper';
+
 export const getSeatPlanArray = (index: number) => {
   if (index === 0) {
     return ['2+1', '2+2'] as BusSeatPlanType[];

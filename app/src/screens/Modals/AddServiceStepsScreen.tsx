@@ -22,9 +22,24 @@ const AddServiceStepsScreen = ({ navigation, route }: RootStackScreenProps<'AddS
         return `${(activeStep / stepRoutes.length) * 100}%`
     }, [activeStep]);
 
+    const handleNextStepForRouteStations = (data?: {
+        departureDate: Date,
+        arrivalDate: Date,
+        price: number
+    }) => {
+        setActiveStep((prev) => prev + 1);
+        if (data) {
+            // oluşturulacak seferlerin verlerini bir state ile tut, o state detail form a da gidecek
+            // state i düzgün oluştur. çünkü bir yere varış süresi hep aynı olmalı
+            // örn. istanbuul bursa izmir => istanbul - izmir (20:05) , bursa - izmir (20:05) olmalı
+        }
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.customHeader}>
+                <Text category='h5'>Route Stations</Text>
+
                 <TouchableOpacity onPress={() => navigation.navigate("Root")}>
                     <FontAwesome name="close" size={22} color={COLORS['danger-600']} />
                 </TouchableOpacity>
@@ -55,10 +70,15 @@ const AddServiceStepsScreen = ({ navigation, route }: RootStackScreenProps<'AddS
                         {
                             stepRoutes.map((item, index) => {
                                 return (
-                                    <View style={{ alignItems: 'center', paddingHorizontal: 15, flex: 1, marginBottom: 10 }} key={index.toString()} >
+                                    <View style={{ paddingHorizontal: 15, flex: 1, marginBottom: 10 }} key={index.toString()} >
                                         <Text category='h4' style={{}} >{item.departureCity} - {item.arrivalCity}</Text>
                                         <View style={styles.formContainer}>
-                                            <ServiceDetailForm key={index.toString()} isEdit={false} />
+                                            <ServiceDetailForm
+                                                key={index.toString()}
+                                                isEdit={false}
+                                                isEnd={activeStep === stepRoutes.length && completedStepCount === stepRoutes.length}
+                                                nextStep={handleNextStepForRouteStations}
+                                            />
                                         </View>
                                     </View>
                                 )
@@ -78,7 +98,7 @@ const styles = StyleSheet.create({
     customHeader: {
         width: '100%',
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 30,
         paddingTop: 20,
@@ -131,9 +151,9 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         flex: 1,
+        width: '100%',
         paddingHorizontal: 10,
         marginVertical: 20,
-        alignItems: 'center',
     },
 })
 
