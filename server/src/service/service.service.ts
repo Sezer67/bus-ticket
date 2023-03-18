@@ -4,8 +4,6 @@ import { Service } from './service.entity';
 import { Repository } from 'typeorm';
 import { Request } from 'express';
 import { ServiceCreateDto } from './dto/service-create.dto';
-import { User } from 'src/user/user.entity';
-
 @Injectable()
 export class ServiceService {
   constructor(
@@ -13,13 +11,17 @@ export class ServiceService {
     private readonly repo: Repository<Service>,
   ) {}
 
-  async createService(dto: ServiceCreateDto, req: Request): Promise<Service> {
+  async createService(dto: any, req: Request): Promise<Service[]> {
     try {
-      const service = await this.repo.save({
-        ...dto,
-        companyId: (req.user as User).companyId,
-      });
-      return service;
+      const createdServices: Service[] = [];
+      for await (const data of dto.datas) {
+        const service = await this.repo.save({
+          ...data,
+          baseServiceId: dto.baseServiceId,
+        });
+        createdServices.push(service);
+      }
+      return createdServices;
     } catch (error) {
       throw error;
     }

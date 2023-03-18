@@ -32,17 +32,17 @@ export class Service extends BaseEntity {
   @Column({ type: 'smallint', nullable: false })
   price: number;
 
-  @Column({ type: 'varchar', length: 20, nullable: false })
-  arrivalTime: string;
+  @Column({ type: 'date', nullable: false })
+  arrivalDate: Date;
 
   @Column({ type: 'date', nullable: false })
   departureDate: Date;
 
-  @Column({ type: 'smallint', enum: Cities, nullable: false })
-  departureCity: Cities;
+  @Column({ type: 'text', nullable: false })
+  departureCity: string;
 
-  @Column({ type: 'smallint', enum: Cities, nullable: false })
-  arrivalCity: Cities;
+  @Column({ type: 'text', nullable: false })
+  arrivalCity: string;
 
   @Column({ type: 'simple-array', default: [], nullable: false })
   filledSeats: string[];

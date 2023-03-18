@@ -17,35 +17,41 @@ type PropsType = {
         arrivalDate: Date,
         price: number
     }) => void;
+    data: {
+        departureCity: string;
+        arrivalCity: string;
+        departureDate?: Date;
+        arrivalDate?: Date;
+        price?: number
+    }
+
 }
 
-const ServiceDetailForm: React.FC<PropsType> = ({ isEdit, isEnd, nextStep }) => {
+const ServiceDetailForm: React.FC<PropsType> = ({ isEdit, isEnd, nextStep, data }) => {
 
     const [departureDateVisible, setDepartureDateVisible] = useState<boolean>(false);
     const [arrivalDateVisible, setArrivalDateVisible] = useState<boolean>(false);
-    const [departureDate, setDepartureDate] = useState<Date | undefined>(undefined);
-    const [arrivalDate, setArrivalDate] = useState<Date | undefined>(undefined);
+    const [departureDate, setDepartureDate] = useState<Date | undefined>(data.departureDate ? data.departureDate : undefined);
+    const [arrivalDate, setArrivalDate] = useState<Date | undefined>(data.arrivalDate ? data.arrivalDate : undefined);
     const priceInputState = useInputState(true);
 
-    const handleOnSubmit = () => {
-        if (isEnd) {
-            // save
-        } else {
-            // next Step bir boş geçiş olacak , birde dolu complete işlemli olacak
-            const data = {
-                departureDate,
-                arrivalDate,
-                price: Number(priceInputState.value)
-            };
-            const isCompleted = !!(data.departureDate && data.arrivalDate && priceInputState.value)
-            if (isCompleted) nextStep(data);
-            else nextStep();
-        }
-    }
-
     useEffect(() => {
-        console.log(departureDate);
-    }, [departureDate])
+        if (data.price) {
+            priceInputState.onChangeText(data.price.toString());
+        }
+    }, [data])
+
+    const handleOnSubmit = () => {
+        const data = {
+            departureDate,
+            arrivalDate,
+            price: Number(priceInputState.value)
+        };
+        const isCompleted = !!(data.departureDate && data.arrivalDate && priceInputState.value)
+        // @ts-ignore
+        if (isCompleted) nextStep(data);
+        else nextStep();
+    }
 
     return (
         <KeyboardAvoidingScrollView>
@@ -99,7 +105,7 @@ const ServiceDetailForm: React.FC<PropsType> = ({ isEdit, isEnd, nextStep }) => 
                 </View>
             </View>
             <Button onPress={handleOnSubmit} style={isEdit ? styles.submitButton : styles.button}>
-                {isEnd ? "Save" : "Next Step"}
+                {isEnd ? "Save" : "Save & Next Step"}
             </Button>
         </KeyboardAvoidingScrollView>
     )

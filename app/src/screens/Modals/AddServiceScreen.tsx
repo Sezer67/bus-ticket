@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { RootStackScreenProps } from '../../../types';
 import { COLORS } from '../../../constants';
-import ServiceDetailForm from '../../components/Forms/ServiceDetailForm';
 import { serviceOfService, vehicleService } from '../../../service';
 import { useAppDispatch } from '../../../hooks/redux.hook';
 import { settingsActions } from '../../redux/settings/slice';
@@ -11,11 +10,10 @@ import { VehicleType } from '../../../types/vehicle.type';
 import EmptyList from '../../components/EmptyList';
 import VehicleTypeIcon from '../../components/VehicleModels/TypeIcon';
 import Layout from '../../../constants/Layout';
-import { TabItems } from '../configs/ticket-find.config';
 import { FontAwesome } from '@expo/vector-icons';
 import SelectCityModal from '../../components/Modals/SelectCityModal';
 import cities from '../../../static-files/cities_of_turkey.json'
-import { arrayIndexChange, convertHelper } from '../../helpers';
+import { arrayIndexChange } from '../../helpers';
 
 
 const AddServiceScreen = ({ navigation, route }: RootStackScreenProps<'AddServiceModal'>) => {

@@ -19,6 +19,9 @@ export class BaseService extends BaseEntity {
   @Column({ type: 'text', nullable: false })
   route: string;
 
+  @Column({ type: 'boolean', default: false })
+  isCompleted: boolean;
+
   @Column({ type: 'int', default: 0 })
   winnings: number;
 

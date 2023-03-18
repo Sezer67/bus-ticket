@@ -14,6 +14,8 @@ const urlsConfig = {
   },
   service: {
     baseCreate: '/base-service',
+    baseServiceLookupMe: '/base-service/@me',
+    multipleCreate: '/service',
   },
 };
 

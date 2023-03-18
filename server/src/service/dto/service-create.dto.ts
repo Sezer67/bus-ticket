@@ -1,44 +1,45 @@
+import { Transform, Type } from 'class-transformer';
 import {
   IsDate,
-  IsDateString,
-  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsString,
   IsUUID,
+  ValidateNested,
 } from 'class-validator';
 import { Cities } from 'src/shared/enums/service.enum';
 
-export class ServiceCreateDto {
+export class ServiceCreateClass {
   @IsNotEmpty()
   @IsNumber()
-  startPrice: number;
+  price: number;
 
   @IsNotEmpty()
-  @IsNumber()
-  endPrice: number;
+  @Type(() => Date)
+  @Transform(({value}) => new Date(value))
+  @IsDate()
+  arrivalDate: Date;
 
   @IsNotEmpty()
-  @IsString()
-  arrivalTime: string;
-
-  @IsNotEmpty()
-  @IsDateString()
+  @Transform(({value}) => new Date(value))
+  @IsDate()
   departureDate: Date;
 
   @IsNotEmpty()
-  @IsEnum(Cities)
-  departureCity: Cities;
-
-  @IsNotEmpty()
-  @IsEnum(Cities)
-  arrivalCity: Cities;
+  @IsString()
+  departureCity: string;
 
   @IsNotEmpty()
   @IsString()
-  route: string;
+  arrivalCity: string;
+}
+
+export class ServiceCreateDto {
+  @IsNotEmpty()
+  @ValidateNested()
+  datas: ServiceCreateClass[];
 
   @IsNotEmpty()
   @IsUUID()
-  vehicleId: string;
+  baseServiceId: string;
 }

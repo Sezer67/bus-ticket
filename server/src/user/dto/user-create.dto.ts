@@ -1,3 +1,4 @@
+import { Transform, Type } from 'class-transformer';
 import {
   IsNotEmpty,
   IsString,
@@ -34,7 +35,9 @@ export class UserCreateDto {
   mail: string;
 
   @IsOptional()
-  @IsDateString()
+  @Type(() => Date)
+  @Transform(({ value }) => new Date(value))
+  @IsDate()
   birthday: Date;
 
   @IsNotEmpty()

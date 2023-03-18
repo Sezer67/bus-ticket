@@ -20,7 +20,8 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       password: this.configService.get<string>('database.password'),
       autoLoadEntities: true,
       synchronize: true,
-      logger: "simple-console",
+      logging: true,
+      logger: 'simple-console',
     };
   }
 }

@@ -19,7 +19,7 @@ export class ServiceController {
   @Post('/')
   @UseGuards(AuthGuard('user'), RolesGuard)
   @Roles(userEnum.Role.Company)
-  createService(@Body() dto: ServiceCreateDto, @Req() req: Request) {
+  createService(@Body() dto: any, @Req() req: Request) {
     return this.service.createService(dto, req);
   }
 }
