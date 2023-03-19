@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import { RootTabScreenProps } from '../../../types';
-import { useAppDispatch } from '../../../hooks/redux.hook';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux.hook';
 import { settingsActions } from '../../redux/settings/slice';
 import { serviceOfService } from '../../../service';
-import { BaseServiceType } from '../../../types/service.type';
 import EmptyList from '../../components/EmptyList';
 import BaseServiceWithServicesItem from '../../components/BaseServiceWithServicesItem';
 import { defaultPageSize } from '../../../configs';
+import { serviceActions } from '../../redux/service/slice';
+import { ReduxRootType } from '../../../types/redux-slice.type';
 
 const MyServicesScreen = ({ navigation, route }: RootTabScreenProps<'MyServices'>) => {
 
-
-    const dispatch = useAppDispatch();
-
-    const [services, setServices] = useState<BaseServiceType[]>([]);
-    const [totalServicesLength, setTotalServicesLength] = useState<number>(0);
     const [page, setPage] = useState<number>(0);
+
+    const serviceState = useAppSelector((state: ReduxRootType) => state.service);
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         const getMyServices = async () => {
             try {
                 dispatch(settingsActions.setLoading({ isLoading: true, content: 'Your Service Data initializing...' }));
                 const { data } = await serviceOfService.baseServiceLookup({ relations: ["vehicle", "services"], limit: defaultPageSize });
-                setServices(data.rows);
+                dispatch(serviceActions.setBaseServiceCount(data.count));
+                dispatch(serviceActions.setBaseServiceList(data.rows));
             } catch (error: any) {
                 if (typeof error.response?.data.message === "string") {
                     dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));
@@ -43,7 +43,7 @@ const MyServicesScreen = ({ navigation, route }: RootTabScreenProps<'MyServices'
         try {
             dispatch(settingsActions.setLoading({ isLoading: true, content: 'Loading...' }));
             const { data } = await serviceOfService.baseServiceLookup({ relations: ["vehicle", "services"], limit: defaultPageSize, offset: page * defaultPageSize });
-            setServices(services.concat(data.rows));
+            dispatch(serviceActions.setBaseServiceList(serviceState.baseServiceList.concat(data.rows)));
         } catch (error: any) {
             if (typeof error.response?.data.message === "string") {
                 dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));
@@ -61,13 +61,13 @@ const MyServicesScreen = ({ navigation, route }: RootTabScreenProps<'MyServices'
         <View style={styles.container}>
             <FlatList
                 contentContainerStyle={{ flexGrow: 1 }}
-                data={services}
+                data={serviceState.baseServiceList}
                 keyExtractor={item => item.id}
                 ListEmptyComponent={<EmptyList text='Your company has not service' />}
                 renderItem={({ item, index }) => <BaseServiceWithServicesItem item={item} index={index} />}
                 onEndReachedThreshold={0.2}
                 onEndReached={() => {
-                    if (totalServicesLength > 0 && totalServicesLength > services.length) {
+                    if (serviceState.baseServiceCount > 0 && serviceState.baseServiceCount > serviceState.baseServiceList.length) {
                         setPage(page + 1);
                         fetchMoreData(page + 1);
                     }

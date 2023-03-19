@@ -84,14 +84,61 @@ export class BaseServiceService {
 
         query.where = where;
         query.select = select;
+        query.order = {
+          createdDate: 'desc',
+        };
       }
-
       const [rows, count] = await this.repo.findAndCount(query);
 
       return {
         rows,
         count,
       };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async checkCompletedService() {
+    try {
+      const services = await this.repo.find({
+        where: {
+          isCompleted: false,
+        },
+        relations: {
+          services: true,
+        },
+        select: {
+          services: {
+            id: true,
+            arrivalDate: true,
+          },
+        },
+      });
+
+      const completedServiceIds: string[] = [];
+      const date = new Date().getTime();
+      services.forEach((each) => {
+        let control = true;
+
+        for (const service of each.services) {
+          if (new Date(service.arrivalDate).getTime() > date) {
+            control = false;
+            break;
+          }
+        }
+        if (control) {
+          completedServiceIds.push(each.id);
+        }
+      });
+
+      if (completedServiceIds.length > 0) {
+        await this.repo.update(
+          { id: In(completedServiceIds) },
+          { isCompleted: true },
+        );
+        console.log('Yeni tamamlanmış seferler mevcut');
+      }
     } catch (error) {
       throw error;
     }

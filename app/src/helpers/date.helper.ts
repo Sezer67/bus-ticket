@@ -14,11 +14,11 @@ export const formattedDate = (date: Date, format: FormatType): string => {
       result = date.toDateString();
       break;
     case 'DD/MM/YYYY HH:mm':
-      result = [isSingleDigit(date.getDay()), isSingleDigit(date.getMonth() + 1), date.getFullYear()].join('/');
+      result = [isSingleDigit(date.getDate()), isSingleDigit(date.getMonth() + 1), date.getFullYear()].join('/');
       break;
 
     case 'DD/MM HH:mm':
-      result = [isSingleDigit(date.getDay()), isSingleDigit(date.getMonth() + 1)].join('/');
+      result = [isSingleDigit(date.getDate()), isSingleDigit(date.getMonth() + 1)].join('/');
       break;
   }
 

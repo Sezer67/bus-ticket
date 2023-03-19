@@ -14,6 +14,8 @@ import { FontAwesome } from '@expo/vector-icons';
 import SelectCityModal from '../../components/Modals/SelectCityModal';
 import cities from '../../../static-files/cities_of_turkey.json'
 import { arrayIndexChange } from '../../helpers';
+import { serviceActions } from '../../redux/service/slice';
+import { vehicleEnums } from '../../../enums';
 
 
 const AddServiceScreen = ({ navigation, route }: RootStackScreenProps<'AddServiceModal'>) => {
@@ -108,6 +110,15 @@ const AddServiceScreen = ({ navigation, route }: RootStackScreenProps<'AddServic
         }
         try {
             const { data } = await serviceOfService.createBaseService({ vehicleId: form.id, route: form.route.join(",") });
+            const selectedVehicle = vehicles.find((v) => v.id === form.id);
+            dispatch(serviceActions.addBaseService({
+                ...data,
+                vehicle: {
+                    id: form.id,
+                    plate: selectedVehicle?.plate || " ",
+                    vehicleType: selectedVehicle?.vehicleType || vehicleEnums.VehicleType.Bus
+                }
+            }));
             navigation.navigate('AddServiceStepsModal', {
                 baseServiceId: data.id,
                 route: data.route

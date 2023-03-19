@@ -9,7 +9,6 @@ import Layout from '../../constants/Layout';
 import Accordion from './Accordion';
 import RouteDetailList from './RouteDetailList';
 import { useNavigation } from '@react-navigation/native';
-import { RootStackScreenProps } from '../../types';
 
 type PropsType = {
     item: BaseServiceType,
@@ -54,7 +53,7 @@ const BaseServiceWithServicesItem: React.FC<PropsType> = ({ item, index }) => {
                 children={
                     <View style={{ marginLeft: 20 }}>
                         <RouteDetailList
-                            data={item.services.sort((a, b) => new Date(a.departureDate).getTime() - new Date(b.departureDate).getTime())}
+                            data={item.services}
                         />
                     </View>
                 }

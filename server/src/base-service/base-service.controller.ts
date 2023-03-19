@@ -14,6 +14,7 @@ import { RolesGuard } from 'src/shared/guards/role.guard';
 import { BaseServiceService } from './base-service.service';
 import { CreateBaseServiceDto } from './dto/create-base-service.dto';
 import { BaseServiceLookupDto } from './dto/lookup.dto';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Controller('base-service')
 @UseGuards(AuthGuard('user'), RolesGuard)
@@ -34,5 +35,10 @@ export class BaseServiceController {
   @Get('sad')
   get(@Req() req: any) {
     return this.service.get(req.user);
+  }
+
+  @Cron(CronExpression.EVERY_2_HOURS)
+  checkCompletedService() {
+    this.service.checkCompletedService();
   }
 }

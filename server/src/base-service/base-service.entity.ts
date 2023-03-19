@@ -4,6 +4,7 @@ import { Vehicle } from 'src/vehicle/vehicle.entity';
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -27,6 +28,9 @@ export class BaseService extends BaseEntity {
 
   @Column({ type: 'smallint', default: 0 })
   ticketsCount: number;
+
+  @CreateDateColumn()
+  createdDate: Date;
 
   @ManyToOne(() => Vehicle, (vehicle) => vehicle.services, { nullable: false })
   @JoinColumn({ name: 'vehicleId' })

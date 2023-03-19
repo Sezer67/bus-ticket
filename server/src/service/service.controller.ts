@@ -5,7 +5,6 @@ import { RolesGuard } from 'src/shared/guards/role.guard';
 import { Roles } from 'src/shared/decorators/role.decorator';
 import { userEnum } from 'src/shared/enums';
 import { Request } from 'express';
-import { ServiceCreateDto } from './dto/service-create.dto';
 
 @Controller('service')
 export class ServiceController {

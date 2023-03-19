@@ -32,10 +32,10 @@ export class Service extends BaseEntity {
   @Column({ type: 'smallint', nullable: false })
   price: number;
 
-  @Column({ type: 'date', nullable: false })
+  @Column({ nullable: true })
   arrivalDate: Date;
 
-  @Column({ type: 'date', nullable: false })
+  @Column({ nullable: true })
   departureDate: Date;
 
   @Column({ type: 'text', nullable: false })

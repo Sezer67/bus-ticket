@@ -1,4 +1,4 @@
-import { Modal, Text, ViewPager } from '@ui-kitten/components';
+import { Button, Modal, Text, ViewPager } from '@ui-kitten/components';
 import React, { useMemo, useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
 import { RootStackScreenProps } from '../../../types';
@@ -12,6 +12,7 @@ import { settingsActions } from '../../redux/settings/slice';
 import { serviceOfService } from '../../../service';
 import { serviceTypes } from '../../../types/index';
 import RouteDetailList from '../../components/RouteDetailList';
+import { serviceActions } from '../../redux/service/slice';
 type ServiceFormData = {
     departureCity: string;
     arrivalCity: string;
@@ -25,116 +26,8 @@ const AddServiceStepsScreen = ({ navigation, route }: RootStackScreenProps<'AddS
     const [stepRoutes, setStepRoutes] = useState<ServiceFormData[]>([]);
     const [activeStep, setActiveStep] = useState<number>(0);
     const [completedStepCount, setCompletedStepCount] = useState<number>(1);
-    const [createdServices, setCreatedServices] = useState<serviceTypes.ServiceType[]>([
-        {
-            arrivalCity: "Adıyaman",
-            arrivalDate: new Date("2023-03-15T23:30:00.000Z"),
-            baseServiceId: "93f2066f-f085-4b30-a9cb-d0f062444dda",
-            departureCity: "Adana",
-            departureDate: new Date("2023-03-15T21:00:00.000Z"),
-            filledSeats: [
-                "[]"
-            ],
-            id: "92a4bede-a270-4d45-95a2-e6d3f76f7274",
-            price: 250
-        },
-        {
-            arrivalCity: "Adıyaman",
-            arrivalDate: new Date("2023-03-15T23:30:00.000Z"),
-            baseServiceId: "93f2066f-f085-4b30-a9cb-d0f062444dda",
-            departureCity: "Adana",
-            departureDate: new Date("2023-03-15T21:00:00.000Z"),
-            filledSeats: [
-                "[]"
-            ],
-            id: "92a4bede-a270-4d45-95a2-awed",
-            price: 250
-        }, {
-            arrivalCity: "Adıyaman",
-            arrivalDate: new Date("2023-03-15T23:30:00.000Z"),
-            baseServiceId: "93f2066f-f085-4b30-a9cb-d0f062444dda",
-            departureCity: "Adana",
-            departureDate: new Date("2023-03-15T21:00:00.000Z"),
-            filledSeats: [
-                "[]"
-            ],
-            id: "92a4bede-a270-4d45-95a2-asdsddsad",
-            price: 250
-        },
-        {
-            arrivalCity: "Adıyaman",
-            arrivalDate: new Date("2023-03-15T23:30:00.000Z"),
-            baseServiceId: "93f2066f-f085-4b30-a9cb-d0f062444dda",
-            departureCity: "Adana",
-            departureDate: new Date("2023-03-15T21:00:00.000Z"),
-            filledSeats: [
-                "[]"
-            ],
-            id: "92a4bede-a270-4d45-95a2-e6d3f76f7asd",
-            price: 250
-        },
-        {
-            arrivalCity: "Afyonkarahisar",
-            arrivalDate: new Date("2023-03-16T02:00:00.000Z"),
-            baseServiceId: "93f2066f-f085-4b30-a9cb-d0f062444dda",
-            departureCity: "Adana",
-            departureDate: new Date("2023-03-15T21:00:00.000Z"),
-            filledSeats: [
-                "[]"
-            ],
-            id: "6bf3257f-8341-48fe-91b1-7f0d393fcd10",
-            price: 350
-        },
-        {
-            arrivalCity: "Ağrı",
-            arrivalDate: new Date("2023-03-16T04:30:00.000Z"),
-            baseServiceId: "93f2066f-f085-4b30-a9cb-d0f062444dda",
-            departureCity: "Adana",
-            departureDate: new Date("2023-03-15T21:00:00.000Z"),
-            filledSeats: [
-                "[]"
-            ],
-            id: "9ebebdb6-1523-4614-934e-14393b0798b9",
-            price: 500
-        },
-        {
-            arrivalCity: "Afyonkarahisar",
-            arrivalDate: new Date("2023-03-16T02:00:00.000Z"),
-            baseServiceId: "93f2066f-f085-4b30-a9cb-d0f062444dda",
-            departureCity: "Adıyaman",
-            departureDate: new Date("2023-03-15T23:30:00.000Z"),
-            filledSeats: [
-                "[]"
-            ],
-            id: "c3efab04-1d26-49dd-bdbc-f91a55e10882",
-            price: 250
-        },
-        {
-            arrivalCity: "Ağrı",
-            arrivalDate: new Date("2023-03-16T04:30:00.000Z"),
-            baseServiceId: "93f2066f-f085-4b30-a9cb-d0f062444dda",
-            departureCity: "Adıyaman",
-            departureDate: new Date("2023-03-15T23:30:00.000Z"),
-            filledSeats: [
-                "[]"
-            ],
-            id: "fd13a5d4-8675-448b-ac44-85e1ef4d1073",
-            price: 500
-        },
-        {
-            arrivalCity: "Ağrı",
-            arrivalDate: new Date("2023-03-16T04:30:00.000Z"),
-            baseServiceId: "93f2066f-f085-4b30-a9cb-d0f062444dda",
-            departureCity: "Afyonkarahisar",
-            departureDate: new Date("2023-03-16T02:00:00.000Z"),
-            filledSeats: [
-                "[]"
-            ],
-            id: "cce5a6f2-1335-4e20-9b48-7435c2e67d40",
-            price: 300
-        }
-    ]);
-    const [outputModalVisible, setOutputVisible] = useState<boolean>(true);
+    const [createdServices, setCreatedServices] = useState<serviceTypes.ServiceType[]>([]);
+    const [outputModalVisible, setOutputVisible] = useState<boolean>(false);
 
     const dispatch = useAppDispatch();
 
@@ -217,6 +110,7 @@ const AddServiceStepsScreen = ({ navigation, route }: RootStackScreenProps<'AddS
             // @ts-ignore
             const { data } = await serviceOfService.createMultipleService({ datas: stepRoutes, baseServiceId: route.params.baseServiceId });
             console.log(data);
+            dispatch(serviceActions.newBaseServiceCompleted({ services: data, baseServiceId: route.params.baseServiceId }));
             setCreatedServices(data);
             setOutputVisible(true);
         } catch (error: any) {
@@ -231,19 +125,6 @@ const AddServiceStepsScreen = ({ navigation, route }: RootStackScreenProps<'AddS
             dispatch(settingsActions.setLoading({ isLoading: false, content: '' }))
         }
     }
-
-    const renderServiceItem = (prop: { item: serviceTypes.ServiceType, index: number }) => (
-        <View>
-            <View>
-                <Text category='h6' style={{}} >{prop.item.departureCity} - {prop.item.arrivalCity}</Text>
-            </View>
-            <View>
-                <Text>{dateHelper.formattedDate(new Date(prop.item.arrivalDate), "Day Month Date Year HH:mm")}</Text>
-                <Text>{dateHelper.formattedDate(new Date(prop.item.departureDate), "Day Month Date Year HH:mm")}</Text>
-                <Text>{prop.item.price} ₺</Text>
-            </View>
-        </View>
-    )
 
     useEffect(() => {
         let control = false;
@@ -320,6 +201,9 @@ const AddServiceStepsScreen = ({ navigation, route }: RootStackScreenProps<'AddS
                 style={styles.modalContainer}
             >
                 <RouteDetailList data={createdServices} />
+                <Button status='danger' onPress={() => navigation.navigate("Root")} style={{ borderWidth: 0, marginTop: 20 }}>
+                    My Services Screen
+                </Button>
             </Modal>
         </View>
     )

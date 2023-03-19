@@ -8,7 +8,7 @@ export type BaseServiceType = {
   ticketsCount: number;
   vehicleId: string;
   companyId: string;
-  vehicle: VehicleType;
+  vehicle: Pick<VehicleType, 'id' | 'plate' | 'vehicleType'>;
   services: ServiceType[];
 };
 export type ServiceType = {

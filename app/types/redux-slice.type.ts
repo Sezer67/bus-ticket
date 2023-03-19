@@ -1,3 +1,4 @@
+import { BaseServiceType, ServiceType } from './service.type';
 import { UserType } from './user.type';
 import { VehicleType } from './vehicle.type';
 
@@ -24,8 +25,16 @@ export type VehicleSliceType = {
   vehiclesCount: number;
 };
 
+export type ServiceSliceType = {
+  service: ServiceType | undefined;
+  baseServiceList: BaseServiceType[];
+  baseServiceCount: number;
+  serviceList: ServiceType[];
+};
+
 export type ReduxRootType = {
   user: UserSliceType;
   settings: SettingsSliceType;
   vehicle: VehicleSliceType;
+  service: ServiceSliceType;
 };
