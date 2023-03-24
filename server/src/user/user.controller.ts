@@ -7,6 +7,7 @@ import { RolesGuard } from 'src/shared/guards/role.guard';
 import { Roles } from 'src/shared/decorators/role.decorator';
 import { userEnum } from 'src/shared/enums';
 import { User } from './user.entity';
+import { ChangePasswordDto } from './dto/user-update.dto';
 
 @Controller('user')
 export class UserController {
@@ -21,6 +22,12 @@ export class UserController {
   @Post('register')
   createUser(@Body() dto: UserCreateDto) {
     return this.service.createUser(dto);
+  }
+
+  @Put('/change-password')
+  @UseGuards(AuthGuard('user'))
+  changePass(@Body() dto: ChangePasswordDto, @Req() req: any) {
+    return this.service.changePass(dto, req.user);
   }
 
   @Put('/')

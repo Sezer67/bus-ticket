@@ -30,7 +30,7 @@ const UserDetailForm: React.FC<PropsType> = ({ isEdit, isDisable }) => {
     const datePickerState = useDatePickerState(new Date("January 1,2000"));
 
     const userState = useAppSelector((state: ReduxRootType) => state.user);
-    const dispacth = useAppDispatch();
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         if (isEdit && userState.user.id) {
@@ -58,22 +58,22 @@ const UserDetailForm: React.FC<PropsType> = ({ isEdit, isDisable }) => {
             password: passwordInputState.value,
             role: roleRadioGroupState.selectedIndex
         };
-        dispacth(settingsActions.setLoading({ isLoading: true, content: 'Creating a record...' }));
+        dispatch(settingsActions.setLoading({ isLoading: true, content: 'Creating a record...' }));
         try {
             const { data } = await userService.register(formData);
-            dispacth(userActions.login(data));
+            dispatch(userActions.login(data));
             setToken(data.token);
             storageHelper.setStorageKey("@token", data.token);
         } catch (error: any) {
             if (typeof error.response?.data.message === "string") {
-                dispacth(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));
             } else if (typeof error.response?.data.message === "object") {
-                dispacth(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message[0] }));
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message[0] }));
             } else {
-                dispacth(settingsActions.setErrorSnackbar({ isError: true, content: error.message }));
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.message }));
             }
         } finally {
-            dispacth(settingsActions.setLoading({ isLoading: false, content: undefined }));
+            dispatch(settingsActions.setLoading({ isLoading: false, content: undefined }));
         }
 
     }

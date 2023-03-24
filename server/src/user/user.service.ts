@@ -15,6 +15,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ILoginResponse } from 'src/shared/interfaces/user.interface';
 import { ServicesOfUsers } from 'src/services-of-users/services-of-users.entity';
+import { ChangePasswordDto } from './dto/user-update.dto';
 
 @Injectable()
 export class UserService {
@@ -85,6 +86,17 @@ export class UserService {
         user,
         token,
       };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async changePass(dto: ChangePasswordDto, user: User) {
+    try {
+      if (user.password !== dto.currentPassword) {
+        throw new HttpException('Password is wrong', HttpStatus.FORBIDDEN);
+      }
+      await this.repo.update({ id: user.id }, { password: dto.newPassword });
     } catch (error) {
       throw error;
     }

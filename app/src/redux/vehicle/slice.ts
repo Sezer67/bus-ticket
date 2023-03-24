@@ -16,9 +16,11 @@ const vehicleSlice = createSlice({
     setSelectedVehicle: (state, action: PayloadAction<VehicleType>) => {
       state.vehicle = { ...action.payload };
     },
-    setVehicleList: (state, action: PayloadAction<SetListActionType>) => {
-      state.vehicleList = [...action.payload.rows];
-      state.vehiclesCount = action.payload.count;
+    setVehicleList: (state, action: PayloadAction<VehicleType[]>) => {
+      state.vehicleList = [...action.payload];
+    },
+    setVehicleLength: (state, action: PayloadAction<number>) => {
+      state.vehiclesCount = action.payload;
     },
     updateVehicle: (state, action: PayloadAction<VehicleType>) => {
       state.vehicleList = state.vehicleList.map((v) => {

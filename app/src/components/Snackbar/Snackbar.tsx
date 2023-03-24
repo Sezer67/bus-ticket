@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import Layout from '../../../constants/Layout';
-import { COLORS } from '../../../constants';
 import { Text } from '@ui-kitten/components';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux.hook';
 import { FontAwesome } from '@expo/vector-icons';
 import { settingsActions } from '../../redux/settings/slice';
 import { ReduxRootType } from '../../../types/redux-slice.type';
-
 
 const Snackbar = () => {
 

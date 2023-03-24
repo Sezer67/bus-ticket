@@ -26,5 +26,11 @@ export const lookup = (data: LookupQueryDataType): AxiosPromise<LookupResponseTy
   if (data.select) {
     query.select = data.select.join(',');
   }
+  if (data.limit) {
+    query.limit = data.limit.toString();
+  }
+  if (data.offset) {
+    query.offset = data.offset.toString();
+  }
   return axiosInstance.get(routeHelper.addQueryPArameters(urlsConfig.vehicle.get, query));
 };

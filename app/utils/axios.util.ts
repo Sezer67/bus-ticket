@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import urlsConfig from '../configs/url.config';
+import { storageHelper } from '../src/helpers';
 
 const axiosInstance = axios.create({
   baseURL: urlsConfig.apiUrl,
@@ -15,6 +16,9 @@ axiosInstance.interceptors.response.use(
   (error: AxiosError) => {
     console.log(error);
     if (error.response?.status === 401) {
+      setToken('');
+      storageHelper.setStorageKey('@token', '');
+      console.log('if ');
     }
 
     return Promise.reject(error);

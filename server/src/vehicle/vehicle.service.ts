@@ -37,7 +37,12 @@ export class VehicleService {
             select[val] = true;
           });
         }
-
+        if (dto.limit) {
+          query.take = dto.limit;
+        }
+        if (dto.offset) {
+          query.skip = dto.offset;
+        }
         if (user.companyId) {
           where.companyId = user.companyId;
         }

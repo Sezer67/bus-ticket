@@ -25,7 +25,6 @@ export class UserStrategy extends PassportStrategy(Strategy, 'user') {
     if (!isDefined(user)) {
       throw new UnauthorizedException();
     }
-    user.password = undefined;
 
     return user;
   }

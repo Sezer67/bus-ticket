@@ -16,6 +16,7 @@ import EmptyList from '../../components/EmptyList';
 import { useInputState } from '../../../hooks/forms.hook';
 import GLOBAL_STYLES from '../../../constants/Styles';
 import VehicleTypeIcon from '../../components/VehicleModels/TypeIcon';
+import { defaultPageSize } from '../../../configs';
 
 const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'>) => {
 
@@ -23,6 +24,8 @@ const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'
     const [searchVisible, setSearchVisible] = useState<boolean>(false);
     const [filterKey, setFilterKey] = useState<number | undefined>(undefined);
     const [filteredList, setFilteredList] = useState<VehicleType[]>([]);
+    const [page, setPage] = useState<number>(0);
+
     const searchInputState = useInputState();
     const vehicleState = useAppSelector((state: ReduxRootType) => state.vehicle);
 
@@ -31,8 +34,9 @@ const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'
     const getMyVehicles = async () => {
         try {
             dispatch(settingsActions.setLoading({ isLoading: true, content: 'Loading...' }))
-            const { data } = await vehicleService.lookup({});
-            dispatch(vehicleActions.setVehicleList(data));
+            const { data } = await vehicleService.lookup({ limit: defaultPageSize });
+            dispatch(vehicleActions.setVehicleList(data.rows));
+            dispatch(vehicleActions.setVehicleLength(data.count));
             setFilteredList(data.rows);
         } catch (error: any) {
             if (typeof error.response?.data.message === "string") {
@@ -50,6 +54,24 @@ const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'
     useEffect(() => {
         getMyVehicles();
     }, []);
+
+    const fetchMoreData = async (page: number) => {
+        try {
+            dispatch(settingsActions.setLoading({ isLoading: true, content: 'Loading...' }));
+            const { data } = await vehicleService.lookup({ limit: defaultPageSize, offset: page * defaultPageSize });
+            dispatch(vehicleActions.setVehicleList(vehicleState.vehicleList.concat(data.rows)));
+        } catch (error: any) {
+            if (typeof error.response?.data.message === "string") {
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));
+            } else if (typeof error.response?.data.message === "object") {
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message[0] }));
+            } else {
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.message }));
+            }
+        } finally {
+            dispatch(settingsActions.setLoading({ isLoading: false, content: undefined }));
+        }
+    }
 
     useEffect(() => {
         if (searchInputState.value) {
@@ -246,11 +268,19 @@ const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'
                 </View>
             </View>
             <FlatList
+                contentContainerStyle={{ flexGrow: 1 }}
                 data={filterKey === undefined ? filteredList : filteredList.filter((v) => v.vehicleType === filterKey)}
                 keyExtractor={(item) => item.id}
                 renderItem={renderItem}
+                onEndReachedThreshold={0.2}
                 showsVerticalScrollIndicator={false}
                 ListEmptyComponent={EmptyList}
+                onEndReached={() => {
+                    if (vehicleState.vehiclesCount > 0 && vehicleState.vehiclesCount > vehicleState.vehicleList.length) {
+                        setPage(page + 1);
+                        fetchMoreData(page + 1);
+                    }
+                }}
             />
         </View>
     )
