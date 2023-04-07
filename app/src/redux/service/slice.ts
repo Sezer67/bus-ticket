@@ -40,6 +40,9 @@ const ServiceSlice = createSlice({
     setBaseServiceCount: (state, action: PayloadAction<number>) => {
       state.baseServiceCount = action.payload;
     },
+    setServiceList: (state, action: PayloadAction<ServiceType[]>) => {
+      state.serviceList = [...action.payload];
+    },
   },
 });
 

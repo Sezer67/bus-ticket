@@ -14,11 +14,14 @@ import SelectCityModal from '../Modals/SelectCityModal';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native'
 import { RootStackParamList, RootStackScreenProps } from '../../../types';
+import { serviceOfService } from '../../../service';
+import { vehicleEnums } from '../../../enums';
+import { serviceActions } from '../../redux/service/slice';
 
 type PropsType = {
     routeLineIcon: TicketRouteLineIcon;
     submitButtonText: string;
-    ticketType: TicketType;
+    ticketType: vehicleEnums.VehicleType;
 }
 
 const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, ticketType }) => {
@@ -58,18 +61,27 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
         setToValue(fromValue);
     }
 
-    const handleOnFinish = () => {
+    const handleOnFinish = async () => {
         try {
             if (!isFilledForm) {
                 dispatch(settingsActions.setErrorSnackbar({ isError: true, content: 'From & To required fields !' }));
             }
-            dispatch(settingsActions.setLoading({ isLoading: true, content: 'Looking for Tickets ...' }));
-            setTimeout(() => {
-                dispatch(settingsActions.setLoading({ isLoading: false, content: undefined }));
-            }, 5000);
-            navigation.navigate('Services');
-        } catch (error) {
-            console.log(error);
+            dispatch(settingsActions.setLoading({ isLoading: true, content: 'Looking for Services ...' }));
+            const { data } = await serviceOfService.findTickets({ from: fromValue, to: toValue, vehicleType: ticketType, date: dateValue });
+
+            console.log("result : ", data);
+            dispatch(serviceActions.setServiceList(data.rows));
+            // navigation.navigate('Services');
+        } catch (error: any) {
+            if (typeof error.response?.data.message === "string") {
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));
+            } else if (typeof error.response?.data.message === "object") {
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message[0] }));
+            } else {
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.message }));
+            }
+        } finally {
+            dispatch(settingsActions.setLoading({ isLoading: false, content: undefined }));
         }
 
     }

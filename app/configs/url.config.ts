@@ -17,6 +17,7 @@ const urlsConfig = {
     baseCreate: '/base-service',
     baseServiceLookupMe: '/base-service/@me',
     multipleCreate: '/service',
+    findTicket: '/service/find',
   },
 };
 

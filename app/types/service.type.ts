@@ -19,4 +19,5 @@ export type ServiceType = {
   departureCity: string;
   arrivalCity: string;
   baseServiceId: string;
+  filledSeats: string[];
 };

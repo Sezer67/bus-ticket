@@ -30,7 +30,7 @@ export default function TicketFindScreen({ navigation }: RootStackScreenProps<'T
                 <View style={styles.separator} />
                 <View style={styles.formContainer}>
                     <TicketFindForm
-                        ticketType={ticketFindConfigs.TabItems[activeTab].ticketType}
+                        ticketType={ticketFindConfigs.TabItems[activeTab].id}
                         key={activeTab}
                         routeLineIcon={ticketFindConfigs.TabItems[activeTab].routeIcon}
                         submitButtonText={ticketFindConfigs.TabItems[activeTab].submitButtonText}
