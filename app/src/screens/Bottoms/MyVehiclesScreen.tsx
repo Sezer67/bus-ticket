@@ -229,7 +229,7 @@ const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'
                     ) : (
                         <>
                             <View style={[styles.row, styles.hrBorder, { width: '80%' }]}>
-                                <Text category='h6'>Total Vehicle Count of Your Company : </Text>
+                                <Text category='h6'>Total Vehicle Count : </Text>
                                 {/* <AntDesign name="right" size={18} style={{ marginTop: 2, marginHorizontal: 4 }} color="black" /> */}
                                 <Text category='h6' >{vehicleState.vehiclesCount}</Text>
                             </View>

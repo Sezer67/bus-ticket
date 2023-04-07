@@ -11,9 +11,9 @@ type PropsType = {
 
 const EmptyList: React.FC<PropsType> = ({ text, mt, imageW }) => {
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: mt || Layout.window.height / 5 }}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: mt || Layout.window.height * 0.01 }}>
             <Image resizeMode='cover' source={images.empty} style={{ width: imageW || 246, height: imageW || 246 }} />
-            <Text category='h4'>{text || "No data exist"}</Text>
+            <Text category='h5'>{text || "No data exist"}</Text>
         </View>
     )
 }

@@ -5,13 +5,18 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Text } from '@ui-kitten/components';
 import { dateHelper } from '../helpers';
 import { COLORS } from '../../constants';
+import Layout from '../../constants/Layout';
 
 
 const RouteDetailList: React.FC<{ data: ServiceType[] }> = ({ data }) => {
 
     const renderServiceList = (prop: { item: ServiceType }) => (
         <View>
-            <Text category='h6' style={{ marginBottom: 5 }} >{prop.item.departureCity} - {prop.item.arrivalCity} {"    "} ( {prop.item.price} ₺ )</Text>
+            <Text style={{ marginBottom: 5,...Layout.FONTS.h2 }} >
+                {prop.item.departureCity} - {prop.item.arrivalCity} 
+                {" "}
+                <Text category='h6'>( {prop.item.price} ₺ )</Text>
+            </Text>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <FontAwesome name="clock-o" size={20} color={COLORS.gray} style={{ marginRight: 10 }} />
                 <Text appearance='hint'>{dateHelper.formattedDate(new Date(prop.item.departureDate), "DD/MM HH:mm")} - {dateHelper.formattedDate(new Date(prop.item.arrivalDate), "DD/MM HH:mm")}</Text>

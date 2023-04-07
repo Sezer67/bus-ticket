@@ -55,7 +55,8 @@ const styles = StyleSheet.create({
         width: Layout.window.width * 4 / 5,
         backgroundColor: 'rgba(255,255,255,0.9)',
         padding: 10,
-        borderRadius: 5
+        borderRadius: 5,
+        zIndex:999
     },
     headerContainer: {
         width: '100%',

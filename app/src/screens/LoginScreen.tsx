@@ -13,6 +13,7 @@ import { userService } from '../../service';
 import { userActions } from '../redux/user/slice';
 import { setToken } from '../../utils/axios.util';
 import { storageHelper } from '../helpers';
+import { Role } from '../../enums/user.enum';
 const LoginScreen = ({ navigation, route }: RootStackScreenProps<'Login'>) => {
 
     const mailInputState = useInputState();
@@ -38,6 +39,10 @@ const LoginScreen = ({ navigation, route }: RootStackScreenProps<'Login'>) => {
             setToken(data.token);
             storageHelper.setStorageKey("@token", data.token);
 
+            if(data.user.role === Role.Company && !data.user.companyId){
+                dispatch(settingsActions.setErrorSnackbar({ isError: true, content: "Your company information is missing" }));
+                navigation.navigate('CreateCompany');
+            }
         } catch (error: any) {
             if (typeof error.response?.data.message === "string") {
                 dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));

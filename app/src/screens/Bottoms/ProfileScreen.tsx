@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import { RootTabScreenProps } from '../../../types';
 import { COLORS, images } from '../../../constants';
 import { Text, ViewPager } from '@ui-kitten/components';
@@ -43,38 +43,37 @@ const ProfileScreen = ({ navigation, route }: RootTabScreenProps<'Profile'>) => 
     }, [])
 
     return (
-        <View style={styles.container}>
-            <StatusBar style='dark' />
-            <View style={[styles.tabBarContainer,]}>
-                <TouchableOpacity onPress={() => setActivePageIndex(0)} style={[styles.tabBar, activePageIndex === 0 && styles.activeTab]}>
-                    <Text style={activePageIndex === 0 && styles.activeText}>Profile</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setActivePageIndex(1)} style={[styles.tabBar, activePageIndex === 1 && styles.activeTab]}>
-                    <Text style={activePageIndex === 1 && styles.activeText}>Change Password</Text>
-                </TouchableOpacity>
+        <ScrollView>
+            <View style={styles.container}>
+                <StatusBar style='dark' />
+                <View style={[styles.tabBarContainer,]}>
+                    <TouchableOpacity onPress={() => setActivePageIndex(0)} style={[styles.tabBar, activePageIndex === 0 && styles.activeTab]}>
+                        <Text style={activePageIndex === 0 && styles.activeText}>Profile</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => setActivePageIndex(1)} style={[styles.tabBar, activePageIndex === 1 && styles.activeTab]}>
+                        <Text style={activePageIndex === 1 && styles.activeText}>Change Password</Text>
+                    </TouchableOpacity>
+                </View>
+                <ViewPager
+                    style={{ flex: 1, marginBottom:20 }}
+                    selectedIndex={activePageIndex}
+                    onSelect={(index) => setActivePageIndex(index as never)}
+                >
+                    <View style={styles.tabContainer}>
+                        <View style={{ width: '100%', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
+                            <Image style={styles.profileImage} borderRadius={100} resizeMethod='resize' resizeMode='cover' source={images.plane} />
+                            <Text category='h4'>{Object.keys(userEnums.Role).filter((key) => userEnums.Role[key as keyof typeof userEnums.Role] === userState.user.role)[0]} Account</Text>
+                        </View>
+                        <View style={styles.form}>
+                            <UserDetailForm isEdit isDisable />
+                        </View>
+                    </View>
+                    <View style={styles.tabContainer}>
+                        <ChangePasswordForm />
+                    </View>
+                </ViewPager>
             </View>
-
-            <ViewPager
-                style={{ flex: 1 }}
-                selectedIndex={activePageIndex}
-                onSelect={(index) => setActivePageIndex(index as never)}
-            >
-                <View style={styles.tabContainer}>
-                    <View style={{ width: '100%', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-                        <Image style={styles.profileImage} borderRadius={100} resizeMethod='resize' resizeMode='cover' source={images.plane} />
-                        <Text category='h4'>{Object.keys(userEnums.Role).filter((key) => userEnums.Role[key as keyof typeof userEnums.Role] === userState.user.role)[0]} Account</Text>
-                    </View>
-                    <View style={styles.form}>
-                        <UserDetailForm isEdit isDisable />
-                    </View>
-                </View>
-                <View style={styles.tabContainer}>
-                    <ChangePasswordForm />
-                </View>
-            </ViewPager>
-
-
-        </View>
+        </ScrollView>
     )
 };
 

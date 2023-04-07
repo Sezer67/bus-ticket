@@ -1,11 +1,14 @@
 const urlsConfig = {
-  apiUrl: 'http://192.168.1.103:8000',
+  apiUrl: 'http://192.168.1.100:8000',
   user: {
     login: '/auth/login',
     logout: '/user/logout',
     register: '/user/register',
     getCurrent: '/user/@me',
     changePassword: '/user/change-password',
+  },
+  company:{
+    create:'/company'
   },
   vehicle: {
     create: '/vehicle',

@@ -33,6 +33,7 @@ import GLOBAL_STYLES from '../../constants/Styles';
 import AddVehicleScreen from '../screens/Modals/AddVehicleScreen';
 import AddServiceScreen from '../screens/Modals/AddServiceScreen';
 import AddServiceStepsScreen from '../screens/Modals/AddServiceStepsScreen';
+import CreateCompanyScreen from '../screens/CreateCompanyScreen';
 
 export default function Navigation() {
   return (
@@ -99,8 +100,9 @@ function RootNavigator() {
           <>
             <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
             <Stack.Screen name='Services' component={ServicesScreen} options={{}} />
+            <Stack.Screen name='CreateCompany' component={CreateCompanyScreen} options={{headerShown: false}} />
             <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-            <Stack.Group screenOptions={{ presentation: 'modal' }}>
+            <Stack.Group screenOptions={{ presentation: 'card' }}>
               <Stack.Screen name="Modal" component={ModalScreen} />
               <Stack.Screen name="AddVehicleModal" component={AddVehicleScreen} />
               <Stack.Screen name="AddServiceModal" component={AddServiceScreen} />
