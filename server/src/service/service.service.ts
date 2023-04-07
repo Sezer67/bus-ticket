@@ -34,7 +34,7 @@ export class ServiceService {
 
       {
         const where: any = {};
-        const select: any = {};
+        let select: any = {};
         if (dto.relations) {
           query.relations = [...dto.relations];
         }
@@ -56,26 +56,7 @@ export class ServiceService {
           new Date(
             dto.date.getFullYear(),
             dto.date.getMonth(),
-            dto.date.getDate(),
-            0,
-            0,
-            0,
-            0,
-          ),
-          new Date(
-            dto.date.getFullYear(),
-            dto.date.getMonth(),
-            dto.date.getDate(),
-            23,
-            59,
-          ),
-        );
-        console.log(
-          'Between : ',
-          new Date(
-            dto.date.getFullYear(),
-            dto.date.getMonth(),
-            dto.date.getDate(),
+            dto.date.getDate() - 1,
             0,
             0,
             0,
@@ -90,20 +71,39 @@ export class ServiceService {
           ),
         );
         query.where = where;
+
+        // default select added
+        select = {
+          ...select,
+          baseService:{
+            route:true,
+            company:{
+              id:true,
+              name:true
+            },
+            vehicle:{
+              id:true,
+              plate:true,
+              seatingPlan:true
+            }
+          }
+        }
         query.select = select;
+        query.relations = {
+          baseService:{
+            company:true,
+            vehicle:true
+          }
+        };
       }
 
       const [rows, count] = await this.repo.findAndCount(query);
-
+      console.log("rows : ",rows);
       return {
         rows,
         count,
       };
 
-      return await this.repo.findAndCount({
-        where: {},
-        relations: ['company', 'vehicle'],
-      });
     } catch (error) {
       throw error;
     }

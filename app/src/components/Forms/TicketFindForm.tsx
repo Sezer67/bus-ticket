@@ -71,7 +71,7 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
 
             console.log("result : ", data);
             dispatch(serviceActions.setServiceList(data.rows));
-            // navigation.navigate('Services');
+            navigation.navigate('Services');
         } catch (error: any) {
             if (typeof error.response?.data.message === "string") {
                 dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));

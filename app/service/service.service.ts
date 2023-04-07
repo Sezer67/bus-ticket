@@ -58,6 +58,5 @@ export const findTickets = (data: FindTicketQueryDataType): AxiosPromise<Service
     query.offset = data.offset.toString();
   }
 
-  console.log('get url : ', routeHelper.addQueryPArameters(urlsConfig.service.findTicket, query));
   return axiosInstance.get(routeHelper.addQueryPArameters(urlsConfig.service.findTicket, query));
 };
