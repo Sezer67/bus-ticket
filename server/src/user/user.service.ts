@@ -65,7 +65,10 @@ export class UserService {
           mail: dto.mail,
         },
       });
-
+      
+      if(!user){
+        throw new HttpException('mail is not found',400);
+      }
       if (user.password !== dto.password) {
         throw new HttpException('Password is wrong', HttpStatus.FORBIDDEN);
       }
