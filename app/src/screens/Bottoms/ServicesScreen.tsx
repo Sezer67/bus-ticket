@@ -4,48 +4,19 @@ import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native'
 import { Button, Card, Text } from '@ui-kitten/components'
 import { StatusBar } from 'expo-status-bar'
 import { COLORS } from '../../../constants'
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useAppSelector } from '../../../hooks/redux.hook'
+import { ReduxRootType } from '../../../types/redux-slice.type'
+import { ServiceType } from '../../../types/service.type'
+import { dateHelper } from '../../helpers'
+import Layout from '../../../constants/Layout'
+import Accordion from '../../components/Accordion'
 
 const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>) => {
 
     // yapılan sorgu verileri redux da filter state olarak tutulsun.
     // tepede sorgu verilerimiz listelenecek.
-
-    const mockServices = [
-        {
-            id: 'asdf',
-            company: 'METRO',
-            price: 250,
-            seat: '2+1',
-            arrivalTime: '8',
-            departureTime: '23:00',
-            departureCity: 'İzmir',
-            arrivalCity: 'Ankara',
-            routeDetail: ['İzmir', 'Ankara', 'istanbul']
-        },
-        {
-            id: 'asdsdf',
-            company: 'KAMILKOC',
-            price: 250,
-            seat: '2+1',
-            arrivalTime: '8',
-            departureTime: '23:15',
-            departureCity: 'İzmir',
-            arrivalCity: 'Ankara',
-            routeDetail: ['İzmir', 'Ankara', 'istanbul']
-        },
-        {
-            id: 'aassdf',
-            company: 'BASKENT TURIZM',
-            price: 250,
-            seat: '2+1',
-            arrivalTime: '8',
-            departureTime: '23:30',
-            departureCity: 'İzmir',
-            arrivalCity: 'Ankara',
-            routeDetail: ['İzmir', 'Ankara', 'istanbul']
-        }
-    ]
+    const serviceState = useAppSelector((state:ReduxRootType) => state.service);
 
     useEffect(() => {
         navigation.setOptions({
@@ -55,37 +26,70 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
         })
     }, [])
 
+    const renderRoute = (route:string, start:string, end:string) => {
+        const _renderItem = ({item,index}:{item:string,index:number}) => {
+            return (
+                <View style={{flexDirection:'row',alignItems:'center'}}>
+                    {
+                        start === item || end === item ? (
+                            <Entypo name='dot-single' size={24} color={COLORS['primary-400']} />
+                        ) : null
+                    }
+                    <Text style={start === item || end === item ? {color: COLORS['primary-400']} : {paddingLeft:24}}>{item}</Text>
+                </View>
+            )
+        }
+        return (
+            <FlatList 
+                data={route.split(",")}
+                keyExtractor={(item) => item}
+                renderItem={_renderItem}
+            />
+        )
+    }
 
+    const renderItem = (prop: { item: ServiceType, index: number }) => {
+        const arrivalTime = dateHelper.hourDifference(new Date(prop.item.departureDate), new Date(prop.item.arrivalDate));
 
-    const renderItem = (prop: { item: any, index: number }) => (
-        <Card status={prop.index % 2 === 0 ? "warning" : "danger"} style={{ marginBottom: 10 }}>
-            {/* Header */}
-            <View style={styles.cardHeader}>
-                <Text category='h6' style={{ paddingLeft: 10 }}>{prop.item.company}</Text>
-                <Text category='h6' style={{ paddingRight: 10 }} >{prop.item.departureTime}</Text>
-            </View>
-            {/* Content */}
-            <View style={styles.cardContent}>
-                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <MaterialCommunityIcons name="seatbelt" size={24} color={COLORS.gray} />
-                    <Text style={styles.contentText}>{prop.item.seat}</Text>
+        return (
+            <Card status={prop.index % 2 === 0 ? "warning" : "danger"} style={{ marginBottom: 10 }}>
+                {/* Header */}
+                <View style={styles.cardHeader}>
+                    <Text category='h6' style={{ paddingLeft: 10 }}>{prop.item.companyName}</Text>
+                    <Text category='h6' style={{ paddingRight: 10 }} >{dateHelper.formattedDate(new Date(prop.item.departureDate),"HH:mm")}</Text>
                 </View>
-                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <MaterialCommunityIcons name="highway" size={24} color={COLORS.gray} />
-                    <Text style={styles.contentText}>{prop.item.departureCity} - {prop.item.arrivalCity}</Text>
+                {/* Content */}
+                <View style={styles.cardContent}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <MaterialCommunityIcons name="seatbelt" size={24} color={COLORS.gray} />
+                        <Text style={styles.contentText}>{prop.item.seat}</Text>
+                    </View>
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <MaterialCommunityIcons name="highway" size={24} color={COLORS.gray} />
+                        <Text numberOfLines={2} style={styles.contentText}>{prop.item.departureCity} - {prop.item.arrivalCity}</Text>
+                    </View>
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <MaterialCommunityIcons name="clock-outline" size={24} color={COLORS.gray} />
+                        <Text style={styles.contentText}>{arrivalTime}</Text>
+                    </View>
                 </View>
-                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <MaterialCommunityIcons name="clock-outline" size={24} color={COLORS.gray} />
-                    <Text style={styles.contentText}>{prop.item.arrivalTime} hours</Text>
+                {/* Footer */}
+                <View style={styles.cardFooter}>
+                    <View>
+                        <Accordion 
+                            title={
+                                <Text style={{...Layout.FONTS.h2,fontWeight:'700', color:COLORS['primary-500'],marginRight:10}}>Show Service Route</Text>
+                            }
+                            children={
+                                renderRoute(prop.item.route,prop.item.departureCity,prop.item.arrivalCity)
+                            }
+                        />
+                    </View>
+                    <Text category='h6' style={{ paddingRight: 10,paddingTop:15 }} appearance='hint'>{prop.item.price} TL</Text>
                 </View>
-            </View>
-            {/* Footer */}
-            <View style={styles.cardFooter}>
-                <Button appearance='ghost'>Show Service</Button>
-                <Text category='h6' style={{ paddingRight: 10 }} appearance='hint'>{prop.item.price} TL</Text>
-            </View>
-        </Card>
-    )
+            </Card>
+        )
+    }
 
     const _footer = () => (
         <View>
@@ -104,7 +108,7 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
                     <Text>Filtrelenen gün yol vs.</Text>
                 </View>
                 <FlatList
-                    data={mockServices}
+                    data={serviceState.serviceList}
                     renderItem={renderItem}
                     ListFooterComponent={_footer}
                 />
@@ -138,7 +142,7 @@ const styles = StyleSheet.create({
         borderTopColor: COLORS.gray,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'flex-start',
     }, cardContent: {
         paddingVertical: 15,
         paddingHorizontal: 10,
@@ -149,6 +153,8 @@ const styles = StyleSheet.create({
     contentText: {
         color: '#000',
         fontSize: 12,
+        maxWidth: (Layout.window.width - 10 ) / 3,
+        textAlign:'center'
     }, footerButton: {
         flexDirection: 'row',
         justifyContent: 'center',

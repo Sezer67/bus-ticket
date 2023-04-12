@@ -1,3 +1,6 @@
+import { ServiceLookupResponseType } from '../../service/types/service-service.type';
+import { ServiceType } from '../../types/service.type';
+
 export const convertRouteToSteps = (
   route: string,
 ): {
@@ -23,4 +26,32 @@ export const convertRouteToSteps = (
     index++;
   }
   return result;
+};
+
+export const convertTicketResultToRedux = (response: ServiceLookupResponseType): {
+  rows: ServiceType[],
+  count: number
+} => {
+
+   const rows: ServiceType[] = response.rows.map((row) => {
+    return {
+      id: row.id,
+      price: row.price,
+      arrivalDate: row.arrivalDate,
+      arrivalCity: row.arrivalCity,
+      departureDate: row.departureDate,
+      departureCity: row.departureCity,
+      baseServiceId: row.baseServiceId,
+      companyName: row.baseService.company.name,
+      filledSeats: row.filledSeats,
+      plate: row.baseService.vehicle.plate,
+      route: row.baseService.route,
+      seat: row.baseService.vehicle.seatingPlan
+    }
+  })
+  
+  return {
+    rows,
+    count: response.count
+  }
 };

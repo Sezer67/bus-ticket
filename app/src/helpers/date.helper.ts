@@ -1,4 +1,10 @@
-type FormatType = 'Day Month Date Year HH:mm' | 'DD/MM/YYYY HH:mm' | 'DD/MM HH:mm';
+type FormatType = 'Day Month Date Year HH:mm' | 'DD/MM/YYYY HH:mm' | 'DD/MM HH:mm' | 'HH:mm';
+
+const dakika = 60;
+const saat = dakika * 60;
+const gun = saat * 24;
+const ay = gun * 30;
+const yil = ay * 12 + (60*60*6);
 
 const isSingleDigit = (number: number) => {
   if (number < 10) {
@@ -28,3 +34,18 @@ export const formattedDate = (date: Date, format: FormatType): string => {
 
   return result;
 };
+
+export const hourDifference = (littleDate: Date, bigDate: Date ):string => {
+  const diff = (bigDate.getTime() - littleDate.getTime()) / 1000;
+
+  const hourDiff = Math.floor((diff % gun) / saat);
+  const minDiff = Math.floor((diff % saat) / dakika);
+
+  let result = hourDiff + " hours ";
+
+  if(minDiff > 0){
+    result += minDiff + " minutes"
+  }
+  
+  return result;
+}

@@ -17,6 +17,7 @@ import { RootStackParamList, RootStackScreenProps } from '../../../types';
 import { serviceOfService } from '../../../service';
 import { vehicleEnums } from '../../../enums';
 import { serviceActions } from '../../redux/service/slice';
+import { convertHelper } from '../../helpers';
 
 type PropsType = {
     routeLineIcon: TicketRouteLineIcon;
@@ -69,8 +70,8 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
             dispatch(settingsActions.setLoading({ isLoading: true, content: 'Looking for Services ...' }));
             const { data } = await serviceOfService.findTickets({ from: fromValue, to: toValue, vehicleType: ticketType, date: dateValue });
 
-            console.log("result : ", data);
-            dispatch(serviceActions.setServiceList(data.rows));
+            const convertedData = convertHelper.convertTicketResultToRedux(data);
+            dispatch(serviceActions.setServiceList(convertedData.rows));
             navigation.navigate('Services');
         } catch (error: any) {
             if (typeof error.response?.data.message === "string") {
