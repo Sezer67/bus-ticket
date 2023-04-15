@@ -98,7 +98,6 @@ export class ServiceService {
       }
 
       const [rows, count] = await this.repo.findAndCount(query);
-      console.log("rows : ",rows);
       return {
         rows,
         count,

@@ -32,6 +32,7 @@ export class CompanyController {
   constructor(private readonly service: CompanyService) {}
 
   @Get('/')
+  @Roles(userEnum.Role.Customer,userEnum.Role.Company)
   lookup(@Query() dto: CompanyLookupDto) {
     return this.service.lookup(dto);
   }
