@@ -25,3 +25,15 @@ export type ServiceType = {
   seat: string;
   filledSeats: string[];
 };
+
+export type ServiceScreenFilterOptionsType = {
+  companies: {
+    id: string;
+    name: string;
+    isSelected: boolean;
+  }[];
+  seatingPlans: {
+    seatingPlan: string;
+    isSelected: boolean;
+  }[];
+};

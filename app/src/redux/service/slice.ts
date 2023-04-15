@@ -1,13 +1,14 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { reduxSliceTypes } from '../../../types/index';
 import { BaseServiceType, ServiceType } from '../../../types/service.type';
-import { AddBaseServiceActionType, CreateMultipleServiceType } from './reducer.type';
+import { AddBaseServiceActionType, CreateMultipleServiceType, SetTicketFindFormType } from './reducer.type';
 
 const initialState: reduxSliceTypes.ServiceSliceType = {
   baseServiceCount: 0,
   baseServiceList: [],
   service: undefined,
   serviceList: [],
+  ticketFindForm: undefined,
 };
 
 const ServiceSlice = createSlice({
@@ -43,6 +44,9 @@ const ServiceSlice = createSlice({
     setServiceList: (state, action: PayloadAction<ServiceType[]>) => {
       state.serviceList = [...action.payload];
     },
+    setTicketFindForm: (state,action: PayloadAction<SetTicketFindFormType>) => {
+      state.ticketFindForm = { ...action.payload };
+    }
   },
 });
 

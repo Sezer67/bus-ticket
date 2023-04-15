@@ -1,3 +1,4 @@
+import { vehicleEnums } from '../enums';
 import { BaseServiceType, ServiceType } from './service.type';
 import { UserType } from './user.type';
 import { VehicleType } from './vehicle.type';
@@ -30,6 +31,12 @@ export type ServiceSliceType = {
   baseServiceList: BaseServiceType[];
   baseServiceCount: number;
   serviceList: ServiceType[];
+  ticketFindForm: {
+    vehicleType: vehicleEnums.VehicleType;
+    from: string;
+    to: string;
+    date: string;
+  } | undefined;
 };
 
 export type ReduxRootType = {

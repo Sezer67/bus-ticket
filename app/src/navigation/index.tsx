@@ -99,7 +99,7 @@ function RootNavigator() {
         isSignedIn ? (
           <>
             <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-            <Stack.Screen name='Services' component={ServicesScreen} options={{}} />
+            <Stack.Screen name='Services' component={ServicesScreen} options={{headerShown: true}} />
             <Stack.Screen name='CreateCompany' component={CreateCompanyScreen} options={{headerShown: false}} />
             <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
             <Stack.Group screenOptions={{ presentation: 'card' }}>
