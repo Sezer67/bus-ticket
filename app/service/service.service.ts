@@ -57,6 +57,13 @@ export const findTickets = (data: FindTicketQueryDataType): AxiosPromise<Service
   if (data.offset) {
     query.offset = data.offset.toString();
   }
-
+  if(data.filter){
+    if(data.filter.companyIds){
+      query.companyIds = data.filter.companyIds.join(",");
+    }
+    if(data.filter.seatingPlans){
+      query.seatingPlans = data.filter.seatingPlans.join(",");
+    }
+  }
   return axiosInstance.get(routeHelper.addQueryPArameters(urlsConfig.service.findTicket, query));
 };

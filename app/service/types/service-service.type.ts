@@ -54,6 +54,10 @@ export type CreateMultipleServiceType = {
 export type FindTicketQueryDataType = {
   relations?: RelationsType[];
   select?: (keyof BaseServiceType)[];
+  filter?: {
+    companyIds?: string[];
+    seatingPlans?: string[];
+  };
   limit?: number;
   offset?: number;
   vehicleType: vehicleEnums.VehicleType;

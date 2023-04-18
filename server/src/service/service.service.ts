@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Service } from './service.entity';
-import { Between, Repository } from 'typeorm';
+import { Between, In, Repository } from 'typeorm';
 import { Request } from 'express';
 import { ServiceCreateDto } from './dto/service-create.dto';
 import { ServiceLookupDto } from './dto/service-lookup.dto';
@@ -35,6 +35,24 @@ export class ServiceService {
       {
         const where: any = {};
         let select: any = {};
+
+        if(dto.companyIds){
+          where.baseService = {
+            company: {
+              id: In(dto.companyIds)
+            }
+          };
+        }
+        if(dto.seatingPlans){
+          const arr = dto.seatingPlans.map(plan => plan.replace(" ","+"));
+          where.baseService = {
+            ...where.baseService,
+            vehicle: {
+              seatingPlan: In(arr)
+            }
+          }
+        }
+
         if (dto.relations) {
           query.relations = [...dto.relations];
         }

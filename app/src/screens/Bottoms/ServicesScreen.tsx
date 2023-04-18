@@ -20,6 +20,7 @@ import { serviceActions } from '../../redux/service/slice';
 import { settingsActions } from '../../redux/settings/slice';
 import { serviceTypes } from '../../../types/index';
 import { getSeatPlanArray } from '../../helpers';
+import { defaultPageSize } from '../../../configs';
 
 const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>) => {
   // yapılan sorgu verileri redux da filter state olarak tutulsun.
@@ -32,6 +33,7 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
     companies: [],
     seatingPlans: [],
   });
+  const [page, setPage] = useState<number>(0);
 
   const serviceState = useAppSelector((state: ReduxRootType) => state.service);
   const dispatch = useAppDispatch();
@@ -40,7 +42,7 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
     dispatch(settingsActions.setLoading({ isLoading: true, content: 'Looking for Services ...' }));
     try {
       const { data } = await companyService.getCompanyList({});
-      console.log(filterOptions);
+
       setFilterOptions((prev) => ({
         ...prev,
         companies: data.rows.map((each) => {
@@ -53,7 +55,6 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
       }));
       setFilterModalVisible(true);
     } catch (error: any) {
-      console.log(error);
       if (typeof error.response?.data.message === 'string') {
         dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));
       } else if (typeof error.response?.data.message === 'object') {
@@ -65,6 +66,22 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
       dispatch(settingsActions.setLoading({ isLoading: false, content: undefined }));
     }
   };
+
+  const getFilterValues = () => {
+    const companyIds: string[] = [];
+    const seatingPlans: string[] = [];
+
+    filterOptions.companies.forEach((c) => c.isSelected && companyIds.push(c.id));
+    filterOptions.seatingPlans.forEach((c) => c.isSelected && seatingPlans.push(c.seatingPlan));
+
+    if(companyIds.length < 1 && seatingPlans.length < 1){
+      return undefined;
+    }
+    return {
+      companyIds: companyIds.length > 0 ? companyIds : undefined,
+      seatingPlans: seatingPlans.length > 0 ? seatingPlans : undefined,
+    }
+  }
 
   useEffect(() => {
     navigation.setOptions({
@@ -90,27 +107,25 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
           seatingPlan: plan,
         });
       });
-      console.log(seatingPlans);
+
       setFilterOptions({ companies: [], seatingPlans });
     }
   }, []);
-
-  useEffect(() => {
-    console.log("---------------")
-    console.log(filterOptions);
-    console.log("---------------")
-  },[filterOptions])
 
   const getTickets = async (props: { newDate: Date }) => {
     const { newDate } = props;
     if (!serviceState.ticketFindForm) return;
     dispatch(settingsActions.setLoading({ isLoading: true, content: 'Looking for Services ...' }));
     try {
+      const filter = getFilterValues();
       const { data } = await serviceOfService.findTickets({
         from: serviceState.ticketFindForm.from,
         to: serviceState.ticketFindForm.to,
         vehicleType: serviceState.ticketFindForm.vehicleType,
         date: newDate,
+        limit: defaultPageSize,
+        offset: 0,
+        filter
       });
 
       const convertedData = convertHelper.convertTicketResultToRedux(data);
@@ -123,6 +138,7 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
           date: newDate.toString(),
         }),
       );
+      setPage(0);
     } catch (error: any) {
       if (typeof error.response?.data.message === 'string') {
         dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));
@@ -143,6 +159,39 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
     }
     setDateVisible(false);
   };
+
+  const fetchMoreData = async (page: number) => {
+    
+    if (!serviceState.ticketFindForm) return;
+    dispatch(settingsActions.setLoading({ isLoading: true, content: 'Looking for Services ...' }));
+    try {
+      const filter = getFilterValues();
+      const { data } = await serviceOfService.findTickets({
+        from: serviceState.ticketFindForm.from,
+        to: serviceState.ticketFindForm.to,
+        vehicleType: serviceState.ticketFindForm.vehicleType,
+        date: new Date(serviceState.ticketFindForm.date),
+        limit: defaultPageSize,
+        offset: page * defaultPageSize,
+        filter
+      });
+
+      const convertedData = convertHelper.convertTicketResultToRedux(data);
+
+      dispatch(serviceActions.setServiceList(serviceState.serviceList.concat(convertedData.rows)));
+
+    } catch (error: any) {
+      if (typeof error.response?.data.message === "string") {
+        dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));
+      } else if (typeof error.response?.data.message === "object") {
+        dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message[0] }));
+      } else {
+        dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.message }));
+      }
+    } finally {
+      dispatch(settingsActions.setLoading({ isLoading: false, content: undefined }));
+    }
+}
 
   const renderRoute = (route: string, start: string, end: string) => {
     const _renderItem = ({ item, index }: { item: string; index: number }) => {
@@ -273,7 +322,7 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
               <VehicleTypeIcon type={serviceState.ticketFindForm.vehicleType} color="dark" size={20} />
               <View style={{ ...styles.tag, backgroundColor: COLORS['info-600'], marginLeft: 10 }}>
                 <Text numberOfLines={1} style={styles.headerContentText}>
-                  {serviceState.ticketFindForm.to}aaa
+                  {serviceState.ticketFindForm.to}
                 </Text>
               </View>
             </View>
@@ -289,10 +338,18 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
           </View>
         ) : null}
         <FlatList
+          contentContainerStyle={{ flexGrow: 1 }}
           data={serviceState.serviceList}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           ListFooterComponent={_footer}
+          onEndReachedThreshold={0.2}
+          onEndReached={() => {
+            if (serviceState.baseServiceCount > 0 && serviceState.baseServiceCount > serviceState.baseServiceList.length) {
+              setPage(page + 1);
+              fetchMoreData(page + 1);
+            }
+          }}
         />
         <DatePicker
           //   minimumDate={new Date()}
@@ -313,6 +370,10 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
         setIsVisible={setFilterModalVisible}
         filterOptions={filterOptions}
         setFilterOptions={setFilterOptions}
+        handleOk={() => {
+          setFilterModalVisible(false);
+          getTickets({newDate: new Date(serviceState.ticketFindForm?.date || "")})
+        }}
       />
     </View>
   );

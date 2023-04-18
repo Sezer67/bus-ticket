@@ -27,7 +27,7 @@ const BaseServiceWithServicesItem: React.FC<PropsType> = ({ item, index }) => {
     )
 
     const FirstAndLastStationText = (prop: { route: string[] }) => (
-        <Text category='h5'>{prop.route[0]} - {prop.route[prop.route.length - 1]}</Text>
+        <Text category='h5' numberOfLines={1} style={{ maxWidth: '55%' }} >{prop.route[0]} - {prop.route[prop.route.length - 1]}</Text>
     )
 
     const navigateToCreateServices = () => {

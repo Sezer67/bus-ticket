@@ -5,6 +5,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsObject,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -51,4 +52,14 @@ export class ServiceLookupDto {
   @Transform(({ value }) => new Date(value))
   @IsDate()
   date: Date;
+
+  @IsOptional()
+  @Transform(({ value }) => value.split(','))
+  @IsArray()
+  companyIds?: string[];
+
+  @IsOptional()
+  @Transform(({ value }) => value.split(','))
+  @IsArray()
+  seatingPlans?: string[];
 }

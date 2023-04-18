@@ -11,6 +11,7 @@ type PropsType = {
   setIsVisible: (visible: boolean) => void;
   filterOptions: serviceTypes.ServiceScreenFilterOptionsType;
   setFilterOptions: (options: serviceTypes.ServiceScreenFilterOptionsType) => void;
+  handleOk: () => void;
 };
 
 const ServiceFilterAndSorterModal: React.FC<PropsType> = ({
@@ -18,6 +19,7 @@ const ServiceFilterAndSorterModal: React.FC<PropsType> = ({
   setIsVisible,
   filterOptions,
   setFilterOptions,
+  handleOk
 }) => {
   const [activePageIndex, setActivePageIndex] = useState(0);
 
@@ -126,7 +128,7 @@ const ServiceFilterAndSorterModal: React.FC<PropsType> = ({
       </ScrollView>
       <View style={{ flexDirection: 'row',justifyContent:'space-between' }}>
         <Button onPress={() => setIsVisible(false)} style={{ backgroundColor: COLORS.gray, borderWidth: 0, width:'49%' }}>Cancel</Button>
-        <Button style={{ backgroundColor: COLORS['danger-400'], borderWidth: 0, width:'49%' }}>Apply</Button>
+        <Button onPress={handleOk} style={{ backgroundColor: COLORS['danger-400'], borderWidth: 0, width:'49%' }}>Apply</Button>
       </View>
     </Modal>
   );
