@@ -191,8 +191,13 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
     } finally {
       dispatch(settingsActions.setLoading({ isLoading: false, content: undefined }));
     }
-}
+  }
 
+  const handleSelectService = (item: ServiceType) => {
+    dispatch(serviceActions.setSelectedService(item));
+    navigation.navigate('TicketBuy');
+  }
+  
   const renderRoute = (route: string, start: string, end: string) => {
     const _renderItem = ({ item, index }: { item: string; index: number }) => {
       return (
@@ -219,8 +224,8 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
           <Text category="h6" style={{ paddingLeft: 10 }}>
             {prop.item.companyName}
           </Text>
-          <Text category="h6" style={{ paddingRight: 10 }}>
-            {dateHelper.formattedDate(new Date(prop.item.departureDate), 'HH:mm')}
+          <Text style={{ paddingRight: 10, color: COLORS.gray }}>
+            {dateHelper.formattedDate(new Date(prop.item.departureDate), 'DD/MM HH:mm')}
           </Text>
         </View>
         {/* Content */}
@@ -229,12 +234,6 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
             <MaterialCommunityIcons name="seatbelt" size={24} color={COLORS.gray} />
             <Text style={styles.contentText}>{prop.item.seat}</Text>
           </View>
-          {/* <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <MaterialCommunityIcons name="highway" size={24} color={COLORS.gray} />
-            <Text numberOfLines={2} style={styles.contentText}>
-              {prop.item.departureCity} - {prop.item.arrivalCity}
-            </Text>
-          </View> */}
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
             <MaterialCommunityIcons name="clock-outline" size={24} color={COLORS.gray} />
             <Text style={styles.contentText}>{arrivalTime}</Text>
@@ -257,6 +256,7 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
             />
           </View>
           <TouchableOpacity
+            onPress={() => handleSelectService(prop.item)}
             style={{
               borderWidth: 1,
               marginTop: 10,

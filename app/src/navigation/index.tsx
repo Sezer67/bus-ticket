@@ -34,6 +34,7 @@ import AddVehicleScreen from '../screens/Modals/AddVehicleScreen';
 import AddServiceScreen from '../screens/Modals/AddServiceScreen';
 import AddServiceStepsScreen from '../screens/Modals/AddServiceStepsScreen';
 import CreateCompanyScreen from '../screens/CreateCompanyScreen';
+import TicketBuyScreen from '../screens/TicketBuyScreen';
 
 export default function Navigation() {
   return (
@@ -100,6 +101,7 @@ function RootNavigator() {
           <>
             <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
             <Stack.Screen name='Services' component={ServicesScreen} options={{headerShown: true}} />
+            <Stack.Screen name='TicketBuy' component={TicketBuyScreen} options={{headerShown: true}} />
             <Stack.Screen name='CreateCompany' component={CreateCompanyScreen} options={{headerShown: false}} />
             <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
             <Stack.Group screenOptions={{ presentation: 'card' }}>

@@ -22,6 +22,8 @@ export type LookupQueryDataType = {
   select?: (keyof VehicleType)[];
   limit?: number;
   offset?: number;
+  ids?: string[];
+  plates?: string[];
 };
 
 export type LookupResponseType = {

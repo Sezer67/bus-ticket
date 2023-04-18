@@ -1,7 +1,7 @@
 import { Injectable, Inject, forwardRef, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Vehicle } from './vehicle.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CompanyService } from 'src/company/company.service';
 import { VehicleCreateDto } from './dto/vehicle-create.dto';
 import { VehicleInfoUpdateDto } from './dto/vehicle-update.dto';
@@ -28,6 +28,13 @@ export class VehicleService {
       {
         const where: any = {};
         const select: any = {};
+
+        if(dto.ids){
+          where.id = In(dto.ids);
+        }
+        if(dto.plates){
+          where.plate = In(dto.plates);
+        }
         if (dto.relations) {
           query.relations = [...dto.relations];
         }

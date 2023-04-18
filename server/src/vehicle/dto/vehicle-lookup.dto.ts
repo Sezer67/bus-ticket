@@ -13,6 +13,16 @@ export class VehicleLookupDto {
   select?: string[];
 
   @IsOptional()
+  @Transform(({ value }) => value.split(','))
+  @IsArray()
+  ids?: string[];
+
+  @IsOptional()
+  @Transform(({ value }) => value.split(','))
+  @IsArray()
+  plates?: string[];
+
+  @IsOptional()
   @Type(() => Number)
   @Transform(({ value }) => +value)
   @IsNumber()

@@ -46,6 +46,9 @@ const ServiceSlice = createSlice({
     },
     setTicketFindForm: (state,action: PayloadAction<SetTicketFindFormType>) => {
       state.ticketFindForm = { ...action.payload };
+    },
+    setSelectedService: (state, action: PayloadAction<ServiceType>) => {
+      state.service = { ...action.payload };
     }
   },
 });

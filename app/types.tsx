@@ -29,6 +29,7 @@ export type RootStackParamList = {
   };
   NotFound: undefined;
   TicketFind: undefined;
+  TicketBuy: undefined;
   Services: undefined;
   Login: undefined;
   Register: undefined;
