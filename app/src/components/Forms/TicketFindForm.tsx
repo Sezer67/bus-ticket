@@ -114,16 +114,13 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
             marginBottom: 10,
           }}
         >
-          <Text appearance="hint" style={{ fontWeight: '700', fontSize: 12, marginBottom: 2 }}>
-            From
-          </Text>
           <Button
             style={[GLOBAL_STYLES.input, styles.selectButton]}
             onPress={() => setFromModalVisible(true)}
             appearance="outline"
             status="danger"
           >
-            {fromValue || 'Select Click'}
+            {fromValue || 'From City'}
           </Button>
         </View>
         <View
@@ -136,7 +133,7 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
           }}
         >
           <View style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <View style={GLOBAL_STYLES.separator} />
+            <View style={{...GLOBAL_STYLES.separator, backgroundColor: COLORS.dark}} />
           </View>
           <TouchableOpacity onPress={compareFromTo}>
             <MaterialCommunityIcons name="compare-vertical" size={24} color="black" />
@@ -151,9 +148,6 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
             marginBottom: 10,
           }}
         >
-          <Text appearance="hint" style={{ fontWeight: '700', fontSize: 12, marginBottom: 2 }}>
-            To
-          </Text>
           <Button
             style={[GLOBAL_STYLES.input, styles.selectButton]}
             onPress={() => setToModalVisible(true)}
@@ -165,9 +159,9 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
         </View>
       </RouteLine>
       <View style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start', width: '100%' }}>
-        <Text appearance="hint" style={{ fontWeight: '700', fontSize: 12, marginBottom: 2 }}>
+        {/* <Text appearance="hint" style={{ fontWeight: '700', fontSize: 12, marginBottom: 2 }}>
           Date
-        </Text>
+        </Text> */}
         <Button
           style={[GLOBAL_STYLES.input, styles.selectButton]}
           onPress={() => setDatePickerVisible(true)}
@@ -233,7 +227,7 @@ const styles = StyleSheet.create({
   },
   selectButton: {
     width: '100%',
-    backgroundColor: COLORS['danger-100'],
+    // backgroundColor: COLORS['danger-100'],
     marginBottom: 10,
     borderTopRightRadius: 5,
     borderTopLeftRadius: 5,

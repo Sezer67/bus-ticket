@@ -36,6 +36,15 @@
       "eas": {
         "projectId": "2848839f-4358-4ad0-b9c5-33429aabd701"
       }
-    }
+    },
+    "plugins": [
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "",
+          "enableGooglePay": true
+        }
+      ]
+    ]
   }
 }

@@ -27,7 +27,7 @@ export default function TicketFindScreen({ navigation }: RootStackScreenProps<'T
                     <TabComponent activeTab={activeTab} setActiveTab={setActiveTab} />
                 </View>
                 <Text appearance='hint' style={styles.title} >Ticket Find</Text>
-                <View style={styles.separator} />
+                <View style={{...styles.separator, backgroundColor: COLORS.dark}} />
                 <View style={styles.formContainer}>
                     <TicketFindForm
                         ticketType={ticketFindConfigs.TabItems[activeTab].id}
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: COLORS['danger-600']
+        color: COLORS.dark
     },
     separator: {
         marginVertical: 10,

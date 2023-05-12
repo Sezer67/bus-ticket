@@ -1,5 +1,5 @@
 const urlsConfig = {
-  apiUrl: 'http://192.168.1.100:8000',
+  apiUrl: 'http://192.168.1.101:8000',
   user: {
     login: '/auth/login',
     logout: '/user/logout',
@@ -7,8 +7,9 @@ const urlsConfig = {
     getCurrent: '/user/@me',
     changePassword: '/user/change-password',
   },
-  company:{
-    create:'/company'
+  company: {
+    create: '/company',
+    get: '/company',
   },
   vehicle: {
     create: '/vehicle',
@@ -22,6 +23,9 @@ const urlsConfig = {
     multipleCreate: '/service',
     findTicket: '/service/find',
   },
+  payment: {
+    ticketBuy: '/pay/ticket-buy',
+  }
 };
 
 export default urlsConfig;

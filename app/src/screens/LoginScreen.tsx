@@ -30,7 +30,7 @@ const LoginScreen = ({ navigation, route }: RootStackScreenProps<'Login'>) => {
     const handleOnSubmit = async () => {
         try {
             const formData = {
-                mail: mailInputState.value,
+                mail: mailInputState.value.toLowerCase(),
                 password: passwordInputState.value
             }
             dispatch(settingsActions.setLoading({ isLoading: true, content: 'Loading...' }));

@@ -9,8 +9,8 @@ type PropsType = {
 
 const RouteLine: React.FC<PropsType> = ({ children, icon }) => {
     return (
-        <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <View style={{ width: '7%', height: '75%', display: 'flex', flexDirection: 'column' }}>
+        <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            {/* <View style={{ width: '7%', height: '75%', display: 'flex', flexDirection: 'column' }}>
                 <MaterialCommunityIcons name="map-marker-radius" size={20} color="black" />
                 <View style={{ marginTop: 4, height: 20, width: 10, borderRightWidth: 1, borderColor: 'red', borderStyle: 'dotted' }} />
 
@@ -20,7 +20,7 @@ const RouteLine: React.FC<PropsType> = ({ children, icon }) => {
 
                 <View style={{ height: 20, width: 10, marginBottom: 5, borderRightWidth: 1, borderColor: 'red', borderStyle: 'dotted' }} />
                 <MaterialCommunityIcons name="map-marker-radius-outline" size={20} color="black" />
-            </View>
+            </View> */}
             <View style={{ width: '93%' }}>
                 {children}
             </View>

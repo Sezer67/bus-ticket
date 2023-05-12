@@ -12,12 +12,13 @@ type PropsType = {
     number: number;
     isFilled: boolean;
   }[];
+  selectedSeatNumbers?: number[];
+  setSelectedSeatNumbers?: (array: number[]) => void;
 };
 // props => araç koltuk planı, user tarafından görüntülenme için doluluk arrayi, isCustomer ?
 // todo => user tarafı için koltuk seçme işlemi
 // vehicle için redux yazılacak.
-const BusModel: React.FC<PropsType> = ({ isSelectable, seatPlan, seats }) => {
-  const [selectedSeatNumbers, setSelectedSeatNumbers] = useState<number[]>([]);
+const BusModel: React.FC<PropsType> = ({ isSelectable, seatPlan, seats, selectedSeatNumbers, setSelectedSeatNumbers }) => {
   const [editableSeats, setEditableSeats] = useState<{ number: number; isFilled: boolean }[]>([]);
 
   useEffect(() => {
@@ -25,7 +26,7 @@ const BusModel: React.FC<PropsType> = ({ isSelectable, seatPlan, seats }) => {
   }, [seats]);
 
   const handleSelect = ({ isFilled, number }: { isFilled: boolean; number: number }) => {
-    if (!isSelectable) return;
+    if (!isSelectable || !selectedSeatNumbers || !setSelectedSeatNumbers) return;
     // kendi seçtiğini kaldırma işlemi
     if (selectedSeatNumbers.includes(number)) {
       const arr = editableSeats.map((each) => {
@@ -59,7 +60,7 @@ const BusModel: React.FC<PropsType> = ({ isSelectable, seatPlan, seats }) => {
   const seatWithNumber = (prop: { isFilled: boolean; number: number }) => {
     let bg = 'transparent';
     if (prop.isFilled) bg = COLORS['danger-400'];
-    if (selectedSeatNumbers.includes(prop.number)) bg = COLORS['info-300'];
+    if (selectedSeatNumbers?.includes(prop.number)) bg = COLORS['info-300'];
     return (
       <TouchableOpacity
         onPress={() => handleSelect(prop)}
@@ -98,9 +99,9 @@ const BusModel: React.FC<PropsType> = ({ isSelectable, seatPlan, seats }) => {
   };
 
   return (
-    <ScrollView horizontal style={styles.container}>
+    <ScrollView horizontal style={styles.container} showsHorizontalScrollIndicator={false}>
       <View style={styles.driverContainer}>
-        <MaterialCommunityIcons name="steering" size={32} color={COLORS.gray} />
+        <MaterialCommunityIcons name="steering" size={36} color={COLORS.gray} />
       </View>
       <View style={styles.passengerContainer}>
         <View style={{ flexDirection: 'row', height: '100%' }}>

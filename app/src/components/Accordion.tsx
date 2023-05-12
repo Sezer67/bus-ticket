@@ -1,14 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LayoutAnimation, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'
 
 type PropsType = {
     title: React.ReactNode;
     children: React.ReactNode;
+    isOpened?: boolean; 
+    setActiveIndex?: () => void;
 }
 
-const Accordion: React.FC<PropsType> = ({ title, children }) => {
-    const [isOpen, setIsOpen] = useState(false);
+const Accordion: React.FC<PropsType> = ({ title, children, isOpened = false, setActiveIndex }) => {
+    const [isOpen, setIsOpen] = useState(isOpened);
+
+    useEffect(() => {
+        if(setActiveIndex && isOpen){
+            setActiveIndex();
+        }
+    },[isOpen])
+
+    useEffect(() => {
+        setIsOpen(isOpened);
+    },[isOpened])
 
     const toggleOpen = () => {
         setIsOpen(value => !value);
