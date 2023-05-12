@@ -14,6 +14,7 @@ import { VehicleModule } from './vehicle/vehicle.module';
 import { ServiceModule } from './service/service.module';
 import { ServicesOfUsersModule } from './services-of-users/services-of-users.module';
 import { BaseServiceModule } from './base-service/base-service.module';
+import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { BaseServiceModule } from './base-service/base-service.module';
     BaseServiceModule,
     ServiceModule,
     ServicesOfUsersModule,
+    StripeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
