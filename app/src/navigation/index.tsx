@@ -176,12 +176,15 @@ function BottomTabNavigator() {
       <BottomTab.Screen
         name="TicketFind"
         component={TicketFindScreen}
-        options={({ navigation }: RootTabScreenProps<'TicketFind'>) => ({
-          title: 'Find Ticket',
-          headerShown: false,
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="highway" color={color} size={18} />,
-
-        })}
+        options={({ navigation, route }: RootTabScreenProps<'TicketFind'>) => {
+          
+          return ({
+            title: 'Find Ticket',
+            headerShown: false,
+            tabBarIcon: ({ color }) => <MaterialCommunityIcons name="highway" color={color} size={18} />,
+            
+          })
+        }}
       />
       <BottomTab.Screen
         name="Travel"

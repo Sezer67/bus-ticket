@@ -65,3 +65,22 @@ export type FindTicketQueryDataType = {
   to: string;
   date: Date;
 };
+
+export type BuyTicketDataType = {
+  id: string;
+  passengerInfoList: {
+    fullName: string;
+    mail: string;
+    seatNumber: number;
+  }[];
+}
+
+export type BuyTicketResponseDataType = {
+  fullName: string;
+  mail: string;
+  seatNumber: number;
+  userId: string;
+  serviceId: string;
+  id: string;
+  isToVote: boolean;
+}

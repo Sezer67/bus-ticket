@@ -18,7 +18,7 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401) {
       setToken('');
       storageHelper.setStorageKey('@token', '');
-      console.log('if ');
+      console.log('401 ',error);
     }
 
     return Promise.reject(error);

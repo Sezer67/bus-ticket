@@ -1,7 +1,7 @@
 import { StyleSheet, View, ImageBackground } from 'react-native';
 import { RootStackScreenProps } from '../../../types';
 import Layout from '../../../constants/Layout';
-import { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Text } from '@ui-kitten/components';
 import { ticketFindConfigs } from '../configs';
 import { FontAwesome } from '@expo/vector-icons';
@@ -9,7 +9,7 @@ import { COLORS, images } from '../../../constants';
 import TicketFindForm from '../../components/Forms/TicketFindForm';
 import { StatusBar } from 'expo-status-bar';
 
-export default function TicketFindScreen({ navigation }: RootStackScreenProps<'TicketFind'>) {
+export default function TicketFindScreen({ navigation, route }: RootStackScreenProps<'TicketFind'>) {
 
     const [activeTab, setActiveTab] = useState<number>(0);
     const bgImage = useMemo<string>(() => {

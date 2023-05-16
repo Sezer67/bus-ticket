@@ -3,6 +3,8 @@ import urlsConfig from '../configs/url.config';
 import { axiosInstance } from '../utils/axios.util';
 import {
   BaseServiceLookupResponseType,
+  BuyTicketDataType,
+  BuyTicketResponseDataType,
   CreateBaseServiceFormDataType,
   CreateBaseServiceResponseType,
   CreateMultipleServiceType,
@@ -67,3 +69,7 @@ export const findTickets = (data: FindTicketQueryDataType): AxiosPromise<Service
   }
   return axiosInstance.get(routeHelper.addQueryPArameters(urlsConfig.service.findTicket, query));
 };
+
+export const buyTicket = (data: BuyTicketDataType):AxiosPromise<BuyTicketResponseDataType[]> => {
+  return axiosInstance.post(urlsConfig.service.buyTicket,data);
+}

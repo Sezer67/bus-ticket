@@ -121,7 +121,7 @@ const TicketBuyScreen = ({ navigation, route }: RootStackScreenProps<'TicketBuy'
           ))}
         </View>
         {selectedSeats.length > 0 ? (
-          <TicketBuyForm passengerCount={selectedSeats.length} singlePersonTicketPrice={serviceState.service!.price}/>
+          <TicketBuyForm seatNumbers={selectedSeats} passengerCount={selectedSeats.length} singlePersonTicketPrice={serviceState.service!.price}/>
         ) : (
           <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
             <Ionicons name="ios-warning" size={24} color={COLORS['warning-600']} />

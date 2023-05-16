@@ -1,4 +1,4 @@
-type FormatType = 'Day Month Date Year HH:mm' | 'Day Month Date' | 'DD/MM/YYYY HH:mm' | 'DD/MM' | 'DD/MM HH:mm' | 'HH:mm';
+type FormatType = 'Day Month Date Year HH:mm' | 'Day Month Date' | 'Day Month Date HH:mm' | 'DD/MM/YYYY HH:mm' | 'DD/MM' | 'DD/MM HH:mm' | 'HH:mm';
 
 const dakika = 60;
 const saat = dakika * 60;

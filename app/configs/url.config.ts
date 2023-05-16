@@ -1,5 +1,5 @@
 const urlsConfig = {
-  apiUrl: 'http://192.168.1.101:8000',
+  apiUrl: 'http://192.168.1.104:8000',
   user: {
     login: '/auth/login',
     logout: '/user/logout',
@@ -22,6 +22,7 @@ const urlsConfig = {
     baseServiceLookupMe: '/base-service/@me',
     multipleCreate: '/service',
     findTicket: '/service/find',
+    buyTicket: '/service/ticket-buy',
   },
   payment: {
     ticketBuy: '/pay/ticket-buy',
