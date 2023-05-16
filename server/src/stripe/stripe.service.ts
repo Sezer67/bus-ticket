@@ -7,11 +7,12 @@ import { TicketPayDto } from './dto/stripe.ticket-buy.dto';
 @Injectable()
 export class StripeService {
   private stripe: Stripe;
-  
+  private bearerToken: string = "Bearer ";
   constructor(
     private readonly configService: ConfigService,
   ) {
-    this.stripe = new Stripe(configService.get<string>('stripeApiKey'), {
+    this.bearerToken += configService.get<string>('stripeApiKey');
+    this.stripe = new Stripe("sk_test_51N6fwyK1ItlLPFTCo1aIhozigkmgTvm9EPjz1PpOq8RScI60piGUGHgsUyAs5xrIvxjLgJRmTOBmilTEwijFvB6J00UiW5c6Jm", {
       apiVersion: '2022-11-15',
     });
   }

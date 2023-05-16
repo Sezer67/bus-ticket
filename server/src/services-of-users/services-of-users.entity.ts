@@ -16,14 +16,17 @@ export class ServicesOfUsers extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'uuid', nullable: false, unique: true, default: v4() })
-  PNRNumber: string;
-
   @Column({ type: 'smallint', nullable: false })
   seatNumber: number;
 
   @Column({ type: 'boolean', default: false })
   isToVote: boolean;
+
+  @Column({nullable: false})
+  fullName: string;
+
+  @Column({nullable: false})
+  mail: string;
 
   @ManyToOne(() => User, (user) => user.services)
   @JoinColumn({ name: 'userId' })

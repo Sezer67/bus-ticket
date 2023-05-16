@@ -47,7 +47,7 @@ export class Service extends BaseEntity {
   @Column({ type: 'simple-array', default: [], nullable: false })
   filledSeats: string[];
 
-  @ManyToOne(() => BaseService, (entity) => entity.services)
+  @ManyToOne(() => BaseService, (entity) => entity.services, {onDelete: 'NO ACTION'})
   @JoinColumn({ name: 'baseServiceId' })
   baseService: BaseService;
 

@@ -14,6 +14,7 @@ import { Roles } from 'src/shared/decorators/role.decorator';
 import { userEnum } from 'src/shared/enums';
 import { Request } from 'express';
 import { ServiceLookupDto } from './dto/service-lookup.dto';
+import { ServiceBuyTicketDto } from './dto/service-ticket-buy.dto';
 
 @Controller('service')
 export class ServiceController {
@@ -30,5 +31,12 @@ export class ServiceController {
   @Roles(userEnum.Role.Company)
   createService(@Body() dto: any, @Req() req: Request) {
     return this.service.createService(dto, req);
+  }
+
+  @Post('/ticket-buy')
+  @UseGuards(AuthGuard('user'), RolesGuard)
+  @Roles(userEnum.Role.Customer)
+  buyTicket(@Body() dto: ServiceBuyTicketDto, @Req() req: any) {
+    return this.service.buyTicket(dto, req.user);
   }
 }
