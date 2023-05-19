@@ -63,3 +63,16 @@ export class ServiceLookupDto {
   @IsArray()
   seatingPlans?: string[];
 }
+export class TravelLookupDto {
+  @IsOptional()
+  @Type(() => Number)
+  @Transform(({ value }) => +value)
+  @IsNumber()
+  limit?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @Transform(({ value }) => +value)
+  @IsNumber()
+  offset?: number;
+}

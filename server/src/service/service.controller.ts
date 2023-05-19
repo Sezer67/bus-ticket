@@ -13,7 +13,7 @@ import { RolesGuard } from 'src/shared/guards/role.guard';
 import { Roles } from 'src/shared/decorators/role.decorator';
 import { userEnum } from 'src/shared/enums';
 import { Request } from 'express';
-import { ServiceLookupDto } from './dto/service-lookup.dto';
+import { ServiceLookupDto, TravelLookupDto } from './dto/service-lookup.dto';
 import { ServiceBuyTicketDto } from './dto/service-ticket-buy.dto';
 
 @Controller('service')
@@ -38,5 +38,12 @@ export class ServiceController {
   @Roles(userEnum.Role.Customer)
   buyTicket(@Body() dto: ServiceBuyTicketDto, @Req() req: any) {
     return this.service.buyTicket(dto, req.user);
+  }
+
+  @Get('travels/@me')
+  @UseGuards(AuthGuard('user'),RolesGuard)
+  @Roles(userEnum.Role.Customer)
+  getTravelsMe(@Query() dto: TravelLookupDto, @Req() req:any){
+    return this.service.getTravelsMe(dto,req.user);
   }
 }

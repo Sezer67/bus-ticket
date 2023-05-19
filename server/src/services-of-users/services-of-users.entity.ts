@@ -16,6 +16,9 @@ export class ServicesOfUsers extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ nullable: false })
+  companyName: string;
+
   @Column({ type: 'smallint', nullable: false })
   seatNumber: number;
 

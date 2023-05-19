@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Service } from './service.entity';
-import { Between, In, Repository } from 'typeorm';
+import { Between, FindOptionsOrder, In, Repository } from 'typeorm';
 import { Request } from 'express';
 import { ServiceCreateDto } from './dto/service-create.dto';
-import { ServiceLookupDto } from './dto/service-lookup.dto';
+import { ServiceLookupDto, TravelLookupDto } from './dto/service-lookup.dto';
 import { User } from 'src/user/user.entity';
 import { ServiceBuyTicketDto } from './dto/service-ticket-buy.dto';
 import { ServicesOfUsers } from 'src/services-of-users/services-of-users.entity';
@@ -16,7 +16,37 @@ export class ServiceService {
     @InjectRepository(ServicesOfUsers)
     private readonly serviceOfUserRepo: Repository<ServicesOfUsers>,
   ) {}
-
+  travelConstantVariables = {
+    select: {
+      id: true,
+      fullName: true,
+      isToVote: true,
+      seatNumber: true,
+      companyName: true,
+      service: {
+        id: true,
+        arrivalCity: true,
+        arrivalDate: true,
+        departureCity: true,
+        departureDate: true,
+        price: true,
+        baseService: {
+          id: true,
+          isCompleted: true,
+        }
+      }
+    },
+    order: {
+      service: {
+        arrivalDate: 'DESC'
+      }
+    } as FindOptionsOrder<ServicesOfUsers>,
+    relations: {
+      service: {
+        baseService: true
+      },
+    },
+  }
   async createService(dto: any, req: Request): Promise<Service[]> {
     try {
       const createdServices: Service[] = [];
@@ -148,6 +178,7 @@ export class ServiceService {
           mail: info.mail.toLowerCase(),
           userId: user.id,
           serviceId: id,
+          companyName: 'KAMILKOC'
         });
         createdTickects.push(ticket);
       }
@@ -155,6 +186,37 @@ export class ServiceService {
       await this.repo.update({id}, {filledSeats});
       console.log(createdTickects);
       return createdTickects;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getTravelsMe(dto: TravelLookupDto, user:User) {
+    try {
+      // önce o kullanıcının service of users alanından service leri bulunmalı
+      const query: any = {};
+
+      {
+        if(dto.limit){
+          query.take = dto.limit;
+        }
+        
+        if(dto.offset){
+          query.skip = dto.offset;
+        }
+      }
+
+      const [rows, count] = await this.serviceOfUserRepo.findAndCount({
+        where: {
+          userId: user.id
+        },
+        ...query,
+        ...this.travelConstantVariables,
+      });
+
+      return {
+        rows, count
+      }
     } catch (error) {
       throw error;
     }
