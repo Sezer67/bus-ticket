@@ -26,9 +26,7 @@ import MyCompanyScreen from '../screens/Bottoms/MyCompanyScreen';
 import TicketFindScreen from '../screens/Bottoms/TicketFindScreen';
 import ModalScreen from '../screens/Modals/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
-
-
+import MyTravelsScreen from '../screens/Bottoms/MyTravelsScreen';
 import GLOBAL_STYLES from '../../constants/Styles';
 import AddVehicleScreen from '../screens/Modals/AddVehicleScreen';
 import AddServiceScreen from '../screens/Modals/AddServiceScreen';
@@ -165,6 +163,8 @@ function BottomTabNavigator() {
         component={MyCompanyScreen}
         options={() => ({
           title: 'My Company',
+          headerShadowVisible: true,
+          headerStyle: GLOBAL_STYLES.transparentHeaderScreenContainer,
           headerShown: false,
           tabBarIcon: ({ color }) => <MaterialIcons name="business-center" color={color} size={18} />
         })}
@@ -181,6 +181,7 @@ function BottomTabNavigator() {
           return ({
             title: 'Find Ticket',
             headerShown: false,
+            headerStyle: GLOBAL_STYLES.transparentHeaderScreenContainer,
             tabBarIcon: ({ color }) => <MaterialCommunityIcons name="highway" color={color} size={18} />,
             
           })
@@ -188,7 +189,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Travel"
-        component={TabTwoScreen}
+        component={MyTravelsScreen}
         options={{
           title: 'My Travels',
           tabBarIcon: ({ color }) => <FontAwesome5 name="map-marked-alt" color={color} size={18} />,

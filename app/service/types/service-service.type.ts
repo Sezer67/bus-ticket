@@ -27,11 +27,11 @@ type RelationsType = 'company' | 'vehicle' | 'services';
 
 type ServiceLookupResponseRowType = ServiceType & {
   baseService: {
-    route:string;
-    vehicle: Pick<VehicleType, "id" | "plate" | "seatingPlan">,
-    company: Pick<CompanyType, "id" | "name">
-  },
-}
+    route: string;
+    vehicle: Pick<VehicleType, 'id' | 'plate' | 'seatingPlan'>;
+    company: Pick<CompanyType, 'id' | 'name'>;
+  };
+};
 
 export type LookupQueryDataType = {
   relations?: RelationsType[];
@@ -73,7 +73,7 @@ export type BuyTicketDataType = {
     mail: string;
     seatNumber: number;
   }[];
-}
+};
 
 export type BuyTicketResponseDataType = {
   fullName: string;
@@ -83,4 +83,28 @@ export type BuyTicketResponseDataType = {
   serviceId: string;
   id: string;
   isToVote: boolean;
+};
+
+export type MyTavelsLookupDataType = {
+  limit?: number;
+  offset?: number;
+};
+
+export type MyTavelsResponseDataType = {
+  rows: MyTravelsDataType[];
+  count: number;
+};
+
+export type MyTravelsDataType = {
+  id: string;
+  seatNumber: number;
+  isToVote: boolean;
+  fullName: string;
+  companyName: string;
+  service: Pick<ServiceType, 'id' | 'arrivalCity' | 'arrivalDate' | 'departureCity' | 'departureDate' | 'price' > & {
+    baseService: {
+     id: string;
+     isCompleted: boolean; 
+    }
+  };
 }

@@ -10,6 +10,8 @@ import {
   CreateMultipleServiceType,
   FindTicketQueryDataType,
   LookupQueryDataType,
+  MyTavelsLookupDataType,
+  MyTavelsResponseDataType,
   ServiceLookupResponseType,
 } from './types/service-service.type';
 import { ServiceType } from '../types/service.type';
@@ -72,4 +74,16 @@ export const findTickets = (data: FindTicketQueryDataType): AxiosPromise<Service
 
 export const buyTicket = (data: BuyTicketDataType):AxiosPromise<BuyTicketResponseDataType[]> => {
   return axiosInstance.post(urlsConfig.service.buyTicket,data);
+}
+
+export const getMyTravels = (data: MyTavelsLookupDataType):AxiosPromise<MyTavelsResponseDataType> => {
+  const query: any = {};
+  if (data.limit) {
+    query.limit = data.limit.toString();
+  }
+  if (data.offset) {
+    query.offset = data.offset.toString();
+  }
+
+  return axiosInstance.get(routeHelper.addQueryPArameters(urlsConfig.service.myTravels, query));
 }
