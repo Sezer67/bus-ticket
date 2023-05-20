@@ -10,6 +10,7 @@ const initialState: reduxSliceTypes.SettingsSliceType = {
   },
   error: {
     isError: false,
+    isSuccess: false,
     content: undefined,
   },
 };
@@ -23,7 +24,12 @@ const settingsSlice = createSlice({
       state.loading.content = action.payload.content;
     },
     setErrorSnackbar: (state, action: PayloadAction<SetErrorActionType>) => {
-      state.error.isError = action.payload.isError;
+      if(action.payload.isError !== undefined){
+        state.error.isError = action.payload.isError;
+      }
+      if(action.payload.isSuccess !== undefined){
+        state.error.isSuccess = action.payload.isSuccess;
+      }
       state.error.content = action.payload.content;
     },
   },

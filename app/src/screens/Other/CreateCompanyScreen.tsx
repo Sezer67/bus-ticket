@@ -1,17 +1,17 @@
 import { Input, Text,Button } from '@ui-kitten/components';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { RootStackScreenProps } from '../../types';
-import Layout from '../../constants/Layout';
-import { COLORS } from '../../constants';
-import { useInputState } from '../../hooks/forms.hook';
-import GLOBAL_STYLES from '../../constants/Styles';
+import { RootStackScreenProps } from '../../../types';
+import Layout from '../../../constants/Layout';
+import { COLORS } from '../../../constants';
+import { useInputState } from '../../../hooks/forms.hook';
+import GLOBAL_STYLES from '../../../constants/Styles';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
-import { settingsActions } from '../redux/settings/slice';
-import { companyService } from '../../service';
-import { ReduxRootType } from '../../types/redux-slice.type';
-import { userActions } from '../redux/user/slice';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux.hook';
+import { settingsActions } from '../../redux/settings/slice';
+import { companyService } from '../../../service';
+import { ReduxRootType } from '../../../types/redux-slice.type';
+import { userActions } from '../../redux/user/slice';
 
 const CreateCompanyScreen = ({navigation,route}:RootStackScreenProps<'CreateCompany'>) => {
     

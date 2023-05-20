@@ -24,6 +24,7 @@ const urlsConfig = {
     findTicket: '/service/find',
     buyTicket: '/service/ticket-buy',
     myTravels: '/service/travels/@me',
+    vote: '/service/vote',
   },
   payment: {
     ticketBuy: '/pay/ticket-buy',

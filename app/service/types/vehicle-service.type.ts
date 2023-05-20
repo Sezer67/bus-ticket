@@ -30,3 +30,10 @@ export type LookupResponseType = {
   rows: VehicleType[];
   count: number;
 };
+
+export type VoteVehicleDataType = {
+  id: string;
+  servicePoint: number;
+  comfortPoint: number;
+  speedPoint: number;
+}

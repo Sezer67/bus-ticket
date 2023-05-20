@@ -16,6 +16,7 @@ import {
 } from './types/service-service.type';
 import { ServiceType } from '../types/service.type';
 import { routeHelper } from '../src/helpers';
+import { VoteVehicleDataType } from './types/vehicle-service.type';
 
 export const createBaseService = (data: CreateBaseServiceFormDataType): AxiosPromise<CreateBaseServiceResponseType> => {
   return axiosInstance.post(urlsConfig.service.baseCreate, data);
@@ -86,4 +87,8 @@ export const getMyTravels = (data: MyTavelsLookupDataType):AxiosPromise<MyTavels
   }
 
   return axiosInstance.get(routeHelper.addQueryPArameters(urlsConfig.service.myTravels, query));
+}
+
+export const vote = (data: VoteVehicleDataType) => {
+  return axiosInstance.post(urlsConfig.service.vote, data);
 }

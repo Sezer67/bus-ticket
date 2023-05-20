@@ -1,18 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { RootStackScreenProps } from '../../types';
+import { RootStackScreenProps } from '../../../types';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from '@ui-kitten/components';
-import GLOBAL_STYLES from '../../constants/Styles';
+import GLOBAL_STYLES from '../../../constants/Styles';
 import { Feather, FontAwesome, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import BusModel from '../components/VehicleModels/BusModel';
-import { useAppSelector } from '../../hooks/redux.hook';
-import { ReduxRootType } from '../../types/redux-slice.type';
-import Layout from '../../constants/Layout';
-import { VehicleType } from '../../types/vehicle.type';
-import { vehicleService } from '../../service';
-import { COLORS } from '../../constants';
-import { dateHelper } from '../helpers';
-import TicketBuyForm from '../components/TicketBuyForm';
+import BusModel from '../../components/VehicleModels/BusModel';
+import { useAppSelector } from '../../../hooks/redux.hook';
+import { ReduxRootType } from '../../../types/redux-slice.type';
+import Layout from '../../../constants/Layout';
+import { VehicleType } from '../../../types/vehicle.type';
+import { vehicleService } from '../../../service';
+import { COLORS } from '../../../constants';
+import { dateHelper } from '../../helpers';
+import TicketBuyForm from '../../components/TicketBuyForm';
 
 const TicketBuyScreen = ({ navigation, route }: RootStackScreenProps<'TicketBuy'>) => {
   const [vehicle, setVehicle] = useState<VehicleType>();

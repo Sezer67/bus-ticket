@@ -18,22 +18,23 @@ import LinkingConfiguration from './LinkingConfiguration';
 import ProfileScreen from '../screens/Bottoms/ProfileScreen';
 import ServicesScreen from '../screens/Bottoms/ServicesScreen';
 import * as SplashScreen from 'expo-splash-screen';
-import LoginScreen from '../screens/LoginScreen';
-import RegisterScreen from '../screens/RegisterScreen';
+import LoginScreen from '../screens/Other/LoginScreen';
+import RegisterScreen from '../screens/Other/RegisterScreen';
 import MyVehiclesScreen from '../screens/Bottoms/MyVehiclesScreen';
 import MyServicesScreen from '../screens/Bottoms/MyServicesScreen';
 import MyCompanyScreen from '../screens/Bottoms/MyCompanyScreen';
 import TicketFindScreen from '../screens/Bottoms/TicketFindScreen';
 import ModalScreen from '../screens/Modals/ModalScreen';
-import NotFoundScreen from '../screens/NotFoundScreen';
+import NotFoundScreen from '../screens/Other/NotFoundScreen';
 import MyTravelsScreen from '../screens/Bottoms/MyTravelsScreen';
 import GLOBAL_STYLES from '../../constants/Styles';
 import AddVehicleScreen from '../screens/Modals/AddVehicleScreen';
 import AddServiceScreen from '../screens/Modals/AddServiceScreen';
 import AddServiceStepsScreen from '../screens/Modals/AddServiceStepsScreen';
-import CreateCompanyScreen from '../screens/CreateCompanyScreen';
-import TicketBuyScreen from '../screens/TicketBuyScreen';
+import CreateCompanyScreen from '../screens/Other/CreateCompanyScreen';
+import TicketBuyScreen from '../screens/Other/TicketBuyScreen';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
+import ReportScreen from '../screens/Other/ReportScreen';
 
 export default function Navigation() {
   return (
@@ -103,6 +104,7 @@ function RootNavigator() {
             <Stack.Screen name='TicketBuy' component={TicketBuyScreen} options={{headerShown: true}} />
             <Stack.Screen name='CreateCompany' component={CreateCompanyScreen} options={{headerShown: false}} />
             <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+            <Stack.Screen name='Report' component={ReportScreen} options={{title: 'Complain'}} />
             <Stack.Group screenOptions={{ presentation: 'card' }}>
               <Stack.Screen name="Modal" component={ModalScreen} />
               <Stack.Screen name="AddVehicleModal" component={AddVehicleScreen} />
@@ -194,7 +196,7 @@ function BottomTabNavigator() {
         options={{
           title: 'My Travels',
           tabBarIcon: ({ color }) => <FontAwesome5 name="map-marked-alt" color={color} size={18} />,
-          headerShown: false
+          headerTitleAlign:"center",
         }}
       />
     </>
@@ -221,6 +223,7 @@ function BottomTabNavigator() {
         options={{
           title: 'My Profile',
           tabBarIcon: ({ color }) => <FontAwesome5 name='user' color={color} size={18} />,
+          headerTitleAlign:"center",
         }}
       />
     </BottomTab.Navigator>

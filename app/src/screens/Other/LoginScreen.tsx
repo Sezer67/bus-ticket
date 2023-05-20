@@ -1,19 +1,19 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { RootStackScreenProps } from '../../types';
+import { RootStackScreenProps } from '../../../types';
 import { Input, Text, Button } from '@ui-kitten/components';
-import Layout from '../../constants/Layout';
-import { COLORS } from '../../constants';
+import Layout from '../../../constants/Layout';
+import { COLORS } from '../../../constants';
 import { Feather } from '@expo/vector-icons';
-import { useInputPasswordState, useInputState } from '../../hooks/forms.hook';
-import GLOBAL_STYLES from '../../constants/Styles';
-import { settingsActions } from '../redux/settings/slice';
-import { useAppDispatch } from '../../hooks/redux.hook';
-import { userService } from '../../service';
-import { userActions } from '../redux/user/slice';
-import { setToken } from '../../utils/axios.util';
-import { storageHelper } from '../helpers';
-import { Role } from '../../enums/user.enum';
+import { useInputPasswordState, useInputState } from '../../../hooks/forms.hook';
+import GLOBAL_STYLES from '../../../constants/Styles';
+import { settingsActions } from '../../redux/settings/slice';
+import { useAppDispatch } from '../../../hooks/redux.hook';
+import { userService } from '../../../service';
+import { userActions } from '../../redux/user/slice';
+import { setToken } from '../../../utils/axios.util';
+import { storageHelper } from '../../helpers';
+import { Role } from '../../../enums/user.enum';
 const LoginScreen = ({ navigation, route }: RootStackScreenProps<'Login'>) => {
 
     const mailInputState = useInputState();
@@ -38,6 +38,7 @@ const LoginScreen = ({ navigation, route }: RootStackScreenProps<'Login'>) => {
             dispatch(userActions.login(data));
             setToken(data.token);
             storageHelper.setStorageKey("@token", data.token);
+            dispatch(settingsActions.setErrorSnackbar({isSuccess: true, content: `Welcome ${data.user.fullName}`}))
 
             if(data.user.role === Role.Company && !data.user.companyId){
                 dispatch(settingsActions.setErrorSnackbar({ isError: true, content: "Your company information is missing" }));

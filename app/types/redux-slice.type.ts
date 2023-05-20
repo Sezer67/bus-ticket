@@ -10,6 +10,7 @@ export type SettingsSliceType = {
   };
   error: {
     isError: boolean;
+    isSuccess: boolean;
     content: string | undefined;
   };
 };

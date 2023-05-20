@@ -4,6 +4,7 @@ export type SetLoadingActionType = {
 };
 
 export type SetErrorActionType = {
-  isError: boolean;
+  isError?: boolean | undefined;
+  isSuccess?: boolean | undefined;
   content: string | undefined;
 };

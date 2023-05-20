@@ -15,9 +15,14 @@ const isSingleDigit = (number: number) => {
 
 export const formattedDate = (date: Date, format: FormatType): string => {
   let result = '';
+  let splitted = [];
   switch (format) {
+    case 'Day Month Date HH:mm':
+      splitted = date.toDateString().split(" ").filter((v,i) => i < 3);
+      result = splitted.join(" ");
+      break;
     case 'Day Month Date':
-      const splitted = date.toDateString().split(" ").filter((v,i) => i < 3);
+      splitted = date.toDateString().split(" ").filter((v,i) => i < 3);
       result = splitted.join(" ");
       break;
     case 'DD/MM/YYYY HH:mm':

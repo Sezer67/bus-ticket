@@ -21,10 +21,18 @@ import {
   MaterialIcons,
 } from '@expo/vector-icons';
 import { dateHelper } from '../helpers';
+import { useNavigation } from '@react-navigation/native';
+import VoteServiceModal from './Modals/VoteServiceModal';
+import { VoteVehicleDataType } from '../../service/types/vehicle-service.type';
+import { useAppDispatch } from '../../hooks/redux.hook';
+import { settingsActions } from '../redux/settings/slice';
+import { serviceOfService } from '../../service';
+import { AxiosError } from 'axios';
 
 type PropsType = {
   item: MyTravelsDataType;
   index: number;
+  changeVoteField: (travelId: string) => void;
 };
 const colorPalette = [
   COLORS['danger-500'],
@@ -34,15 +42,23 @@ const colorPalette = [
   COLORS['success-500'],
 ];
 
-const TravelCard: React.FC<PropsType> = ({ item, index }) => {
+const TravelCard: React.FC<PropsType> = ({ item, index,changeVoteField }) => {
   const xTreshold = Layout.window.width * 0.2;
-  const [firstRender, setFirstRender] = useState<boolean>(true);
+  const navigation = useNavigation();
   const tranlateX = useSharedValue(0);
+  const dispatch = useAppDispatch();
+
+  const [firstRender, setFirstRender] = useState<boolean>(true);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  const gestureEndCard = () => {
+    setTimeout(() => {
+      tranlateX.value = withTiming(0);
+    }, 1500);
+  }
   useEffect(() => {
     if (!firstRender) {
-      setTimeout(() => {
-        tranlateX.value = withTiming(0);
-      }, 1500);
+      gestureEndCard();
     }
   }, [firstRender]);
 
@@ -165,15 +181,44 @@ const TravelCard: React.FC<PropsType> = ({ item, index }) => {
     );
   };
 
+  const handleVote = async (data: Omit<VoteVehicleDataType, 'id'>) => {
+    try {
+      dispatch(settingsActions.setLoading({ isLoading: true, content: 'You voted...' }));
+      await serviceOfService.vote({
+        ...data,
+        id: item.id,
+      });
+      changeVoteField(item.id);
+      gestureEndCard();
+      dispatch(settingsActions.setErrorSnackbar({ isSuccess: true, content: 'Your vote has been approved' }));
+      setModalVisible(false);
+    } catch (error: any) {
+      if (typeof error.response?.data.message === 'string') {
+        dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));
+      } else if (typeof error.response?.data.message === 'object') {
+        dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message[0] }));
+      } else {
+        dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.message }));
+      }
+    } finally {
+      dispatch(settingsActions.setLoading({ isLoading: false, content: undefined }));
+    }
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
         <View style={[styles.panBackground, rpanBackgroundContainerStyle]}>
-          <TouchableOpacity style={styles.iconButton}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('Report', { companyName: item.companyName, PNRNumber: item.id })
+            }
+            style={styles.iconButton}
+          >
             <Ionicons name="ios-warning" size={24} color={COLORS.dark} />
           </TouchableOpacity>
           {!item.isToVote && (
-            <TouchableOpacity style={styles.iconButton}>
+            <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.iconButton}>
               <MaterialCommunityIcons name="vote" size={24} color={COLORS.dark} />
             </TouchableOpacity>
           )}
@@ -186,6 +231,7 @@ const TravelCard: React.FC<PropsType> = ({ item, index }) => {
           </Animated.View>
         </PanGestureHandler>
       </SafeAreaView>
+      <VoteServiceModal handleVote={handleVote} isVisible={modalVisible} setVisible={setModalVisible} />
     </GestureHandlerRootView>
   );
 };
@@ -212,10 +258,10 @@ const styles = StyleSheet.create({
   rightCrop: {
     backgroundColor: COLORS.light,
     position: 'absolute',
-    width: Layout.window.height * 0.1,
+    width: Layout.window.height * 0.08,
     right: -1 * Layout.window.height * 0.065,
     borderRadius: 100,
-    height: Layout.window.height * 0.1,
+    height: Layout.window.height * 0.08,
     borderLeftWidth: 1,
   },
   leftCrop: {
@@ -223,8 +269,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     borderRadius: Layout.window.height,
     left: -1 * Layout.window.height * 0.065,
-    width: Layout.window.height * 0.1,
-    height: Layout.window.height * 0.1,
+    width: Layout.window.height * 0.08,
+    height: Layout.window.height * 0.08,
     borderRightWidth: 1,
   },
   centerContainer: {

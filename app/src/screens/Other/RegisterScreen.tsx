@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { RootStackScreenProps } from '../../types';
+import { RootStackScreenProps } from '../../../types';
 import { Text } from '@ui-kitten/components';
-import Layout from '../../constants/Layout';
-import { COLORS } from '../../constants';
-import UserDetailForm from '../components/Forms/UserDetailForm';
+import Layout from '../../../constants/Layout';
+import { COLORS } from '../../../constants';
+import UserDetailForm from '../../components/Forms/UserDetailForm';
 
 const RegisterScreen = ({ navigation, route }: RootStackScreenProps<'Register'>) => {
 
