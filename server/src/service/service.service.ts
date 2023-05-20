@@ -1,4 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Service } from './service.entity';
 import { Between, FindOptionsOrder, In, Repository } from 'typeorm';
@@ -8,6 +14,9 @@ import { ServiceLookupDto, TravelLookupDto } from './dto/service-lookup.dto';
 import { User } from 'src/user/user.entity';
 import { ServiceBuyTicketDto } from './dto/service-ticket-buy.dto';
 import { ServicesOfUsers } from 'src/services-of-users/services-of-users.entity';
+import { VehicleService } from 'src/vehicle/vehicle.service';
+import { Vehicle } from 'src/vehicle/vehicle.entity';
+import { VehiclePointsUpdateDto } from 'src/vehicle/dto/vehicle-update.dto';
 @Injectable()
 export class ServiceService {
   constructor(
@@ -15,6 +24,8 @@ export class ServiceService {
     private readonly repo: Repository<Service>,
     @InjectRepository(ServicesOfUsers)
     private readonly serviceOfUserRepo: Repository<ServicesOfUsers>,
+    @Inject(forwardRef(() => VehicleService))
+    private readonly vehicleService: VehicleService,
   ) {}
   travelConstantVariables = {
     select: {
@@ -33,20 +44,20 @@ export class ServiceService {
         baseService: {
           id: true,
           isCompleted: true,
-        }
-      }
+        },
+      },
     },
     order: {
       service: {
-        arrivalDate: 'DESC'
-      }
+        arrivalDate: 'DESC',
+      },
     } as FindOptionsOrder<ServicesOfUsers>,
     relations: {
       service: {
-        baseService: true
+        baseService: true,
       },
     },
-  }
+  };
   async createService(dto: any, req: Request): Promise<Service[]> {
     try {
       const createdServices: Service[] = [];
@@ -162,13 +173,15 @@ export class ServiceService {
 
   async buyTicket(dto: ServiceBuyTicketDto, user: User) {
     try {
-      const {id, passengerInfoList} = dto;
+      const { id, passengerInfoList } = dto;
       const service = await this.repo.findOne({
         where: {
-          id
-        }
+          id,
+        },
       });
-      const filledSeats = [...service.filledSeats.filter((val) => val !== '[]')];
+      const filledSeats = [
+        ...service.filledSeats.filter((val) => val !== '[]'),
+      ];
       const createdTickects = [];
 
       for await (const info of passengerInfoList) {
@@ -178,12 +191,12 @@ export class ServiceService {
           mail: info.mail.toLowerCase(),
           userId: user.id,
           serviceId: id,
-          companyName: 'KAMILKOC'
+          companyName: 'KAMILKOC',
         });
         createdTickects.push(ticket);
       }
       console.log(filledSeats);
-      await this.repo.update({id}, {filledSeats});
+      await this.repo.update({ id }, { filledSeats });
       console.log(createdTickects);
       return createdTickects;
     } catch (error) {
@@ -191,32 +204,84 @@ export class ServiceService {
     }
   }
 
-  async getTravelsMe(dto: TravelLookupDto, user:User) {
+  async getTravelsMe(dto: TravelLookupDto, user: User) {
     try {
       // önce o kullanıcının service of users alanından service leri bulunmalı
       const query: any = {};
 
       {
-        if(dto.limit){
+        if (dto.limit) {
           query.take = dto.limit;
         }
-        
-        if(dto.offset){
+
+        if (dto.offset) {
           query.skip = dto.offset;
         }
       }
 
       const [rows, count] = await this.serviceOfUserRepo.findAndCount({
         where: {
-          userId: user.id
+          userId: user.id,
         },
         ...query,
         ...this.travelConstantVariables,
       });
 
       return {
-        rows, count
+        rows,
+        count,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async vote(dto: VehiclePointsUpdateDto, user: User) {
+    try {
+      console.log(dto);
+      const service = await this.serviceOfUserRepo.findOne({
+        where: {
+          id: dto.id,
+        },
+        relations: {
+          service: {
+            baseService: true,
+          }
+        },
+        select: {
+          id: true,
+          isToVote: true,
+          service: {
+            id: true,
+            baseService: {
+              id: true,
+              vehicleId: true
+            }
+          },
+        },
+      });
+      console.log("-------------");
+      console.log(service);
+      if(!service){
+        throw new HttpException(
+          'Not Found',
+          HttpStatus.NOT_FOUND,
+        );
       }
+      if (service.isToVote) {
+        throw new HttpException(
+          'You have already voted this trip',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      await this.vehicleService.voteVehicle({
+        ...dto,
+        id: service.service.baseService.vehicleId
+      });
+      service.isToVote = true;
+      await this.serviceOfUserRepo.update(service.id,service);
+
+      return 'success';
     } catch (error) {
       throw error;
     }

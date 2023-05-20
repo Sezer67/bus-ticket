@@ -8,6 +8,7 @@ import { VehicleInfoUpdateDto } from './dto/vehicle-update.dto';
 import { VehicleLookupDto } from './dto/vehicle-lookup.dto';
 import { User } from 'src/user/user.entity';
 import { IVehicleLookupResponse } from 'src/shared/interfaces/vehicle.interface';
+import { VehiclePointsUpdateDto } from './dto/vehicle-update.dto';
 
 @Injectable()
 export class VehicleService {
@@ -88,6 +89,30 @@ export class VehicleService {
       const vehicle = await this.repo.findOneBy({
         id: dto.id,
       });
+      return vehicle;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async voteVehicle(dto: VehiclePointsUpdateDto) {
+    try {
+      const vehicle = await this.repo.findOneBy({id: dto.id});
+      const totalPoints = {
+        comfort: vehicle.votesCount * vehicle.comfortPoint,
+        speed: vehicle.votesCount * vehicle.speedPoint,
+        service: vehicle.votesCount * vehicle.servicePoint,
+      }
+      vehicle.votesCount += 1;
+      vehicle.comfortPoint = (totalPoints.comfort + dto.comfortPoint) / vehicle.votesCount;
+      vehicle.servicePoint = (totalPoints.service + dto.servicePoint) / vehicle.votesCount;
+      vehicle.speedPoint = (totalPoints.speed + dto.speedPoint) / vehicle.votesCount;
+
+      const {affected} =  await this.repo.update(dto.id,vehicle);
+
+      if(affected === 0){
+        throw new HttpException('Vehicle Not Found', 404);
+      }
       return vehicle;
     } catch (error) {
       throw error;

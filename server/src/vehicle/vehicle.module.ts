@@ -14,5 +14,6 @@ import { CompanyModule } from 'src/company/company.module';
   ],
   controllers: [VehicleController],
   providers: [VehicleService],
+  exports: [VehicleService]
 })
 export class VehicleModule {}

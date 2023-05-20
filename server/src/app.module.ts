@@ -15,6 +15,7 @@ import { ServiceModule } from './service/service.module';
 import { ServicesOfUsersModule } from './services-of-users/services-of-users.module';
 import { BaseServiceModule } from './base-service/base-service.module';
 import { StripeModule } from './stripe/stripe.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { StripeModule } from './stripe/stripe.module';
     ServiceModule,
     ServicesOfUsersModule,
     StripeModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

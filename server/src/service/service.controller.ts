@@ -15,6 +15,7 @@ import { userEnum } from 'src/shared/enums';
 import { Request } from 'express';
 import { ServiceLookupDto, TravelLookupDto } from './dto/service-lookup.dto';
 import { ServiceBuyTicketDto } from './dto/service-ticket-buy.dto';
+import { VehiclePointsUpdateDto } from 'src/vehicle/dto/vehicle-update.dto';
 
 @Controller('service')
 export class ServiceController {
@@ -45,5 +46,12 @@ export class ServiceController {
   @Roles(userEnum.Role.Customer)
   getTravelsMe(@Query() dto: TravelLookupDto, @Req() req:any){
     return this.service.getTravelsMe(dto,req.user);
+  }
+
+  @Post('vote')
+  @UseGuards(AuthGuard('user'),RolesGuard)
+  @Roles(userEnum.Role.Customer)
+  vote(@Body() dto:VehiclePointsUpdateDto, @Req() req:any){
+    this.service.vote(dto, req.user);
   }
 }
