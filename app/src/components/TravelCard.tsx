@@ -4,19 +4,35 @@ import { SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { MyTravelsDataType } from '../../service/types/service-service.type';
 import Layout from '../../constants/Layout';
 import { COLORS } from '../../constants';
-import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
+import { GestureHandlerRootView, PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import {
+  AntDesign,
+  FontAwesome,
+  FontAwesome5,
+  Fontisto,
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from '@expo/vector-icons';
+import { dateHelper } from '../helpers';
 
 type PropsType = {
   item: MyTravelsDataType;
   index: number;
 };
+const colorPalette = [
+  COLORS['danger-500'],
+  COLORS['primary-500'],
+  COLORS['warning-500'],
+  COLORS['info-500'],
+  COLORS['success-500'],
+];
 
 const TravelCard: React.FC<PropsType> = ({ item, index }) => {
   const xTreshold = Layout.window.width * 0.2;
@@ -26,7 +42,7 @@ const TravelCard: React.FC<PropsType> = ({ item, index }) => {
     if (!firstRender) {
       setTimeout(() => {
         tranlateX.value = withTiming(0);
-      }, 3000);
+      }, 1500);
     }
   }, [firstRender]);
 
@@ -65,50 +81,112 @@ const TravelCard: React.FC<PropsType> = ({ item, index }) => {
     };
   });
   const renderCompletedTag = () => {
-    if (!item.service.baseService.isCompleted) {
+    if (item.service.baseService.isCompleted) {
       return (
         <View style={{ ...styles.tag }}>
-          <AntDesign name="checkcircle" size={16} color={COLORS.light} />
+          <AntDesign name="checkcircle" size={14} color={COLORS.light} />
           <Text style={styles.tagText}>Trip is complete</Text>
         </View>
       );
     }
     return (
       <View style={{ ...styles.tag, backgroundColor: COLORS['warning-500'] }}>
-        <Ionicons name="ios-warning" size={16} color={COLORS.light} />
+        <Ionicons name="ios-warning" size={14} color={COLORS.light} />
         <Text style={styles.tagText}>Trip has not started</Text>
       </View>
     );
   };
   const renderContainer = () => {
+    let footerText = 'Swipe left to vote or complaint';
+    if (item.isToVote) {
+      footerText = 'You voted this trip';
+    }
     return (
-      <View>
+      <View style={{ height: '100%', justifyContent: 'space-between' }}>
         <View style={styles.header}>
           <Text category="h6">{item.companyName}</Text>
           {renderCompletedTag()}
+        </View>
+        <View style={styles.cardContent}>
+          <View
+            style={{
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              width: '55%',
+              paddingVertical: 5,
+            }}
+          >
+            <View style={styles.iconWithText}>
+              <FontAwesome5 name="route" size={20} color={COLORS.dark} style={{ width: 24 }} />
+              <Text style={{ ...styles.infoText, width: '80%' }}>
+                {item.service.departureCity} - {item.service.arrivalCity}
+              </Text>
+            </View>
+            <View style={styles.iconWithText}>
+              <MaterialIcons name="date-range" size={20} color={COLORS.dark} style={{ width: 24 }} />
+              <Text style={{ ...styles.infoText, width: '80%' }}>
+                {dateHelper.formattedDate(new Date(item.service.departureDate), 'Day Month Date HH:mm')}-
+                {dateHelper.formattedDate(new Date(item.service.arrivalDate), 'Day Month Date HH:mm')}
+              </Text>
+            </View>
+          </View>
+          <View
+            style={{ width: 0.1, height: '100%', borderColor: COLORS.dark, borderWidth: 1, borderStyle: 'dotted' }}
+          />
+          <View
+            style={{
+              marginLeft: '4%',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              width: '40%',
+              paddingVertical: 5,
+            }}
+          >
+            <View style={styles.iconWithText}>
+              <FontAwesome name="user" size={20} color={COLORS.dark} style={{ width: 24 }} />
+              <Text style={styles.infoText}>{item.fullName}</Text>
+            </View>
+            <View style={styles.iconWithText}>
+              <MaterialCommunityIcons name="seat-passenger" size={20} color={COLORS.dark} style={{ width: 24 }} />
+              <Text style={styles.infoText}>{item.seatNumber}</Text>
+            </View>
+            <View style={styles.iconWithText}>
+              <Ionicons name="ios-cash" size={20} color={COLORS.dark} style={{ width: 24 }} />
+              <Text style={styles.infoText}>{item.service.price} ₺</Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.cardFooter}>
+          <Text style={{ fontSize: 16, fontWeight: '200' }}>{footerText}</Text>
         </View>
       </View>
     );
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-      <View style={[styles.panBackground, rpanBackgroundContainerStyle]}>
-        <TouchableOpacity style={styles.iconButton}>
-          <Ionicons name="ios-warning" size={24} color={COLORS.dark} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton}>
-          <MaterialCommunityIcons name="vote" size={24} color={COLORS.dark} />
-        </TouchableOpacity>
-      </View>
-      <PanGestureHandler onGestureEvent={panGesture}>
-        <Animated.View style={[styles.container, rStyle]}>
-          <View style={styles.leftCrop} />
-          <View style={styles.centerContainer}>{renderContainer()}</View>
-          <View style={styles.rightCrop} />
-        </Animated.View>
-      </PanGestureHandler>
-    </SafeAreaView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+        <View style={[styles.panBackground, rpanBackgroundContainerStyle]}>
+          <TouchableOpacity style={styles.iconButton}>
+            <Ionicons name="ios-warning" size={24} color={COLORS.dark} />
+          </TouchableOpacity>
+          {!item.isToVote && (
+            <TouchableOpacity style={styles.iconButton}>
+              <MaterialCommunityIcons name="vote" size={24} color={COLORS.dark} />
+            </TouchableOpacity>
+          )}
+        </View>
+        <PanGestureHandler onGestureEvent={panGesture}>
+          <Animated.View style={[styles.container, rStyle, { borderColor: colorPalette[index % colorPalette.length] }]}>
+            <View style={{ ...styles.leftCrop, borderColor: colorPalette[index % colorPalette.length] }} />
+            <View style={styles.centerContainer}>{renderContainer()}</View>
+            <View style={{ ...styles.rightCrop, borderColor: colorPalette[index % colorPalette.length] }} />
+          </Animated.View>
+        </PanGestureHandler>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 };
 
@@ -129,6 +207,7 @@ const styles = StyleSheet.create({
       height: 6,
     },
     elevation: 5,
+    borderWidth: 1,
   },
   rightCrop: {
     backgroundColor: COLORS.light,
@@ -137,6 +216,7 @@ const styles = StyleSheet.create({
     right: -1 * Layout.window.height * 0.065,
     borderRadius: 100,
     height: Layout.window.height * 0.1,
+    borderLeftWidth: 1,
   },
   leftCrop: {
     backgroundColor: COLORS.light,
@@ -145,6 +225,7 @@ const styles = StyleSheet.create({
     left: -1 * Layout.window.height * 0.065,
     width: Layout.window.height * 0.1,
     height: Layout.window.height * 0.1,
+    borderRightWidth: 1,
   },
   centerContainer: {
     height: Layout.window.height * 0.2 - 8,
@@ -178,13 +259,14 @@ const styles = StyleSheet.create({
     width: Layout.window.width * 0.8 - 20,
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: 5,
   },
   tag: {
     paddingHorizontal: 7,
     width: 'auto',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 30,
+    height: 26,
     backgroundColor: COLORS['success-500'],
     borderRadius: 4,
     flexDirection: 'row',
@@ -193,6 +275,28 @@ const styles = StyleSheet.create({
     color: COLORS.light,
     marginLeft: 3,
     fontWeight: '600',
+  },
+  cardContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    height: Layout.window.height * 0.1,
+  },
+  cardFooter: {
+    marginBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconWithText: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 2,
+  },
+  infoText: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginLeft: 6,
+    color: COLORS.dark,
   },
 });
 

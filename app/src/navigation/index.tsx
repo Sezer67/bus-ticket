@@ -33,6 +33,7 @@ import AddServiceScreen from '../screens/Modals/AddServiceScreen';
 import AddServiceStepsScreen from '../screens/Modals/AddServiceStepsScreen';
 import CreateCompanyScreen from '../screens/CreateCompanyScreen';
 import TicketBuyScreen from '../screens/TicketBuyScreen';
+import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 
 export default function Navigation() {
   return (
@@ -189,10 +190,11 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Travel"
-        component={MyTravelsScreen}
+        component={gestureHandlerRootHOC(MyTravelsScreen)}
         options={{
           title: 'My Travels',
           tabBarIcon: ({ color }) => <FontAwesome5 name="map-marked-alt" color={color} size={18} />,
+          headerShown: false
         }}
       />
     </>
