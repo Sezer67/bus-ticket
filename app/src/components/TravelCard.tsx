@@ -211,7 +211,7 @@ const TravelCard: React.FC<PropsType> = ({ item, index,changeVoteField }) => {
         <View style={[styles.panBackground, rpanBackgroundContainerStyle]}>
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate('Report', { companyName: item.companyName, PNRNumber: item.id })
+              navigation.navigate('Report', { companyName: item.companyName, PNRNumber: item.service.id, isEdit: false })
             }
             style={styles.iconButton}
           >

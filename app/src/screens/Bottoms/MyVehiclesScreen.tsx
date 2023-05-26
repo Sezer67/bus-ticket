@@ -172,15 +172,15 @@ const MyVehiclesScreen = ({ navigation, route }: RootTabScreenProps<'MyVehicles'
                 <View style={[styles.row, { width: '100%' }]}>
                     <View style={[styles.row, { width: '30%', backgroundColor: COLORS.light, justifyContent: 'space-around', marginRight: 10, marginBottom: 5, paddingVertical: 5 }]}>
                         <Text>Comfort : </Text>
-                        <Text>{prop.item.comfortPoint}</Text>
+                        <Text>{prop.item.comfortPoint.toFixed(1)}</Text>
                     </View>
                     <View style={[styles.row, { width: '30%', backgroundColor: COLORS.light, justifyContent: 'space-around', marginRight: 10, marginBottom: 5, paddingVertical: 5 }]}>
                         <Text>Speed : </Text>
-                        <Text>{prop.item.speedPoint}</Text>
+                        <Text>{prop.item.speedPoint.toFixed(1)}</Text>
                     </View>
                     <View style={[styles.row, { width: '30%', backgroundColor: COLORS.light, justifyContent: 'space-around', marginRight: 10, marginBottom: 5, paddingVertical: 5 }]}>
                         <Text>Service : </Text>
-                        <Text>{prop.item.servicePoint}</Text>
+                        <Text>{prop.item.servicePoint.toFixed(1)}</Text>
                     </View>
                 </View>
             </View>

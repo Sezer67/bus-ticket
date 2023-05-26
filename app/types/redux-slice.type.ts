@@ -17,6 +17,7 @@ export type SettingsSliceType = {
 
 export type UserSliceType = {
   user: UserType;
+  notReadComplainsCount: number | null;
   token?: string;
   isAuthenticated: boolean;
 };

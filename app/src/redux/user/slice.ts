@@ -18,6 +18,7 @@ const initialState: reduxSliceTypes.UserSliceType = {
   },
   isAuthenticated: false,
   token: undefined,
+  notReadComplainsCount: null,
 };
 
 const userSlice = createSlice({
@@ -46,6 +47,9 @@ const userSlice = createSlice({
         identityNumber: undefined,
       };
     },
+    setNotReadComplainsCount: (state, action: PayloadAction<{count: number}>) => {
+      state.notReadComplainsCount = action.payload.count;
+    }
   },
 });
 

@@ -1,5 +1,5 @@
 const urlsConfig = {
-  apiUrl: 'http://192.168.1.103:8000',
+  apiUrl: 'http://192.168.1.100:8000',
   user: {
     login: '/auth/login',
     logout: '/user/logout',
@@ -28,6 +28,14 @@ const urlsConfig = {
   },
   payment: {
     ticketBuy: '/pay/ticket-buy',
+  },
+  complain: {
+    create: '/complain',
+    notReadCount: '/complain/not-read-count',
+    changeToRead: '/complain/read',
+    createAnswer: '/complain/answer',
+    getMyComplains: '/complain/@me'
+
   }
 };
 

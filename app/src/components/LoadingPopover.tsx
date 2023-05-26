@@ -39,7 +39,8 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         fontSize: 14,
         color: COLORS.light,
-        marginTop: 10
+        marginTop: 10,
+        textAlign:'center',
     },
     backdrop: {
         backgroundColor: 'rgba(0, 0, 0, 0.5)',

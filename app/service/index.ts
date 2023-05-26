@@ -3,3 +3,4 @@ export * as vehicleService from './vehicle.service';
 export * as serviceOfService from './service.service';
 export * as companyService from './company.service';
 export * as paymentService from './payment.service';
+export * as complainService from './complain.service';
