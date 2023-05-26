@@ -1,4 +1,5 @@
 import { Company } from 'src/company/company.entity';
+import { Complain } from 'src/complain/complain.entity';
 import { ServicesOfUsers } from 'src/services-of-users/services-of-users.entity';
 import { userEnum } from 'src/shared/enums';
 import {
@@ -55,4 +56,10 @@ export class User extends BaseEntity {
     onDelete: 'CASCADE',
   })
   services: ServicesOfUsers[];
+
+  @OneToMany(() => Complain, (entity) => entity.user, {
+    onDelete: 'SET NULL',
+  })
+  complains: Complain[];
+
 }

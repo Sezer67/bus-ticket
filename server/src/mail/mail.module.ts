@@ -19,7 +19,7 @@ import { MailService } from "./mail.service";
                     port: config.get<number>('mailPort')
                 },
                 defaults: {
-                    from: config.get<string>('mailUser')
+                    from: `Take A Trip <${config.get<string>('mailUser')}>`,
                 },
                 template: {
                     dir: join(__dirname, 'templates'),

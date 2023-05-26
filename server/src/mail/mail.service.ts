@@ -4,6 +4,8 @@ import { User } from "src/user/user.entity";
 
 @Injectable()
 export class MailService {
+    private sender = "Take a Trip";
+
     constructor(
         private readonly mailService: MailerService
     ){}
@@ -17,7 +19,26 @@ export class MailService {
             context: {
                 number: code,
             },
-            sender: 'Take a Trip',
+            sender: this.sender,
         });
+    }
+
+    async complainCreateMail(companyMail: string,subject: string, message:string) {
+        await this.mailService.sendMail({
+            to: ['kenarsezer08@gmail.com', companyMail],
+            subject: 'New Complain',
+            html: `
+                <div>
+                    <h4>${subject}</h4>
+                    <p>${message}</p>
+                </div>
+            `,
+            context:{
+                subject,
+                message,
+            },
+            sender: this.sender,
+
+        })
     }
 }

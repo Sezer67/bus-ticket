@@ -1,8 +1,6 @@
 import { BaseService } from 'src/base-service/base-service.entity';
-import { Company } from 'src/company/company.entity';
+import { Complain } from 'src/complain/complain.entity';
 import { ServicesOfUsers } from 'src/services-of-users/services-of-users.entity';
-import { Cities } from 'src/shared/enums/service.enum';
-import { Vehicle } from 'src/vehicle/vehicle.entity';
 import {
   BaseEntity,
   Column,
@@ -56,4 +54,7 @@ export class Service extends BaseEntity {
 
   @OneToMany(() => ServicesOfUsers, (entity) => entity.service)
   users: ServicesOfUsers[];
+
+  @OneToMany(() => Complain, (entity) => entity.service)
+  complains: Complain[];
 }

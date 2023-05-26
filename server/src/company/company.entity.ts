@@ -24,6 +24,9 @@ export class Company extends BaseEntity {
   @Column({ type: 'varchar', length: 300, nullable: true })
   logo: string;
 
+  @Column({nullable: false, default: 0})
+  complainCount: number;
+
   @Column({ type: 'float4', nullable: false, default: 0 })
   point: number;
 
