@@ -17,6 +17,7 @@ import { ServicesOfUsers } from 'src/services-of-users/services-of-users.entity'
 import { VehicleService } from 'src/vehicle/vehicle.service';
 import { Vehicle } from 'src/vehicle/vehicle.entity';
 import { VehiclePointsUpdateDto } from 'src/vehicle/dto/vehicle-update.dto';
+import { Sort } from 'src/shared/enums/service.enum';
 @Injectable()
 export class ServiceService {
   constructor(
@@ -80,6 +81,7 @@ export class ServiceService {
 
       {
         const where: any = {};
+        const order: any= {};
         let select: any = {};
 
         if (dto.companyIds) {
@@ -114,6 +116,23 @@ export class ServiceService {
         if (dto.offset) {
           query.skip = dto.offset;
         }
+        console.log("order index :",dto.orderIndex);
+        if(dto.orderIndex !== undefined) {
+          switch(dto.orderIndex){
+            case Sort.LOWEST_PRICE: 
+              order.price = 'ASC'
+              break;
+            case Sort.HIGHEST_PRICE: 
+              order.price = 'DESC'
+              break;
+            case Sort.SHORTEST_TIME:
+              order.departureDate = 'ASC';
+              break;
+            case Sort.LONGEST_TIME:
+              order.departureDate = 'DESC';
+              break;
+          }
+        }
         where.departureCity = dto.from;
         where.arrivalCity = dto.to;
         where.departureDate = Between(
@@ -135,7 +154,7 @@ export class ServiceService {
           ),
         );
         query.where = where;
-
+        query.order = order;
         // default select added
         select = {
           ...select,

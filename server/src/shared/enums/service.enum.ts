@@ -81,3 +81,9 @@ export enum Cities {
   Osmaniye,
   Duzce,
 }
+export enum Sort {
+  LOWEST_PRICE = 0,
+  HIGHEST_PRICE = 1,
+  SHORTEST_TIME = 2,
+  LONGEST_TIME = 3,
+}

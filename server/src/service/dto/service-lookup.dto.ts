@@ -9,7 +9,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { vehicleEnum } from 'src/shared/enums';
+import { serviceEnum, vehicleEnum } from 'src/shared/enums';
 
 export class ServiceLookupDto {
   @IsOptional()
@@ -62,6 +62,12 @@ export class ServiceLookupDto {
   @Transform(({ value }) => value.split(','))
   @IsArray()
   seatingPlans?: string[];
+
+  @IsOptional()
+  @IsEnum(serviceEnum.Sort)
+  @Type(() => Number)
+  @Transform(({value}) => +value)
+  orderIndex?: serviceEnum.Sort; 
 }
 export class TravelLookupDto {
   @IsOptional()
