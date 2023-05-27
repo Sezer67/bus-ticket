@@ -105,11 +105,11 @@ const ReportListScreen: React.FC<RootStackScreenProps<'ReportList'>> = ({ naviga
             {item.message}
           </Text>
           <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-            {item.answer && userState.user.role === userEnums.Role.Company ? (
+            {item.answer ? (
               <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
                 <View style={styles.tag}>
                   <AntDesign name="checkcircle" size={14} color={COLORS.light} />
-                  <Text style={styles.tagText}>You Answered This</Text>
+                  <Text style={styles.tagText}>{userState.user.role === userEnums.Role.Company ? 'You Answered This' : 'Answered'}</Text>
                 </View>
               </View>
             ) : null}

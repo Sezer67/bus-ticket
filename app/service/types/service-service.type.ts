@@ -50,7 +50,12 @@ export type CreateMultipleServiceType = {
   }[];
   baseServiceId: string;
 };
-
+export enum Sort {
+  LOWEST_PRICE = 0,
+  HIGHEST_PRICE = 1,
+  SHORTEST_TIME = 2,
+  LONGEST_TIME = 3,
+}
 export type FindTicketQueryDataType = {
   relations?: RelationsType[];
   select?: (keyof BaseServiceType)[];
@@ -64,6 +69,7 @@ export type FindTicketQueryDataType = {
   from: string;
   to: string;
   date: Date;
+  orderIndex?: number;
 };
 
 export type BuyTicketDataType = {

@@ -130,7 +130,7 @@ const ReportScreen: React.FC<RootStackScreenProps<'Report'>> = ({ navigation, ro
                 answer.isFocus ? GLOBAL_STYLES.focusInput : GLOBAL_STYLES.input,
                 { minHeight: 160, width: '100%', paddingHorizontal: 20, maxHeight: 300 },
               ]}
-              placeholder="Your Answer"
+              placeholder={user.role === userEnums.Role.Company ?  "Your Answer": "Company Answer"}
               {...answer}
               
             />

@@ -33,7 +33,9 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
     companies: [],
     seatingPlans: [],
   });
+  const [orderIndex, setOrderIndex] = useState<number>(-1);
   const [page, setPage] = useState<number>(0);
+  const [modalApplyTrigger, setModalApplyTrigger] = useState<boolean>(false);
 
   const serviceState = useAppSelector((state: ReduxRootType) => state.service);
   const dispatch = useAppDispatch();
@@ -74,14 +76,14 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
     filterOptions.companies.forEach((c) => c.isSelected && companyIds.push(c.id));
     filterOptions.seatingPlans.forEach((c) => c.isSelected && seatingPlans.push(c.seatingPlan));
 
-    if(companyIds.length < 1 && seatingPlans.length < 1){
+    if (companyIds.length < 1 && seatingPlans.length < 1) {
       return undefined;
     }
     return {
       companyIds: companyIds.length > 0 ? companyIds : undefined,
       seatingPlans: seatingPlans.length > 0 ? seatingPlans : undefined,
-    }
-  }
+    };
+  };
 
   useEffect(() => {
     navigation.setOptions({
@@ -107,10 +109,17 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
           seatingPlan: plan,
         });
       });
-
-      setFilterOptions({ companies: [], seatingPlans });
+      console.log(seatingPlans);
+      setFilterOptions({ companies: [], seatingPlans: [...seatingPlans] });
     }
   }, []);
+
+  useEffect(() => {
+    if (modalApplyTrigger) {
+      getTickets({ newDate: new Date(serviceState.ticketFindForm?.date || '') });
+      setModalApplyTrigger(false);
+    }
+  }, [modalApplyTrigger]);
 
   const getTickets = async (props: { newDate: Date }) => {
     const { newDate } = props;
@@ -118,6 +127,7 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
     dispatch(settingsActions.setLoading({ isLoading: true, content: 'Looking for Services ...' }));
     try {
       const filter = getFilterValues();
+      console.log('order : ', orderIndex);
       const { data } = await serviceOfService.findTickets({
         from: serviceState.ticketFindForm.from,
         to: serviceState.ticketFindForm.to,
@@ -125,7 +135,8 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
         date: newDate,
         limit: defaultPageSize,
         offset: 0,
-        filter
+        filter,
+        orderIndex,
       });
 
       const convertedData = convertHelper.convertTicketResultToRedux(data);
@@ -161,7 +172,6 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
   };
 
   const fetchMoreData = async (page: number) => {
-    
     if (!serviceState.ticketFindForm) return;
     dispatch(settingsActions.setLoading({ isLoading: true, content: 'Looking for Services ...' }));
     try {
@@ -173,17 +183,16 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
         date: new Date(serviceState.ticketFindForm.date),
         limit: defaultPageSize,
         offset: page * defaultPageSize,
-        filter
+        filter,
       });
 
       const convertedData = convertHelper.convertTicketResultToRedux(data);
 
       dispatch(serviceActions.setServiceList(serviceState.serviceList.concat(convertedData.rows)));
-
     } catch (error: any) {
-      if (typeof error.response?.data.message === "string") {
+      if (typeof error.response?.data.message === 'string') {
         dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message }));
-      } else if (typeof error.response?.data.message === "object") {
+      } else if (typeof error.response?.data.message === 'object') {
         dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.response.data.message[0] }));
       } else {
         dispatch(settingsActions.setErrorSnackbar({ isError: true, content: error.message }));
@@ -191,13 +200,13 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
     } finally {
       dispatch(settingsActions.setLoading({ isLoading: false, content: undefined }));
     }
-  }
+  };
 
   const handleSelectService = (item: ServiceType) => {
     dispatch(serviceActions.setSelectedService(item));
     navigation.navigate('TicketBuy');
-  }
-  
+  };
+
   const renderRoute = (route: string, start: string, end: string) => {
     const _renderItem = ({ item, index }: { item: string; index: number }) => {
       return (
@@ -345,7 +354,10 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
           ListFooterComponent={_footer}
           onEndReachedThreshold={0.2}
           onEndReached={() => {
-            if (serviceState.baseServiceCount > 0 && serviceState.baseServiceCount > serviceState.baseServiceList.length) {
+            if (
+              serviceState.baseServiceCount > 0 &&
+              serviceState.baseServiceCount > serviceState.baseServiceList.length
+            ) {
               setPage(page + 1);
               fetchMoreData(page + 1);
             }
@@ -365,16 +377,20 @@ const ServicesScreen = ({ navigation, route }: RootStackScreenProps<'Services'>)
           onConfirm={dateSelect}
         />
       </View>
-      <ServiceFilterAndSorterModal
-        isVisible={filterModalVisible}
-        setIsVisible={setFilterModalVisible}
-        filterOptions={filterOptions}
-        setFilterOptions={setFilterOptions}
-        handleOk={() => {
-          setFilterModalVisible(false);
-          getTickets({newDate: new Date(serviceState.ticketFindForm?.date || "")})
-        }}
-      />
+      {filterModalVisible && (
+        <ServiceFilterAndSorterModal
+          isVisible={filterModalVisible}
+          setIsVisible={setFilterModalVisible}
+          filterOptions={filterOptions}
+          sortIndex={orderIndex}
+          handleOk={(index: number, filter: serviceTypes.ServiceScreenFilterOptionsType) => {
+            setFilterModalVisible(false);
+            setOrderIndex(index);
+            setFilterOptions(filter);
+            setModalApplyTrigger(true);
+          }}
+        />
+      )}
     </View>
   );
 };

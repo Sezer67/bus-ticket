@@ -1,4 +1,4 @@
-import { Modal, Text, ViewPager, Button, CheckBox } from '@ui-kitten/components';
+import { Modal, Text, ViewPager, Button, CheckBox, RadioGroup, Radio } from '@ui-kitten/components';
 import React, { useState } from 'react';
 import { FlatList, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Layout from '../../../constants/Layout';
@@ -10,23 +10,26 @@ type PropsType = {
   isVisible: boolean;
   setIsVisible: (visible: boolean) => void;
   filterOptions: serviceTypes.ServiceScreenFilterOptionsType;
-  setFilterOptions: (options: serviceTypes.ServiceScreenFilterOptionsType) => void;
-  handleOk: () => void;
+  handleOk: (index: number, filter: serviceTypes.ServiceScreenFilterOptionsType) => void;
+  sortIndex: number;
 };
 
 const ServiceFilterAndSorterModal: React.FC<PropsType> = ({
   isVisible,
   setIsVisible,
   filterOptions,
-  setFilterOptions,
-  handleOk
+  handleOk,
+  sortIndex,
 }) => {
   const [activePageIndex, setActivePageIndex] = useState(0);
-
+  const [selectedIndex, setSelectedIndex] = useState<number>(sortIndex);
+  const [filter,setFilter] = useState<serviceTypes.ServiceScreenFilterOptionsType>({...filterOptions});
+  console.log("filter : ",filter);
+  console.log("filter opt: ",filterOptions);
   const handleCheckSeat = (plan: string, checked: boolean) => {
-    setFilterOptions({
-      ...filterOptions,
-      seatingPlans: filterOptions.seatingPlans.map((eachPlan) => {
+    setFilter({
+      ...filter,
+      seatingPlans: filter.seatingPlans.map((eachPlan) => {
         if (eachPlan.seatingPlan === plan) {
           return {
             ...eachPlan,
@@ -39,9 +42,9 @@ const ServiceFilterAndSorterModal: React.FC<PropsType> = ({
   };
 
   const handleCheckCompany = (id: string, checked: boolean) => {
-    setFilterOptions({
-      ...filterOptions,
-      companies: filterOptions.companies.map((company) => {
+    setFilter({
+      ...filter,
+      companies: filter.companies.map((company) => {
         if (company.id === id) {
           return {
             ...company,
@@ -53,12 +56,18 @@ const ServiceFilterAndSorterModal: React.FC<PropsType> = ({
     });
   };
 
+  const handleClose = () => {
+    setIsVisible(false);
+    setSelectedIndex(sortIndex);
+    setFilter(filterOptions);
+  }
+
   return (
     <Modal
       style={styles.container}
       backdropStyle={styles.backdrop}
       visible={isVisible}
-      onBackdropPress={() => setIsVisible(false)}
+      onBackdropPress={handleClose}
     >
       <View style={[styles.tabBarContainer]}>
         <TouchableOpacity
@@ -83,7 +92,7 @@ const ServiceFilterAndSorterModal: React.FC<PropsType> = ({
             </View>
             <FlatList
               style={{ marginLeft: 10, marginTop: 5, height: Layout.window.height * 0.2 }}
-              data={filterOptions.companies}
+              data={filter.companies}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <View style={styles.checkBoxContainer}>
@@ -104,7 +113,7 @@ const ServiceFilterAndSorterModal: React.FC<PropsType> = ({
             </View>
             <View style={{ marginLeft: 10, marginTop: 5 }}>
               <FlatList
-                data={filterOptions.seatingPlans}
+                data={filter.seatingPlans}
                 keyExtractor={(item) => item.seatingPlan}
                 renderItem={({ item }) => (
                   <View style={styles.checkBoxContainer}>
@@ -122,13 +131,33 @@ const ServiceFilterAndSorterModal: React.FC<PropsType> = ({
           </View>
         </View>
         {/* Sorter Area */}
-        <View style={{ ...styles.tabView, display: activePageIndex === 0 ? 'none' : 'flex' }}>
-          <Text>Sorter</Text>
+        <View style={{ ...styles.tabView,paddingLeft: 5, display: activePageIndex === 0 ? 'none' : 'flex' }}>
+          <RadioGroup selectedIndex={selectedIndex} onChange={(index) => setSelectedIndex(index)}>
+            <Radio status='danger'>
+              <Text style={{ ...Layout.FONTS.body2 }}>Lowest Price</Text>
+            </Radio>
+            <Radio status='danger'>
+              <Text style={{ ...Layout.FONTS.body2 }}>Highest Price</Text>
+            </Radio>
+            <Radio status='danger'>
+              <Text style={{ ...Layout.FONTS.body2 }}>Shortest Time</Text>
+            </Radio>
+            <Radio status='danger'>
+              <Text style={{ ...Layout.FONTS.body2 }}>Longest Time</Text>
+            </Radio>
+          </RadioGroup>
         </View>
       </ScrollView>
-      <View style={{ flexDirection: 'row',justifyContent:'space-between' }}>
-        <Button onPress={() => setIsVisible(false)} style={{ backgroundColor: COLORS.gray, borderWidth: 0, width:'49%' }}>Cancel</Button>
-        <Button onPress={handleOk} style={{ backgroundColor: COLORS['danger-400'], borderWidth: 0, width:'49%' }}>Apply</Button>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Button
+          onPress={handleClose}
+          style={{ backgroundColor: COLORS.gray, borderWidth: 0, width: '49%' }}
+        >
+          Cancel
+        </Button>
+        <Button onPress={() => handleOk(selectedIndex, filter)} style={{ backgroundColor: COLORS['danger-400'], borderWidth: 0, width: '49%' }}>
+          Apply
+        </Button>
       </View>
     </Modal>
   );

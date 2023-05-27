@@ -70,6 +70,9 @@ export const findTickets = (data: FindTicketQueryDataType): AxiosPromise<Service
       query.seatingPlans = data.filter.seatingPlans.join(",");
     }
   }
+  if(data.orderIndex !== undefined && data.orderIndex !== -1){
+    query.orderIndex = data.orderIndex.toString();
+  }
   return axiosInstance.get(routeHelper.addQueryPArameters(urlsConfig.service.findTicket, query));
 };
 
