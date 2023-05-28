@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import urlsConfig from '../configs/url.config';
 import { storageHelper } from '../src/helpers';
+import { NavigationContext } from '@react-navigation/native';
 
 const axiosInstance = axios.create({
   baseURL: urlsConfig.apiUrl,
@@ -16,9 +17,10 @@ axiosInstance.interceptors.response.use(
   (error: AxiosError) => {
     console.log(error);
     if (error.response?.status === 401) {
-      setToken('');
-      storageHelper.setStorageKey('@token', '');
+      // setToken('');
+      // storageHelper.setStorageKey('@token', '');
       console.log('401 ',error);
+      
     }
 
     return Promise.reject(error);

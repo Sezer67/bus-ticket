@@ -36,6 +36,7 @@ const MyTravelsScreen: React.FC<RootTabScreenProps<'Travel'>> = ({ navigation, r
         offset: page * defaultPageSize,
       });
       if (isLoad) {
+        console.log(JSON.stringify(data.rows[0]));
         setTravelList(data.rows);
         setTotal(data.count);
       } else {

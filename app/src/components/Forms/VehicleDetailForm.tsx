@@ -23,6 +23,7 @@ import { vehicleActions } from '../../redux/vehicle/slice';
 import { useNavigation } from '@react-navigation/native';
 import { RootState } from '../../redux/store';
 import { getSeatPlanArray } from '../../helpers';
+import TrainModel from '../VehicleModels/TrainModel';
 
 type PropsType = {
   isEdit: boolean;
@@ -44,7 +45,10 @@ const VehicleDetailForm: React.FC<PropsType> = ({ isEdit }) => {
     return getSeatPlanArray(Number(vehicleTypeSelectState.selectedIndex) - 1);
   }, [vehicleTypeSelectState.selectedIndex]);
 
-  const seats = useMemo(() => {
+  const seats = useMemo((): {
+    number: number;
+    isFilled: boolean;
+  }[] => {
     if (Number(seatCountInputState.value) > 10) {
       const arr = [];
       for (let i = 1; i <= Number(seatCountInputState.value); i++) {
@@ -53,6 +57,7 @@ const VehicleDetailForm: React.FC<PropsType> = ({ isEdit }) => {
           isFilled: false,
         });
       }
+      return arr;
     }
     return [];
   }, [seatCountInputState]);
@@ -82,7 +87,7 @@ const VehicleDetailForm: React.FC<PropsType> = ({ isEdit }) => {
 
     const formData: EditVehicleFormDataType = {
       seatCount: Number(seatCountInputState.value),
-      seatingPlan: seatingPlanItems[Number(vehicleTypeSelectState.selectedIndex)],
+      seatingPlan: seatingPlanItems[Number(seatingPlanSelectState.selectedIndex)],
       ...checkboxGroupState,
       id: selectedVehicle.id,
     };
@@ -109,11 +114,10 @@ const VehicleDetailForm: React.FC<PropsType> = ({ isEdit }) => {
     const formData: CreateVehicleFormDataType = {
       seatCount: Number(seatCountInputState.value),
       plate: plateInputState.value,
-      seatingPlan: seatingPlanItems[Number(vehicleTypeSelectState.selectedIndex) - 1],
+      seatingPlan: seatingPlanItems[Number(seatingPlanSelectState.selectedIndex) - 1],
       ...checkboxGroupState,
       vehicleType: Number(vehicleTypeSelectState.selectedIndex) - 1,
     };
-
     dispatch(settingsActions.setLoading({ isLoading: true, content: 'Creating a record...' }));
     try {
       const { data } = await vehicleService.createVehicle(formData);
@@ -137,9 +141,32 @@ const VehicleDetailForm: React.FC<PropsType> = ({ isEdit }) => {
     else handleOnCreate();
   };
 
+  const renderVehicleModal = () => {
+    const type = Number(vehicleTypeSelectState.selectedIndex) - 1;
+    console.log(type);
+    if (type === vehicleEnums.VehicleType.Bus) {
+      return (
+        <BusModel
+          isSelectable={false}
+          seatPlan={seatingPlanItems[Number(seatingPlanSelectState.selectedIndex) - 1]}
+          seats={seats}
+        />
+      );
+    } else if (type === vehicleEnums.VehicleType.Train) {
+      return (
+        <TrainModel
+          isSelectable={false}
+          seatPlan={seatingPlanItems[Number(seatingPlanSelectState.selectedIndex) - 1]}
+          seats={seats}
+        />
+      );
+    }
+    return <Text>Not Yet Avalilable</Text>;
+  };
+
   return (
     <>
-      <KeyboardAvoidingScrollView>
+      <KeyboardAvoidingScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <Input
             accessoryLeft={<MaterialCommunityIcons name="seatbelt" size={20} color={COLORS['danger-900']} />}
@@ -272,11 +299,7 @@ const VehicleDetailForm: React.FC<PropsType> = ({ isEdit }) => {
           </TouchableOpacity>
         </View>
         {/* Bus */}
-        {vehicleModelVisible && (
-          <View style={{ marginBottom: 20 }}>
-            <BusModel isSelectable={false} seatPlan="2+1" seats={seats} />
-          </View>
-        )}
+        {vehicleModelVisible && <View style={{ marginBottom: 20 }}>{renderVehicleModal()}</View>}
 
         <Button onPress={handleOnSubmit} style={isEdit ? styles.submitButton : styles.button}>
           {isEdit ? 'EDIT' : 'CREATE VEHICLE'}

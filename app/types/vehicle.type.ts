@@ -18,6 +18,6 @@ export type VehicleType = {
 
 export type BusSeatPlanType = '2+1' | '2+2';
 export type PlaneSeatPlanType = '3+3' | '4+3';
-export type TrainSeatPlanType = '2+2' | '3+2';
+export type TrainSeatPlanType = '2+1' | '2+2';
 
 export type SeatPlanInput = BusSeatPlanType | PlaneSeatPlanType | TrainSeatPlanType;

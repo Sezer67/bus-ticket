@@ -27,7 +27,8 @@ import { VoteVehicleDataType } from '../../service/types/vehicle-service.type';
 import { useAppDispatch } from '../../hooks/redux.hook';
 import { settingsActions } from '../redux/settings/slice';
 import { serviceOfService } from '../../service';
-import { AxiosError } from 'axios';
+import VehicleTypeIcon from './VehicleModels/TypeIcon';
+import { vehicleEnums } from '../../enums';
 
 type PropsType = {
   item: MyTravelsDataType;
@@ -42,7 +43,7 @@ const colorPalette = [
   COLORS['success-500'],
 ];
 
-const TravelCard: React.FC<PropsType> = ({ item, index,changeVoteField }) => {
+const TravelCard: React.FC<PropsType> = ({ item, index, changeVoteField }) => {
   const xTreshold = Layout.window.width * 0.2;
   const navigation = useNavigation();
   const tranlateX = useSharedValue(0);
@@ -55,7 +56,7 @@ const TravelCard: React.FC<PropsType> = ({ item, index,changeVoteField }) => {
     setTimeout(() => {
       tranlateX.value = withTiming(0);
     }, 1500);
-  }
+  };
   useEffect(() => {
     if (!firstRender) {
       gestureEndCard();
@@ -114,8 +115,17 @@ const TravelCard: React.FC<PropsType> = ({ item, index,changeVoteField }) => {
   };
   const renderContainer = () => {
     let footerText = 'Swipe left to vote or complaint';
+    const vehicleType = item.service.baseService.vehicle.vehicleType;
+    let vehicleText = "Bus";
     if (item.isToVote) {
       footerText = 'You voted this trip';
+    }
+    if (!item.service.baseService.isCompleted) {
+      footerText = 'Press to Cancel';
+    }
+    if(vehicleType !== vehicleEnums.VehicleType.Bus) {
+      if(vehicleType === vehicleEnums.VehicleType.Train) vehicleText = "Train";
+      else vehicleText = "Plane"
     }
     return (
       <View style={{ height: '100%', justifyContent: 'space-between' }}>
@@ -130,9 +140,17 @@ const TravelCard: React.FC<PropsType> = ({ item, index,changeVoteField }) => {
               justifyContent: 'space-between',
               alignItems: 'flex-start',
               width: '55%',
-              paddingVertical: 5,
+              paddingVertical: 0,
             }}
           >
+            <View style={styles.iconWithText}>
+              <View style={{ width: 24, justifyContent: 'center', alignItems: 'center' }}>
+                <VehicleTypeIcon type={vehicleType} size={20} color="dark" />
+              </View>
+              <Text style={{ ...styles.infoText, width: '80%' }}>
+                {vehicleText}
+              </Text>
+            </View>
             <View style={styles.iconWithText}>
               <FontAwesome5 name="route" size={20} color={COLORS.dark} style={{ width: 24 }} />
               <Text style={{ ...styles.infoText, width: '80%' }}>
@@ -211,13 +229,17 @@ const TravelCard: React.FC<PropsType> = ({ item, index,changeVoteField }) => {
         <View style={[styles.panBackground, rpanBackgroundContainerStyle]}>
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate('Report', { companyName: item.companyName, PNRNumber: item.service.id, isEdit: false })
+              navigation.navigate('Report', {
+                companyName: item.companyName,
+                PNRNumber: item.service.id,
+                isEdit: false,
+              })
             }
             style={styles.iconButton}
           >
             <Ionicons name="ios-warning" size={24} color={COLORS.dark} />
           </TouchableOpacity>
-          {!item.isToVote && (
+          {!item.isToVote && item.service.baseService.isCompleted && (
             <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.iconButton}>
               <MaterialCommunityIcons name="vote" size={24} color={COLORS.dark} />
             </TouchableOpacity>

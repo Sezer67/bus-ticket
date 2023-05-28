@@ -13,6 +13,8 @@ import { vehicleService } from '../../../service';
 import { COLORS } from '../../../constants';
 import { dateHelper } from '../../helpers';
 import TicketBuyForm from '../../components/TicketBuyForm';
+import { vehicleEnums } from '../../../enums';
+import TrainModel from '../../components/VehicleModels/TrainModel';
 
 const TicketBuyScreen = ({ navigation, route }: RootStackScreenProps<'TicketBuy'>) => {
   const [vehicle, setVehicle] = useState<VehicleType>();
@@ -83,6 +85,34 @@ const TicketBuyScreen = ({ navigation, route }: RootStackScreenProps<'TicketBuy'
     );
   };
 
+  const renderVehicleModal = () => {
+    if(!vehicle) return;
+    const type = vehicle.vehicleType;
+    console.log(type);
+    if (type === vehicleEnums.VehicleType.Bus) {
+      return (
+        <BusModel
+          isSelectable
+          seatPlan={vehicle.seatingPlan}
+          seats={seats}
+          selectedSeatNumbers={selectedSeats}
+          setSelectedSeatNumbers={setSelectedSeats}
+        />
+      );
+    } else if (type === vehicleEnums.VehicleType.Train) {
+      return (
+        <TrainModel
+          isSelectable
+          seatPlan={vehicle.seatingPlan}
+          seats={seats}
+          selectedSeatNumbers={selectedSeats}
+          setSelectedSeatNumbers={setSelectedSeats}
+        />
+      );
+    }
+    return <Text>Not Yet Avalilable</Text>;
+  };
+
   if (!vehicle) return <></>;
 
   return (
@@ -103,13 +133,7 @@ const TicketBuyScreen = ({ navigation, route }: RootStackScreenProps<'TicketBuy'
             color={vehicle.isWifi ? COLORS.dark : COLORS.gray}
           />
         </View>
-        <BusModel
-          isSelectable
-          seatPlan={vehicle.seatingPlan}
-          seats={seats}
-          selectedSeatNumbers={selectedSeats}
-          setSelectedSeatNumbers={setSelectedSeats}
-        />
+        {renderVehicleModal()}
         <View style={styles.seatNumbers}>
           {selectedSeats.map((number) => (
             <View style={styles.seat} key={number}>

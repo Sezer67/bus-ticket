@@ -120,7 +120,7 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
             appearance="outline"
             status="danger"
           >
-            {fromValue || 'From City'}
+            {fromValue || 'Departure'}
           </Button>
         </View>
         <View
@@ -154,7 +154,7 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
             appearance="outline"
             status="danger"
           >
-            {toValue || 'Select Click'}
+            {toValue || 'Arrival'}
           </Button>
         </View>
       </RouteLine>
@@ -198,14 +198,14 @@ const TicketFindForm: React.FC<PropsType> = ({ routeLineIcon, submitButtonText, 
         key="fromModal"
         isVisible={fromModalVisible}
         setVisible={setFromModalVisible}
-        data={data.filter((item) => item.name !== fromValue)}
+        data={data.filter((item) => item.name !== toValue)}
         setValue={setFromValue}
       />
       <SelectCityModal
         key="toModal"
         isVisible={toModalVisible}
         setVisible={setToModalVisible}
-        data={data.filter((item) => item.name !== toValue)}
+        data={data.filter((item) => item.name !== fromValue)}
         setValue={setToValue}
       />
     </View>

@@ -45,6 +45,10 @@ export class ServiceService {
         baseService: {
           id: true,
           isCompleted: true,
+          vehicle: {
+            id: true,
+            vehicleType: true,
+          }
         },
       },
     },
@@ -55,7 +59,9 @@ export class ServiceService {
     } as FindOptionsOrder<ServicesOfUsers>,
     relations: {
       service: {
-        baseService: true,
+        baseService: {
+          vehicle: true
+        },
       },
     },
   };
@@ -81,9 +87,9 @@ export class ServiceService {
 
       {
         const where: any = {};
-        const order: any= {};
+        const order: any = {};
         let select: any = {};
-
+        console.log(dto);
         if (dto.companyIds) {
           where.baseService = {
             company: {
@@ -100,7 +106,15 @@ export class ServiceService {
             },
           };
         }
-
+        if (dto.vehicleType !== undefined) {
+          where.baseService = {
+            ...where.baseService,
+            vehicle: {
+              vehicleType: dto.vehicleType,
+            },
+          };
+          console.log('where : ', where);
+        }
         if (dto.relations) {
           query.relations = [...dto.relations];
         }
@@ -116,14 +130,13 @@ export class ServiceService {
         if (dto.offset) {
           query.skip = dto.offset;
         }
-        console.log("order index :",dto.orderIndex);
-        if(dto.orderIndex !== undefined) {
-          switch(dto.orderIndex){
-            case Sort.LOWEST_PRICE: 
-              order.price = 'ASC'
+        if (dto.orderIndex !== undefined) {
+          switch (dto.orderIndex) {
+            case Sort.LOWEST_PRICE:
+              order.price = 'ASC';
               break;
-            case Sort.HIGHEST_PRICE: 
-              order.price = 'DESC'
+            case Sort.HIGHEST_PRICE:
+              order.price = 'DESC';
               break;
             case Sort.SHORTEST_TIME:
               order.departureDate = 'ASC';
@@ -168,6 +181,7 @@ export class ServiceService {
               id: true,
               plate: true,
               seatingPlan: true,
+              vehicleType: true,
             },
           },
         };
@@ -265,7 +279,7 @@ export class ServiceService {
         relations: {
           service: {
             baseService: true,
-          }
+          },
         },
         select: {
           id: true,
@@ -274,18 +288,15 @@ export class ServiceService {
             id: true,
             baseService: {
               id: true,
-              vehicleId: true
-            }
+              vehicleId: true,
+            },
           },
         },
       });
-      console.log("-------------");
+      console.log('-------------');
       console.log(service);
-      if(!service){
-        throw new HttpException(
-          'Not Found',
-          HttpStatus.NOT_FOUND,
-        );
+      if (!service) {
+        throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
       }
       if (service.isToVote) {
         throw new HttpException(
@@ -295,10 +306,10 @@ export class ServiceService {
       }
       await this.vehicleService.voteVehicle({
         ...dto,
-        id: service.service.baseService.vehicleId
+        id: service.service.baseService.vehicleId,
       });
       service.isToVote = true;
-      await this.serviceOfUserRepo.update(service.id,service);
+      await this.serviceOfUserRepo.update(service.id, service);
 
       return 'success';
     } catch (error) {

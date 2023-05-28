@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { COLORS } from '../../../constants';
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { PropsType } from './vehicle-model.config';
-import SeatWithNumber from './SeatWithNumber';
 import { Text } from '@ui-kitten/components';
 
-const BusModel: React.FC<PropsType> = ({
+const TrainModel: React.FC<PropsType> = ({
   isSelectable,
   seatPlan,
   seats,
@@ -136,26 +134,71 @@ const BusModel: React.FC<PropsType> = ({
     }
   };
   return (
-    <ScrollView horizontal style={styles.container} showsHorizontalScrollIndicator={false}>
-      <View style={[styles.driverContainer, seatPlan === '2+2' ? { height: 180 } : {}]}>
-        <MaterialCommunityIcons name="steering" size={36} color={COLORS.gray} />
+    <View style={{ marginHorizontal: 10 }}>
+      <View style={[styles.rightTop, styles.stop]}>
+        <View style={{ height: 25, width: 3, backgroundColor: COLORS.gray }} />
+        <View style={{ height: 15, width: 3, backgroundColor: COLORS.gray }} />
       </View>
-      <View style={[styles.passengerContainer, seatPlan === '2+2' ? { height: 180 } : {}]}>
-        {seatPlan === '2+1' ? (
-          <View style={{ flexDirection: 'row', height: '100%' }}>
-            {editableSeats.map((item) => {
-              if (item.number % 3 === 0) {
+      <View style={[styles.rightBottom, styles.stop]}>
+        <View style={{ height: 25, width: 3, backgroundColor: COLORS.gray }} />
+        <View style={{ height: 15, width: 3, backgroundColor: COLORS.gray }} />
+      </View>
+      <View style={[styles.leftTop, styles.stop]}>
+        <View style={{ height: 15, width: 3, backgroundColor: COLORS.gray }} />
+        <View style={{ height: 25, width: 3, backgroundColor: COLORS.gray }} />
+      </View>
+      <View style={[styles.leftBottom, styles.stop]}>
+        <View style={{ height: 15, width: 3, backgroundColor: COLORS.gray }} />
+        <View style={{ height: 25, width: 3, backgroundColor: COLORS.gray }} />
+      </View>
+      <ScrollView horizontal style={styles.container} showsHorizontalScrollIndicator={false}>
+        <View style={[styles.passengerContainer, seatPlan === '2+2' ? { height: 180 } : {}]}>
+          {seatPlan === '2+1' ? (
+            <View style={{ flexDirection: 'row', height: '100%' }}>
+              {editableSeats.map((item) => {
+                if (item.number % 3 === 0) {
+                  return (
+                    <View key={item.number} style={{ height: '100%' }}>
+                      {seatWithNumber({
+                        isFilled: editableSeats[item.number - 3].isFilled,
+                        number: editableSeats[item.number - 3].number,
+                      })}
+                      {seatWithNumber({
+                        isFilled: editableSeats[item.number - 2].isFilled,
+                        number: editableSeats[item.number - 2].number,
+                      })}
+                      <View style={{ position: 'absolute', bottom: 0 }}>
+                        {seatWithNumber({
+                          isFilled: editableSeats[item.number - 1].isFilled,
+                          number: editableSeats[item.number - 1].number,
+                        })}
+                      </View>
+                    </View>
+                  );
+                }
+              })}
+              {seats.length % 3 !== 0 ? extraSeats() : null}
+            </View>
+          ) : null}
+          {seatPlan === '2+2' ? (
+            <View style={{ flexDirection: 'row', height: '100%' }}>
+              {editableSeats.map((item) => {
+                if (item.number % 4 !== 0) return;
                 return (
-                  <View key={item.number.toString()} style={{ height: '100%' }}>
+                  <View key={item.number} style={{ height: '100%' }}>
+                    {seatWithNumber({
+                      isFilled: editableSeats[item.number - 4].isFilled,
+                      number: editableSeats[item.number - 4].number,
+                    })}
                     {seatWithNumber({
                       isFilled: editableSeats[item.number - 3].isFilled,
                       number: editableSeats[item.number - 3].number,
                     })}
-                    {seatWithNumber({
-                      isFilled: editableSeats[item.number - 2].isFilled,
-                      number: editableSeats[item.number - 2].number,
-                    })}
-                    <View style={{ position: 'absolute', bottom: 0 }}>
+                    <View style={{ marginTop: 10 }}>
+                      {seatWithNumber({
+                        isFilled: editableSeats[item.number - 2].isFilled,
+                        number: editableSeats[item.number - 2].number,
+                      })}
                       {seatWithNumber({
                         isFilled: editableSeats[item.number - 1].isFilled,
                         number: editableSeats[item.number - 1].number,
@@ -163,43 +206,13 @@ const BusModel: React.FC<PropsType> = ({
                     </View>
                   </View>
                 );
-              }
-            })}
-            {seats.length % 3 !== 0 ? extraSeats() : null}
-          </View>
-        ) : null}
-        {seatPlan === '2+2' ? (
-          <View style={{ flexDirection: 'row', height: '100%' }}>
-            {editableSeats.map((item) => {
-              if (item.number % 4 !== 0) return;
-              return (
-                <View key={item.number} style={{ height: '100%' }}>
-                  {seatWithNumber({
-                    isFilled: editableSeats[item.number - 4].isFilled,
-                    number: editableSeats[item.number - 4].number,
-                  })}
-                  {seatWithNumber({
-                    isFilled: editableSeats[item.number - 3].isFilled,
-                    number: editableSeats[item.number - 3].number,
-                  })}
-                  <View style={{ marginTop: 10 }}>
-                    {seatWithNumber({
-                      isFilled: editableSeats[item.number - 2].isFilled,
-                      number: editableSeats[item.number - 2].number,
-                    })}
-                    {seatWithNumber({
-                      isFilled: editableSeats[item.number - 1].isFilled,
-                      number: editableSeats[item.number - 1].number,
-                    })}
-                  </View>
-                </View>
-              );
-            })}
-            {editableSeats.length % 4 !== 0 ? extraSeats() : null}
-          </View>
-        ) : null}
-      </View>
-    </ScrollView>
+              })}
+              {editableSeats.length % 4 !== 0 ? extraSeats() : null}
+            </View>
+          ) : null}
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -224,6 +237,31 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingRight: 20,
   },
+  rightTop: {
+    position: 'absolute',
+    top: 20,
+    left: -6,
+  },
+  leftTop: {
+    position: 'absolute',
+    top: 20,
+    right: -6,
+  },
+  rightBottom: {
+    position: 'absolute',
+    bottom: 20,
+    left: -6,
+  },
+  leftBottom: {
+    position: 'absolute',
+    bottom: 20,
+    right: -6,
+  },
+  stop: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   seat: {
     height: 36,
     width: 36,
@@ -236,4 +274,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BusModel;
+export default TrainModel;

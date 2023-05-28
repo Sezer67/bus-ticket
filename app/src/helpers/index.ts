@@ -11,7 +11,7 @@ export const getSeatPlanArray = (index: number) => {
   } else if (index === 1) {
     return ['3+3', '4+3'] as PlaneSeatPlanType[];
   } else {
-    return ['2+2', '3+2'] as TrainSeatPlanType[];
+    return ['2+1', '2+2'] as TrainSeatPlanType[];
   }
 };
 

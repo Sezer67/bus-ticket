@@ -97,7 +97,7 @@ function RootNavigator() {
   useEffect(() => {
     if (!userState.isAuthenticated) controlToPhoneStorage();
     prepare();
-  }, []);
+  }, [userState.isAuthenticated]);
 
   useEffect(() => {
     if (appIsReady) hideSplash();
@@ -199,6 +199,7 @@ function BottomTabNavigator() {
         options={({ navigation, route }: RootTabScreenProps<'TicketFind'>) => {
           return {
             title: 'Find Ticket',
+            tabBarLabelStyle: { paddingBottom: 5, fontSize: 12, fontWeight: '500' },
             headerShown: false,
             headerStyle: GLOBAL_STYLES.transparentHeaderScreenContainer,
             tabBarIcon: ({ color }) => <MaterialCommunityIcons name="highway" color={color} size={18} />,
@@ -210,6 +211,7 @@ function BottomTabNavigator() {
         component={gestureHandlerRootHOC(MyTravelsScreen)}
         options={{
           title: 'My Travels',
+          tabBarLabelStyle: {paddingBottom: 5},
           tabBarIcon: ({ color }) => <FontAwesome5 name="map-marked-alt" color={color} size={18} />,
           headerTitleAlign: 'center',
         }}
@@ -236,6 +238,7 @@ function BottomTabNavigator() {
         component={ProfileScreen}
         options={{
           title: 'My Profile',
+          tabBarLabelStyle: {paddingBottom: 5},
           tabBarIcon: ({ color }) => (
             <View>
               <FontAwesome5 name="user" color={color} size={18} />

@@ -110,7 +110,11 @@ export type MyTravelsDataType = {
   service: Pick<ServiceType, 'id' | 'arrivalCity' | 'arrivalDate' | 'departureCity' | 'departureDate' | 'price' > & {
     baseService: {
      id: string;
-     isCompleted: boolean; 
+     isCompleted: boolean;
+     vehicle: {
+      id: string;
+      vehicleType: vehicleEnums.VehicleType;
+     }
     }
   };
 }
